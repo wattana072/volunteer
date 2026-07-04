@@ -465,27 +465,29 @@
       .hamburger { display: flex; }
       .nav-links.open {
         display: flex; flex-direction: column;
-        position: fixed; top: 52px; left: 0; right: 0; bottom: 0;
-        background: #ced4da; /* Grey background */
-        padding: 24px; z-index: 999; gap: 16px;
+        position: fixed; top: 52px; left: 50%;
+        transform: translateX(-50%);
+        background: #ced4da;
+        padding: 16px 32px; z-index: 999; gap: 4px;
         animation: fadeIn 0.2s ease;
-        border-top: 1px solid var(--c-border-light);
-        align-items: center; /* Center horizontally */
-        overflow-y: auto;
+        border: 1px solid var(--c-border-light);
+        border-top: none;
+        box-shadow: var(--shadow-md);
+        align-items: center;
       }
       .nav-links.open .nav-link {
         text-align: center;
-        padding: 12px 20px;
+        padding: 8px 16px;
         background: transparent;
         border: none;
         border-radius: 0;
-        font-size: 1.4rem;
-        font-weight: 600;
-        width: 100%;
+        font-size: 1rem;
+        font-weight: 500;
+        width: auto;
         color: #000;
       }
       .nav-links.open .nav-link#navLogout {
-        color: #ff3b30;
+        color: #ff3b30 !important;
       }
       .nav-link { padding: 13px 16px; border-radius: var(--radius-md); }
       .modal { padding: 20px; border-radius: var(--radius-lg); }
