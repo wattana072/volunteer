@@ -6,69 +6,71 @@
   <title>Volunteer OS V1 — ระบบจัดการอาสาสมัครวัด</title>
   <meta name="description" content="ระบบจัดการอาสาสมัครวัด สะสมบุญพอยท์ กิจกรรมความดีสากล ตอบปัญหาธรรมะ" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Kanit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
   <style>
     /* ============================================================
-       CSS DESIGN SYSTEM — Gen Z Blue Gradient
+       CSS DESIGN SYSTEM — Apple-Inspired Clean & Minimal
     ============================================================ */
     :root {
-      --c-bg-deep:   #00001a;
-      --c-bg-dark:   #000033;
-      --c-bg-mid:    #00005c;
-      --c-blue-700:  #0033cc;
-      --c-blue-500:  #0055ff;
-      --c-blue-400:  #3377ff;
-      --c-blue-300:  #66aaff;
-      --c-blue-200:  #99ccff;
-      --c-blue-100:  #cce5ff;
-      --c-accent:    #ffe600;
-      --c-accent-2:  #ff6b35;
-      --c-white:     #ffffff;
-      --c-glass-bg:  rgba(0,80,255,0.08);
-      --c-glass-bd:  rgba(100,170,255,0.25);
-      --c-glass-hover: rgba(0,80,255,0.18);
-      --c-text-primary:   #ffffff;
-      --c-text-secondary: #99ccff;
-      --c-text-muted:     #5588bb;
-      --c-danger:    #ff4444;
-      --c-success:   #00e676;
-      --c-warning:   #ffab00;
+      /* Colors */
+      --c-bg:        #ffffff;
+      --c-bg-2:      #f5f5f7;
+      --c-bg-3:      #e8e8ed;
+      --c-surface:   #ffffff;
+      --c-border:    #d2d2d7;
+      --c-border-light: #e8e8ed;
 
-      --radius-sm:   8px;
+      --c-text-primary:   #1d1d1f;
+      --c-text-secondary: #6e6e73;
+      --c-text-muted:     #aeaeb2;
+      --c-white:          #ffffff;
+
+      --c-blue:      #0071e3;
+      --c-blue-dark: #0077ed;
+      --c-blue-light:#e8f0fd;
+      --c-blue-mid:  #e1effe;
+
+      --c-accent:    #0071e3;
+      --c-danger:    #ff3b30;
+      --c-success:   #34c759;
+      --c-warning:   #ff9500;
+      --c-purple:    #5e5ce6;
+
+      /* Radius */
+      --radius-xs:   6px;
+      --radius-sm:   10px;
       --radius-md:   14px;
-      --radius-lg:   22px;
-      --radius-xl:   32px;
+      --radius-lg:   18px;
+      --radius-xl:   24px;
       --radius-full: 9999px;
 
-      --shadow-glow: 0 0 30px rgba(0,85,255,0.35);
-      --shadow-card: 0 8px 32px rgba(0,0,60,0.5);
-      --shadow-btn:  0 4px 20px rgba(0,85,255,0.4);
+      /* Shadow */
+      --shadow-sm:  0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-md:  0 4px 16px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.05);
+      --shadow-lg:  0 12px 40px rgba(0,0,0,0.10), 0 4px 16px rgba(0,0,0,0.06);
+      --shadow-card:0 2px 12px rgba(0,0,0,0.07);
+      --shadow-btn: 0 2px 8px rgba(0,113,227,0.25);
 
-      --font: 'Kanit', sans-serif;
-      --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
-
-      /* ---- API URL: แก้ไขตรงนี้เพียงที่เดียว ---- */
-      --gas-url: '';
+      --font: -apple-system, 'SF Pro Display', 'Inter', 'Kanit', sans-serif;
+      --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { scroll-behavior: smooth; }
 
     body {
       font-family: var(--font);
-      background: linear-gradient(135deg, var(--c-bg-deep) 0%, var(--c-bg-dark) 50%, var(--c-bg-mid) 100%);
-      background-attachment: fixed;
+      background: var(--c-bg);
       color: var(--c-text-primary);
       min-height: 100vh;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ---- Scrollbar ---- */
     ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--c-bg-deep); }
-    ::-webkit-scrollbar-thumb { background: var(--c-blue-700); border-radius: 3px; }
+    ::-webkit-scrollbar-track { background: var(--c-bg-2); }
+    ::-webkit-scrollbar-thumb { background: var(--c-border); border-radius: 3px; }
 
     /* ---- Utility ---- */
     .hidden { display: none !important; }
@@ -78,16 +80,16 @@
     .gap-2 { gap: 8px; }
     .gap-3 { gap: 12px; }
     .gap-4 { gap: 16px; }
-    .text-accent { color: var(--c-accent); }
+    .text-accent { color: var(--c-blue); }
     .text-muted { color: var(--c-text-secondary); }
     .text-sm { font-size: 0.85rem; }
     .text-xs { font-size: 0.75rem; }
-    .text-lg { font-size: 1.15rem; }
-    .text-xl { font-size: 1.4rem; }
-    .text-2xl { font-size: 1.75rem; }
-    .text-3xl { font-size: 2.2rem; }
-    .font-bold { font-weight: 700; }
-    .font-extrabold { font-weight: 900; }
+    .text-lg { font-size: 1.1rem; }
+    .text-xl { font-size: 1.3rem; }
+    .text-2xl { font-size: 1.65rem; }
+    .text-3xl { font-size: 2rem; }
+    .font-bold { font-weight: 600; }
+    .font-extrabold { font-weight: 800; }
     .text-center { text-align: center; }
     .w-full { width: 100%; }
     .mt-2 { margin-top: 8px; }
@@ -100,113 +102,126 @@
     .p-4 { padding: 16px; }
     .rounded { border-radius: var(--radius-md); }
 
-    /* ---- Glass Card ---- */
+    /* ---- Card ---- */
     .glass-card {
-      background: var(--c-glass-bg);
-      border: 1px solid var(--c-glass-bd);
+      background: var(--c-surface);
+      border: 1px solid var(--c-border-light);
       border-radius: var(--radius-lg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
       padding: 24px;
+      box-shadow: var(--shadow-card);
       transition: var(--transition);
     }
     .glass-card:hover {
-      background: var(--c-glass-hover);
-      border-color: var(--c-blue-400);
-      box-shadow: var(--shadow-glow);
-      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--c-border);
+      transform: translateY(-1px);
     }
 
     /* ---- Buttons ---- */
     .btn {
-      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-      padding: 12px 24px;
+      display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+      padding: 11px 22px;
       border: none; border-radius: var(--radius-full); cursor: pointer;
-      font-family: var(--font); font-size: 0.95rem; font-weight: 600;
+      font-family: var(--font); font-size: 0.9rem; font-weight: 500;
       transition: var(--transition); white-space: nowrap; text-decoration: none;
+      letter-spacing: -0.01em;
     }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
+
     .btn-primary {
-      background: linear-gradient(135deg, var(--c-blue-500), var(--c-blue-700));
-      color: var(--c-white);
-      box-shadow: var(--shadow-btn);
+      background: var(--c-blue);
+      color: var(--c-text-primary);
     }
-    .btn-primary:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 6px 28px rgba(0,85,255,0.55); }
+    .btn-primary:hover { background: var(--c-blue-dark); transform: scale(1.02); box-shadow: var(--shadow-btn); }
+
     .btn-accent {
-      background: linear-gradient(135deg, var(--c-accent), #ffb700);
-      color: #000;
-      box-shadow: 0 4px 20px rgba(255,230,0,0.35);
+      background: var(--c-blue);
+      color: #fff;
     }
-    .btn-accent:hover { transform: translateY(-2px); }
+    .btn-accent:hover { background: #005bb5; transform: scale(1.02); }
+
     .btn-ghost {
-      background: transparent;
-      border: 1.5px solid var(--c-glass-bd);
-      color: var(--c-text-secondary);
+      background: var(--c-bg-2);
+      border: 1px solid var(--c-border-light);
+      color: var(--c-text-primary);
     }
-    .btn-ghost:hover { border-color: var(--c-blue-400); color: var(--c-white); background: var(--c-glass-bg); }
+    .btn-ghost:hover { background: var(--c-bg-3); border-color: var(--c-border); }
+
     .btn-danger {
-      background: linear-gradient(135deg, #ff4444, #cc0000);
-      color: var(--c-white);
+      background: var(--c-danger);
+      color: #fff;
     }
-    .btn-danger:hover { transform: translateY(-2px); }
-    .btn-sm { padding: 7px 16px; font-size: 0.82rem; }
+    .btn-danger:hover { background: #cc2e24; }
+
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid var(--c-blue);
+      color: var(--c-blue);
+    }
+    .btn-outline:hover { background: var(--c-blue-light); }
+
+    .btn-sm { padding: 7px 15px; font-size: 0.8rem; }
     .btn-full { width: 100%; }
 
     /* ---- Form Elements ---- */
     .form-group { margin-bottom: 16px; }
     .form-label {
       display: block; margin-bottom: 6px;
-      font-size: 0.85rem; font-weight: 600; color: var(--c-blue-200);
+      font-size: 0.82rem; font-weight: 500; color: var(--c-text-secondary);
+      letter-spacing: 0.01em;
     }
     .form-control {
       width: 100%;
-      background: rgba(0,40,120,0.35);
-      border: 1.5px solid var(--c-glass-bd);
+      background: var(--c-bg-2);
+      border: 1px solid var(--c-border);
       border-radius: var(--radius-sm);
-      color: var(--c-white);
+      color: var(--c-text-primary);
       font-family: var(--font); font-size: 0.95rem;
-      padding: 12px 16px;
+      padding: 11px 14px;
       transition: var(--transition);
       outline: none;
     }
     .form-control::placeholder { color: var(--c-text-muted); }
-    .form-control:focus { border-color: var(--c-blue-400); box-shadow: 0 0 0 3px rgba(0,85,255,0.2); background: rgba(0,60,180,0.3); }
-    .form-control option { background: #000033; color: #fff; }
+    .form-control:focus {
+      border-color: var(--c-blue);
+      box-shadow: 0 0 0 3px rgba(0,113,227,0.15);
+      background: var(--c-white);
+    }
+    .form-control option { background: #fff; color: #1d1d1f; }
     select.form-control { cursor: pointer; }
     textarea.form-control { resize: vertical; min-height: 80px; }
 
     /* ---- Navbar ---- */
     #navbar {
       position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-      background: rgba(0,0,30,0.85);
-      border-bottom: 1px solid var(--c-glass-bd);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      padding: 12px 24px;
+      background: rgba(255,255,255,0.85);
+      border-bottom: 1px solid var(--c-border-light);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      padding: 0 24px;
+      height: 52px;
       display: flex; align-items: center; justify-content: space-between;
-      transition: var(--transition);
     }
     .nav-brand {
-      font-weight: 900; font-size: 1.1rem;
-      background: linear-gradient(90deg, var(--c-white), var(--c-accent));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      text-decoration: none;
+      font-weight: 700; font-size: 1rem;
+      color: var(--c-text-primary);
+      text-decoration: none; letter-spacing: -0.02em;
     }
-    .nav-links { display: flex; gap: 4px; align-items: center; }
+    .nav-links { display: flex; gap: 0; align-items: center; }
     .nav-link {
-      padding: 8px 14px; border-radius: var(--radius-full);
-      color: var(--c-text-secondary); font-size: 0.88rem; font-weight: 500;
+      padding: 6px 13px; border-radius: var(--radius-full);
+      color: var(--c-text-secondary); font-size: 0.85rem; font-weight: 400;
       cursor: pointer; transition: var(--transition); border: none; background: none;
       font-family: var(--font);
     }
-    .nav-link:hover, .nav-link.active { background: var(--c-glass-bg); color: var(--c-white); }
+    .nav-link:hover, .nav-link.active { color: var(--c-text-primary); }
     .nav-avatar {
-      width: 36px; height: 36px; border-radius: 50%;
-      background: var(--c-blue-700);
-      border: 2px solid var(--c-blue-400);
+      width: 30px; height: 30px; border-radius: 50%;
+      background: var(--c-bg-2);
+      border: 1px solid var(--c-border);
       object-fit: cover; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 0.85rem; color: #fff;
+      font-weight: 600; font-size: 0.78rem; color: var(--c-text-secondary);
       overflow: hidden;
     }
     .hamburger {
@@ -214,203 +229,199 @@
       flex-direction: column; gap: 5px; padding: 4px;
     }
     .hamburger span {
-      display: block; width: 22px; height: 2px;
-      background: var(--c-white); border-radius: 2px; transition: var(--transition);
+      display: block; width: 20px; height: 1.5px;
+      background: var(--c-text-primary); border-radius: 2px; transition: var(--transition);
     }
 
     /* ---- Main content area ---- */
-    #app {
-      padding-top: 70px;
-      min-height: 100vh;
-    }
+    #app { padding-top: 52px; min-height: 100vh; }
 
     /* ---- PAGE CONTAINER ---- */
-    .page { display: none; animation: fadeInUp 0.35s ease; }
+    .page { display: none; animation: fadeIn 0.25s ease; }
     .page.active { display: block; }
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(18px); }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-    .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
-    .section { padding: 48px 0; }
+    .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+    .section { padding: 56px 0; }
     .section-title {
-      font-size: 1.6rem; font-weight: 800; margin-bottom: 6px;
-      background: linear-gradient(90deg, #fff, var(--c-blue-200));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      font-size: 1.5rem; font-weight: 700; margin-bottom: 6px;
+      color: var(--c-text-primary); letter-spacing: -0.03em;
     }
-    .section-subtitle { color: var(--c-text-secondary); margin-bottom: 28px; font-size: 0.95rem; }
+    .section-subtitle { color: var(--c-text-secondary); margin-bottom: 28px; font-size: 0.92rem; }
     .grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 20px; }
-    .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
-    .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
 
     /* ---- Badge ---- */
     .badge {
-      display: inline-block; padding: 3px 10px; border-radius: var(--radius-full);
-      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em;
+      display: inline-block; padding: 3px 9px; border-radius: var(--radius-full);
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.02em;
     }
-    .badge-blue  { background: rgba(0,85,255,0.25); color: var(--c-blue-200); border: 1px solid rgba(0,85,255,0.4); }
-    .badge-accent{ background: rgba(255,230,0,0.2); color: var(--c-accent); border: 1px solid rgba(255,230,0,0.4); }
-    .badge-green { background: rgba(0,230,118,0.15); color: var(--c-success); border: 1px solid rgba(0,230,118,0.35); }
-    .badge-red   { background: rgba(255,68,68,0.15); color: #ff6666; border: 1px solid rgba(255,68,68,0.35); }
+    .badge-blue   { background: var(--c-blue-mid); color: var(--c-blue); }
+    .badge-accent { background: #fff3cd; color: #b45309; }
+    .badge-green  { background: #d1fae5; color: #065f46; }
+    .badge-red    { background: #fee2e2; color: #991b1b; }
 
     /* ---- Stat Card ---- */
     .stat-card {
-      background: var(--c-glass-bg);
-      border: 1px solid var(--c-glass-bd);
+      background: var(--c-bg-2);
+      border: 1px solid var(--c-border-light);
       border-radius: var(--radius-lg);
       padding: 20px;
       text-align: center;
       transition: var(--transition);
     }
-    .stat-card:hover { transform: translateY(-3px); border-color: var(--c-blue-400); }
-    .stat-icon { font-size: 2rem; margin-bottom: 8px; }
-    .stat-value { font-size: 2rem; font-weight: 900; color: var(--c-accent); line-height: 1; }
-    .stat-label { font-size: 0.8rem; color: var(--c-text-secondary); margin-top: 4px; }
+    .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .stat-icon { font-size: 1.6rem; margin-bottom: 8px; }
+    .stat-value { font-size: 1.8rem; font-weight: 800; color: var(--c-blue); line-height: 1; letter-spacing: -0.04em; }
+    .stat-label { font-size: 0.78rem; color: var(--c-text-secondary); margin-top: 4px; }
 
     /* ---- Hero Header ---- */
     .hero-header {
-      width: 100%; height: 320px; position: relative; overflow: hidden;
-      border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+      width: 100%; height: 380px; position: relative; overflow: hidden;
     }
     .hero-header img { width: 100%; height: 100%; object-fit: cover; }
     .hero-overlay {
       position: absolute; inset: 0;
-      background: linear-gradient(to bottom, rgba(0,0,40,0.3), rgba(0,0,40,0.75));
-      display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-      padding: 32px 24px;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.10), rgba(0,0,0,0.45));
+      display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end;
+      padding: 40px 48px;
     }
     .hero-title {
-      font-size: 2.2rem; font-weight: 900; text-align: center;
-      background: linear-gradient(90deg, #fff, var(--c-accent));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      text-shadow: none;
+      font-size: 2.4rem; font-weight: 700; letter-spacing: -0.04em;
+      color: #ffffff; line-height: 1.15;
     }
-    .hero-sub { color: var(--c-blue-200); margin-top: 4px; font-size: 0.95rem; text-align: center; }
+    .hero-sub { color: rgba(255,255,255,0.85); margin-top: 6px; font-size: 1rem; }
 
     /* ---- Table ---- */
     .table-wrap { overflow-x: auto; border-radius: var(--radius-md); }
     table { width: 100%; border-collapse: collapse; }
-    thead tr { background: rgba(0,85,255,0.25); }
-    th { padding: 12px 16px; text-align: left; font-size: 0.82rem; font-weight: 700; color: var(--c-blue-100); white-space: nowrap; }
-    td { padding: 12px 16px; font-size: 0.88rem; color: var(--c-text-secondary); border-bottom: 1px solid rgba(100,170,255,0.08); }
-    tbody tr:hover { background: rgba(0,85,255,0.08); }
+    thead tr { background: var(--c-bg-2); border-bottom: 1px solid var(--c-border-light); }
+    th { padding: 10px 16px; text-align: left; font-size: 0.78rem; font-weight: 600; color: var(--c-text-secondary); white-space: nowrap; letter-spacing: 0.04em; text-transform: uppercase; }
+    td { padding: 12px 16px; font-size: 0.88rem; color: var(--c-text-primary); border-bottom: 1px solid var(--c-border-light); }
+    tbody tr:hover { background: var(--c-bg-2); }
     tbody tr:last-child td { border-bottom: none; }
 
     /* ---- Alert ---- */
     .alert {
-      padding: 14px 18px; border-radius: var(--radius-md); margin-bottom: 16px;
-      font-size: 0.9rem; display: flex; align-items: center; gap: 10px;
+      padding: 13px 16px; border-radius: var(--radius-sm); margin-bottom: 14px;
+      font-size: 0.88rem; display: flex; align-items: center; gap: 9px;
     }
-    .alert-success { background: rgba(0,230,118,0.12); border: 1px solid rgba(0,230,118,0.35); color: var(--c-success); }
-    .alert-error   { background: rgba(255,68,68,0.12);  border: 1px solid rgba(255,68,68,0.35);  color: #ff8888; }
-    .alert-info    { background: rgba(0,85,255,0.12);   border: 1px solid var(--c-glass-bd);    color: var(--c-blue-200); }
+    .alert-success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; }
+    .alert-error   { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; }
+    .alert-info    { background: var(--c-blue-light); border: 1px solid #bfdbfe; color: #1e40af; }
 
     /* ---- Modal ---- */
     .modal-overlay {
       display: none; position: fixed; inset: 0; z-index: 2000;
-      background: rgba(0,0,30,0.85); backdrop-filter: blur(8px);
+      background: rgba(0,0,0,0.4); backdrop-filter: blur(6px);
       align-items: center; justify-content: center; padding: 20px;
     }
     .modal-overlay.active { display: flex; }
     .modal {
-      background: #000840;
-      border: 1px solid var(--c-glass-bd);
+      background: var(--c-surface);
+      border: 1px solid var(--c-border-light);
       border-radius: var(--radius-xl);
       width: 100%; max-width: 540px;
       max-height: 90vh; overflow-y: auto;
       padding: 32px;
-      animation: fadeInUp 0.25s ease;
-      box-shadow: 0 20px 60px rgba(0,0,60,0.8);
+      animation: fadeIn 0.2s ease;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.18);
     }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-    .modal-title { font-size: 1.25rem; font-weight: 800; color: var(--c-white); }
+    .modal-title { font-size: 1.1rem; font-weight: 700; color: var(--c-text-primary); letter-spacing: -0.02em; }
     .modal-close {
-      width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--c-glass-bd);
-      background: var(--c-glass-bg); color: var(--c-text-secondary);
-      cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--c-bg-2); border: none;
+      color: var(--c-text-secondary);
+      cursor: pointer; font-size: 0.85rem;
+      display: flex; align-items: center; justify-content: center;
       transition: var(--transition);
     }
-    .modal-close:hover { border-color: var(--c-danger); color: var(--c-danger); }
+    .modal-close:hover { background: var(--c-bg-3); color: var(--c-danger); }
 
     /* ---- Progress Bar ---- */
-    .progress-bar-wrap { background: rgba(0,40,100,0.5); border-radius: var(--radius-full); height: 10px; overflow: hidden; }
+    .progress-bar-wrap { background: var(--c-bg-3); border-radius: var(--radius-full); height: 6px; overflow: hidden; }
     .progress-bar-fill {
       height: 100%; border-radius: var(--radius-full);
-      background: linear-gradient(90deg, var(--c-blue-500), var(--c-accent));
-      transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+      background: var(--c-blue);
+      transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
     }
 
     /* ---- Quiz Option ---- */
     .quiz-option {
       display: block; width: 100%;
-      padding: 14px 18px; margin-bottom: 10px;
-      background: var(--c-glass-bg); border: 1.5px solid var(--c-glass-bd);
+      padding: 13px 16px; margin-bottom: 9px;
+      background: var(--c-bg-2); border: 1.5px solid var(--c-border-light);
       border-radius: var(--radius-md); color: var(--c-text-primary);
-      font-family: var(--font); font-size: 0.95rem; text-align: left;
+      font-family: var(--font); font-size: 0.92rem; text-align: left;
       cursor: pointer; transition: var(--transition);
     }
-    .quiz-option:hover:not(:disabled) { background: var(--c-glass-hover); border-color: var(--c-blue-400); }
-    .quiz-option.selected { background: rgba(0,85,255,0.3); border-color: var(--c-blue-400); color: #fff; }
-    .quiz-option.correct  { background: rgba(0,230,118,0.2); border-color: var(--c-success); color: var(--c-success); }
-    .quiz-option.wrong    { background: rgba(255,68,68,0.15); border-color: var(--c-danger); color: #ff8888; }
+    .quiz-option:hover:not(:disabled) { background: var(--c-blue-light); border-color: var(--c-blue); }
+    .quiz-option.selected { background: var(--c-blue-mid); border-color: var(--c-blue); color: var(--c-blue); font-weight: 600; }
+    .quiz-option.correct  { background: #f0fdf4; border-color: var(--c-success); color: #15803d; }
+    .quiz-option.wrong    { background: #fef2f2; border-color: var(--c-danger); color: #b91c1c; }
 
     /* ---- Goodness Form Grid ---- */
-    .goodness-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    .goodness-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
     @media (min-width: 560px) {
-      .goodness-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
+      .goodness-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
       .goodness-item-full { grid-column: span 2; }
     }
     .goodness-item {
-      background: var(--c-glass-bg); border: 1px solid var(--c-glass-bd);
-      border-radius: var(--radius-md); padding: 18px;
+      background: var(--c-bg-2); border: 1px solid var(--c-border-light);
+      border-radius: var(--radius-md); padding: 16px;
     }
-    .goodness-item-title { font-size: 0.9rem; font-weight: 700; color: var(--c-accent); margin-bottom: 12px; }
+    .goodness-item-title { font-size: 0.85rem; font-weight: 700; color: var(--c-blue); margin-bottom: 10px; }
 
     /* ---- Reward Card ---- */
     .reward-card {
-      background: var(--c-glass-bg); border: 1px solid var(--c-glass-bd);
-      border-radius: var(--radius-lg); overflow: hidden; transition: var(--transition);
+      background: var(--c-surface); border: 1px solid var(--c-border-light);
+      border-radius: var(--radius-lg); overflow: hidden;
+      box-shadow: var(--shadow-card); transition: var(--transition);
     }
-    .reward-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-glow); border-color: var(--c-accent); }
-    .reward-img { width: 100%; height: 180px; object-fit: cover; }
-    .reward-body { padding: 18px; }
-    .reward-points { font-size: 1.5rem; font-weight: 900; color: var(--c-accent); }
-    .reward-title { font-size: 1rem; font-weight: 700; margin-top: 4px; }
+    .reward-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+    .reward-img { width: 100%; height: 170px; object-fit: cover; }
+    .reward-body { padding: 16px; }
+    .reward-points { font-size: 1.2rem; font-weight: 800; color: var(--c-blue); letter-spacing: -0.03em; }
+    .reward-title { font-size: 0.95rem; font-weight: 600; margin-top: 3px; color: var(--c-text-primary); }
 
     /* ---- Avatar Upload ---- */
     .avatar-upload {
-      width: 100px; height: 100px; border-radius: 50%;
-      background: rgba(0,40,120,0.4); border: 2px dashed var(--c-glass-bd);
+      width: 90px; height: 90px; border-radius: 50%;
+      background: var(--c-bg-2); border: 2px dashed var(--c-border);
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer; margin: 0 auto 16px; overflow: hidden; transition: var(--transition);
+      cursor: pointer; margin: 0 auto 14px; overflow: hidden; transition: var(--transition);
       position: relative;
     }
-    .avatar-upload:hover { border-color: var(--c-blue-400); }
+    .avatar-upload:hover { border-color: var(--c-blue); background: var(--c-blue-light); }
     .avatar-upload img { width: 100%; height: 100%; object-fit: cover; }
-    .avatar-placeholder { color: var(--c-text-muted); font-size: 2rem; }
+    .avatar-placeholder { color: var(--c-text-muted); font-size: 1.8rem; }
     .avatar-upload input { display: none; }
 
-    /* ---- Glow pulse animation ---- */
-    @keyframes glow-pulse {
-      0%, 100% { box-shadow: 0 0 20px rgba(0,85,255,0.3); }
-      50% { box-shadow: 0 0 40px rgba(0,85,255,0.7), 0 0 80px rgba(255,230,0,0.15); }
+    /* ---- Glow pulse (replaced with subtle pulse) ---- */
+    @keyframes subtle-pulse {
+      0%, 100% { box-shadow: 0 2px 12px rgba(0,113,227,0.12); }
+      50% { box-shadow: 0 4px 24px rgba(0,113,227,0.22); }
     }
-    .glow-pulse { animation: glow-pulse 3s ease-in-out infinite; }
+    .glow-pulse { animation: subtle-pulse 3s ease-in-out infinite; }
 
     /* ---- Toast ---- */
     #toast-container {
       position: fixed; bottom: 24px; right: 24px; z-index: 9999;
-      display: flex; flex-direction: column; gap: 10px;
+      display: flex; flex-direction: column; gap: 8px;
     }
     .toast {
-      background: #001166; border: 1px solid var(--c-blue-400);
-      border-radius: var(--radius-md); padding: 14px 20px;
-      color: var(--c-white); font-size: 0.9rem; font-weight: 500;
-      max-width: 320px; animation: slideInRight 0.3s ease;
-      box-shadow: 0 8px 30px rgba(0,0,60,0.6);
+      background: rgba(28,28,30,0.92); backdrop-filter: blur(12px);
+      border-radius: var(--radius-md); padding: 13px 18px;
+      color: #fff; font-size: 0.88rem; font-weight: 500;
+      max-width: 300px; animation: slideInRight 0.3s ease;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.18);
     }
-    .toast.success { border-color: var(--c-success); background: #001a0d; }
-    .toast.error   { border-color: var(--c-danger);  background: #1a0000; }
+    .toast.success { background: rgba(52,199,89,0.95); }
+    .toast.error   { background: rgba(255,59,48,0.95); }
     @keyframes slideInRight {
       from { transform: translateX(100%); opacity: 0; }
       to   { transform: translateX(0); opacity: 1; }
@@ -418,45 +429,51 @@
 
     /* ---- Loading Spinner ---- */
     .spinner {
-      width: 40px; height: 40px; border-radius: 50%;
-      border: 3px solid rgba(0,85,255,0.2);
-      border-top-color: var(--c-blue-400);
-      animation: spin 0.8s linear infinite;
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 2.5px solid var(--c-bg-3);
+      border-top-color: var(--c-blue);
+      animation: spin 0.7s linear infinite;
       margin: 40px auto;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* ---- Photo preview ---- */
     .photo-preview {
-      width: 100%; height: 140px; object-fit: cover;
+      width: 100%; height: 130px; object-fit: cover;
       border-radius: var(--radius-md); margin-top: 8px;
-      border: 1px solid var(--c-glass-bd);
+      border: 1px solid var(--c-border-light);
     }
 
     /* ---- Department Badge ---- */
     .dept-tag {
-      display: inline-block; padding: 4px 12px;
-      background: rgba(0,85,255,0.2); border: 1px solid var(--c-blue-500);
-      border-radius: var(--radius-full); font-size: 0.8rem; color: var(--c-blue-200);
+      display: inline-block; padding: 3px 11px;
+      background: var(--c-bg-2); border: 1px solid var(--c-border);
+      border-radius: var(--radius-full); font-size: 0.78rem; color: var(--c-text-secondary);
     }
+
+    /* ---- Divider ---- */
+    .divider { height: 1px; background: var(--c-border-light); margin: 24px 0; }
 
     /* ---- Responsive ---- */
     @media (max-width: 768px) {
       .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
       .goodness-grid { grid-template-columns: 1fr; }
       .goodness-item[style*='span 2'] { grid-column: span 1 !important; }
-      .hero-title { font-size: 1.5rem; }
+      .hero-title { font-size: 1.6rem; }
+      .hero-overlay { padding: 28px 24px; }
       .nav-links { display: none; }
       .hamburger { display: flex; }
       .nav-links.open {
         display: flex; flex-direction: column;
-        position: fixed; inset: 0; top: 60px;
-        background: rgba(0,0,30,0.97); backdrop-filter: blur(20px);
-        padding: 24px; z-index: 999; gap: 8px;
-        animation: fadeInUp 0.25s ease;
+        position: fixed; inset: 0; top: 52px;
+        background: rgba(255,255,255,0.98); backdrop-filter: blur(20px);
+        padding: 20px; z-index: 999; gap: 4px;
+        animation: fadeIn 0.2s ease;
+        border-top: 1px solid var(--c-border-light);
       }
-      .nav-link { padding: 14px 20px; border-radius: var(--radius-md); }
-      .modal { padding: 20px; }
+      .nav-link { padding: 13px 16px; border-radius: var(--radius-md); }
+      .modal { padding: 20px; border-radius: var(--radius-lg); }
+      .hero-header { height: 260px; }
     }
   </style>
 </head>
@@ -501,7 +518,7 @@
       <img src="https://images.dmc.tv/www/images/00-iimage/561225.01.jpg" alt="วัด" />
       <div class="hero-overlay">
         <div class="hero-title">🙏 Volunteer OS V1</div>
-        <div class="hero-sub">ระบบอาสาสมัครวัด · สะสมบุญพอยท์ · พัฒนาตนเอง</div>
+        <div class="hero-sub" style="color:rgba(255,255,255,0.9);">ระบบอาสาสมัครวัด · สะสมบุญพอยท์ · พัฒนาตนเอง</div>
       </div>
     </div>
 
@@ -514,17 +531,17 @@
             <h2 class="section-title">🏛️ หน้าที่อาสาสมัครวัด</h2>
             <p class="section-subtitle">ร่วมเป็นส่วนหนึ่งของการสร้างบุญกุศล</p>
             <div style="display:flex; flex-direction:column; gap:14px;">
-              <div style="display:flex;align-items:center;gap:12px;background:var(--c-glass-bg);padding:14px;border-radius:var(--radius-md);border:1px solid var(--c-glass-bd);">
+              <div style="display:flex;align-items:center;gap:12px;background:var(--c-bg-2);padding:14px;border-radius:var(--radius-md);border:1px solid var(--c-border-light);">
                 <span style="font-size:1.8rem;">🏯</span>
-                <div><div style="font-weight:700;color:#fff;">เป็นเจ้าของวัด</div><div class="text-sm text-muted">ดูแลสถานที่ศักดิ์สิทธิ์ด้วยใจบริสุทธิ์</div></div>
+                <div><div style="font-weight:700;color:var(--c-text-primary);">เป็นเจ้าของวัด</div><div class="text-sm text-muted">ดูแลสถานที่ศักดิ์สิทธิ์ด้วยใจบริสุทธิ์</div></div>
               </div>
-              <div style="display:flex;align-items:center;gap:12px;background:var(--c-glass-bg);padding:14px;border-radius:var(--radius-md);border:1px solid var(--c-glass-bd);">
+              <div style="display:flex;align-items:center;gap:12px;background:var(--c-bg-2);padding:14px;border-radius:var(--radius-md);border:1px solid var(--c-border-light);">
                 <span style="font-size:1.8rem;">🙏</span>
-                <div><div style="font-weight:700;color:#fff;">ต้อนรับปฏิสันถารญาติโยม</div><div class="text-sm text-muted">รับแขกด้วยรอยยิ้มและไมตรีจิต</div></div>
+                <div><div style="font-weight:700;color:var(--c-text-primary);">ต้อนรับปฏิสันถารญาติโยม</div><div class="text-sm text-muted">รับแขกด้วยรอยยิ้มและไมตรีจิต</div></div>
               </div>
-              <div style="display:flex;align-items:center;gap:12px;background:var(--c-glass-bg);padding:14px;border-radius:var(--radius-md);border:1px solid var(--c-glass-bd);">
+              <div style="display:flex;align-items:center;gap:12px;background:var(--c-bg-2);padding:14px;border-radius:var(--radius-md);border:1px solid var(--c-border-light);">
                 <span style="font-size:1.8rem;">⭐</span>
-                <div><div style="font-weight:700;color:#fff;">เตรียมงาน · ต้อนรับ · เก็บงาน</div><div class="text-sm text-muted">ทำงานอย่างมีระเบียบและทุ่มเท</div></div>
+                <div><div style="font-weight:700;color:var(--c-text-primary);">เตรียมงาน · ต้อนรับ · เก็บงาน</div><div class="text-sm text-muted">ทำงานอย่างมีระเบียบและทุ่มเท</div></div>
               </div>
             </div>
           </div>
@@ -534,17 +551,17 @@
             <h2 class="section-title">✨ อานิสงค์การทำหน้าที่</h2>
             <p class="section-subtitle">ผลบุญที่ได้รับจากการเป็นอาสาสมัครวัด</p>
             <div style="display:flex; flex-direction:column; gap:14px;">
-              <div style="display:flex;align-items:center;gap:12px;background:rgba(255,230,0,0.06);padding:14px;border-radius:var(--radius-md);border:1px solid rgba(255,230,0,0.2);">
+              <div style="display:flex;align-items:center;gap:12px;background:#fffbeb;padding:14px;border-radius:var(--radius-md);border:1px solid #fde68a;">
                 <span style="font-size:1.8rem;">💛</span>
-                <div><div style="font-weight:700;color:var(--c-accent);">ผิวพรรณวรรณะผ่องใส</div><div class="text-sm text-muted">บุญส่งให้หน้าตาผ่องใส มีเสน่ห์น่ารัก</div></div>
+                <div><div style="font-weight:700;color:var(--c-text-primary);">ผิวพรรณวรรณะผ่องใส</div><div class="text-sm text-muted">บุญส่งให้หน้าตาผ่องใส มีเสน่ห์น่ารัก</div></div>
               </div>
-              <div style="display:flex;align-items:center;gap:12px;background:rgba(255,230,0,0.06);padding:14px;border-radius:var(--radius-md);border:1px solid rgba(255,230,0,0.2);">
+              <div style="display:flex;align-items:center;gap:12px;background:#fffbeb;padding:14px;border-radius:var(--radius-md);border:1px solid #fde68a;">
                 <span style="font-size:1.8rem;">💫</span>
-                <div><div style="font-weight:700;color:var(--c-accent);">เป็นที่รักของมนุษย์และเทวดา</div><div class="text-sm text-muted">ได้รับความรักและการปกป้องจากทุกทิศ</div></div>
+                <div><div style="font-weight:700;color:var(--c-text-primary);">เป็นที่รักของมนุษย์และเทวดา</div><div class="text-sm text-muted">ได้รับความรักและการปกป้องจากทุกทิศ</div></div>
               </div>
-              <div style="display:flex;align-items:center;gap:12px;background:rgba(255,230,0,0.06);padding:14px;border-radius:var(--radius-md);border:1px solid rgba(255,230,0,0.2);">
+              <div style="display:flex;align-items:center;gap:12px;background:#fffbeb;padding:14px;border-radius:var(--radius-md);border:1px solid #fde68a;">
                 <span style="font-size:1.8rem;">🧠</span>
-                <div><div style="font-weight:700;color:var(--c-accent);">มีดวงปัญญาสว่างไสว</div><div class="text-sm text-muted">ปัญญาเฉลียวฉลาด เรียนรู้ได้เร็ว</div></div>
+                <div><div style="font-weight:700;color:var(--c-text-primary);">มีดวงปัญญาสว่างไสว</div><div class="text-sm text-muted">ปัญญาเฉลียวฉลาด เรียนรู้ได้เร็ว</div></div>
               </div>
             </div>
           </div>
@@ -585,7 +602,7 @@
 
       <!-- 1.3 Reward -->
       <div class="section" style="padding-top:0">
-        <div class="glass-card" style="background:linear-gradient(135deg,rgba(255,230,0,0.08),rgba(0,85,255,0.08));border-color:rgba(255,230,0,0.3);">
+        <div class="glass-card" style="background:var(--c-blue-light);border-color:#bfdbfe;">
           <div class="flex items-center justify-between" style="flex-wrap:wrap;gap:16px;">
             <div>
               <h2 class="section-title">🎁 Reward — แลกรางวัล</h2>
@@ -610,7 +627,7 @@
   <!-- ========== PAGE: LOGIN ========== -->
   <div class="page" id="page-login">
     <div class="container" style="max-width:480px;padding-top:48px;">
-      <div class="glass-card glow-pulse" style="border-color:var(--c-blue-400);">
+      <div class="glass-card glow-pulse" style="border-color:var(--c-blue);">
         <div class="text-center mb-4">
           <div style="font-size:3rem;margin-bottom:8px;">🙏</div>
           <h1 class="text-2xl font-extrabold">เข้าสู่ระบบ</h1>
@@ -845,7 +862,7 @@
       </div>
 
       <div class="glass-card text-center mt-4" style="border-color:rgba(255,230,0,0.3);background:rgba(255,230,0,0.05);">
-        <p class="text-sm text-muted">🌟 BoonPoint ของคุณ: <span class="text-accent font-bold text-xl" id="rewardBoonPoint">—</span> คะแนน</p>
+        <p class="text-sm text-muted">🌟 BoonPoint ของคุณ: <span class="font-bold text-xl" style="color:var(--c-blue)" id="rewardBoonPoint">—</span> คะแนน</p>
         <p class="text-xs text-muted mt-2">ติดต่อขอแลกรางวัลได้ที่ พระวัฒนา อคฺควฑฺฒโน | Line: Wattana072</p>
       </div>
     </div>
@@ -854,25 +871,25 @@
   <!-- ========== PAGE: CONTACT ========== -->
   <div class="page" id="page-contact">
     <div class="container" style="max-width:540px;padding-top:48px;padding-bottom:48px;">
-      <div class="glass-card text-center glow-pulse">
+      <div class="glass-card text-center">
         <div style="font-size:4rem;margin-bottom:16px;">📿</div>
         <h1 class="text-2xl font-extrabold mb-2">ติดต่อผู้ดูแลระบบ</h1>
-        <div style="background:rgba(255,230,0,0.08);border:1px solid rgba(255,230,0,0.25);border-radius:var(--radius-lg);padding:24px;margin:24px 0;">
-          <div style="font-size:1.3rem;font-weight:800;color:var(--c-accent);margin-bottom:4px;">พระวัฒนา อคฺควฑฺฒโน</div>
+        <div style="background:var(--c-bg-2);border:1px solid var(--c-border-light);border-radius:var(--radius-lg);padding:24px;margin:24px 0;">
+          <div style="font-size:1.2rem;font-weight:700;color:var(--c-text-primary);margin-bottom:4px;">พระวัฒนา อคฺควฑฺฒโน</div>
           <div class="text-sm text-muted">ผู้พัฒนาระบบ Volunteer OS V1</div>
         </div>
         <div style="display:flex;flex-direction:column;gap:14px;text-align:left;">
-          <a href="tel:0624564524" style="display:flex;align-items:center;gap:14px;background:var(--c-glass-bg);padding:16px;border-radius:var(--radius-md);border:1px solid var(--c-glass-bd);text-decoration:none;color:inherit;transition:var(--transition);" onmouseover="this.style.borderColor='var(--c-blue-400)'" onmouseout="this.style.borderColor='var(--c-glass-bd)'">
+          <a href="tel:0624564524" style="display:flex;align-items:center;gap:14px;background:var(--c-bg-2);padding:16px;border-radius:var(--radius-md);border:1px solid var(--c-border-light);text-decoration:none;color:inherit;transition:var(--transition);" onmouseover="this.style.borderColor='var(--c-blue)'" onmouseout="this.style.borderColor='var(--c-border-light)'">
             <span style="font-size:1.5rem;">📞</span>
             <div><div style="font-size:0.8rem;color:var(--c-text-secondary);">เบอร์โทรศัพท์</div><div style="font-weight:700;">062-456-4524</div></div>
           </a>
-          <a href="mailto:wattana072@gmail.com" style="display:flex;align-items:center;gap:14px;background:var(--c-glass-bg);padding:16px;border-radius:var(--radius-md);border:1px solid var(--c-glass-bd);text-decoration:none;color:inherit;transition:var(--transition);" onmouseover="this.style.borderColor='var(--c-blue-400)'" onmouseout="this.style.borderColor='var(--c-glass-bd)'">
+          <a href="mailto:wattana072@gmail.com" style="display:flex;align-items:center;gap:14px;background:var(--c-bg-2);padding:16px;border-radius:var(--radius-md);border:1px solid var(--c-border-light);text-decoration:none;color:inherit;transition:var(--transition);" onmouseover="this.style.borderColor='var(--c-blue)'" onmouseout="this.style.borderColor='var(--c-border-light)'">
             <span style="font-size:1.5rem;">✉️</span>
             <div><div style="font-size:0.8rem;color:var(--c-text-secondary);">อีเมล</div><div style="font-weight:700;">wattana072@gmail.com</div></div>
           </a>
-          <div style="display:flex;align-items:center;gap:14px;background:rgba(0,200,0,0.06);padding:16px;border-radius:var(--radius-md);border:1px solid rgba(0,200,0,0.2);">
+          <div style="display:flex;align-items:center;gap:14px;background:#f0fdf4;padding:16px;border-radius:var(--radius-md);border:1px solid #bbf7d0;">
             <span style="font-size:1.5rem;">💬</span>
-            <div><div style="font-size:0.8rem;color:var(--c-text-secondary);">Line ID</div><div style="font-weight:700;color:#00e676;">Wattana072</div></div>
+            <div><div style="font-size:0.8rem;color:var(--c-text-secondary);">Line ID</div><div style="font-weight:700;color:#15803d;">Wattana072</div></div>
           </div>
         </div>
         <button class="btn btn-ghost mt-4" onclick="navigate('home')">← กลับหน้าหลัก</button>
@@ -1309,7 +1326,7 @@ async function loadUserPage() {
 
 function renderUserDashboard(d) {
   document.getElementById('userDashboard').innerHTML = `
-    <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-value">${d.totalBoonPoint}</div><div class="stat-label">BoonPoint รวม</div></div>
+    <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-value" style="color:var(--c-blue)">${d.totalBoonPoint}</div><div class="stat-label">BoonPoint รวม</div></div>
     <div class="stat-card"><div class="stat-icon">🎪</div><div class="stat-value">${d.activityBoon}</div><div class="stat-label">จากกิจกรรม</div></div>
     <div class="stat-card"><div class="stat-icon">🌍</div><div class="stat-value">${d.goodnessBoon}</div><div class="stat-label">ความดีสากล</div></div>
     <div class="stat-card"><div class="stat-icon">📖</div><div class="stat-value">${d.quizBoon}</div><div class="stat-label">จากข้อสอบ</div></div>
@@ -1892,10 +1909,10 @@ async function finishQuiz() {
     document.getElementById('quizModalContent').innerHTML = `
       <div class="text-center">
         <div style="font-size:4rem;margin-bottom:12px;">${pct>=80?'🎉':pct>=50?'👍':'😊'}</div>
-        <h2 class="text-2xl font-extrabold" style="color:var(--c-accent);">${pct>=80?'ยอดเยี่ยม!':pct>=50?'ดีมาก!':'ขอบคุณที่ร่วมสอบ!'}</h2>
+        <h2 class="text-2xl font-extrabold" style="color:var(--c-blue);">${pct>=80?'ยอดเยี่ยม!':pct>=50?'ดีมาก!':'ขอบคุณที่ร่วมสอบ!'}</h2>
         <p class="text-lg mt-2">${res.message}</p>
         <div class="glass-card text-center mt-4" style="padding:24px;">
-          <div style="font-size:3rem;font-weight:900;color:var(--c-accent);">${res.boonScore}/${res.maxScore}</div>
+          <div style="font-size:3rem;font-weight:900;color:var(--c-blue);">${res.boonScore}/${res.maxScore}</div>
           <div class="text-muted">คะแนนที่ได้ (${pct}%)</div>
           <div class="progress-bar-wrap mt-3"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
         </div>
