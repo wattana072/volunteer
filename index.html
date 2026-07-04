@@ -1278,6 +1278,18 @@ function closeMenu() {
 }
 
 // ============================================================
+//  GLOBAL LOADER
+// ============================================================
+function showGlobalLoader() {
+  const l = document.getElementById('globalLoader');
+  if (l) { l.style.display = 'flex'; l.classList.add('active'); }
+}
+function hideGlobalLoader() {
+  const l = document.getElementById('globalLoader');
+  if (l) { l.style.display = 'none'; l.classList.remove('active'); }
+}
+
+// ============================================================
 //  API HELPER
 // ============================================================
 async function api(params) {
@@ -1290,12 +1302,17 @@ async function api(params) {
         params.action === 'deleteQuizSet' || params.action === 'uploadPhoto' ||
         params.action === 'updateActivityComment' || params.action === 'setupSheets') {
       // POST
-      const res = await fetch(GAS_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(params)
-      });
-      return await res.json();
+      showGlobalLoader();
+      try {
+        const res = await fetch(GAS_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify(params)
+        });
+        return await res.json();
+      } finally {
+        hideGlobalLoader();
+      }
     } else {
       // GET
       const qs = new URLSearchParams(params).toString();
@@ -2451,5 +2468,13 @@ document.addEventListener('keydown', e => {
 });
 </script>
 
+
+<!-- Global Loading Overlay -->
+<div class="modal-overlay" id="globalLoader" style="z-index:9999;">
+  <div style="background:var(--c-surface); padding:32px 40px; border-radius:var(--radius-lg); text-align:center; box-shadow:var(--shadow-lg); animation: fadeIn 0.2s ease;">
+    <div class="spinner" style="margin: 0 auto 16px;"></div>
+    <div style="font-weight:600; font-size:1.1rem; color:var(--c-text-primary);">ช้าเพื่อไปต่อ รอเพื่อสำเร็จ..</div>
+  </div>
+</div>
 </body>
 </html>
