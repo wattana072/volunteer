@@ -1362,22 +1362,29 @@ async function doRegister() {
     showAlert('registerAlert','กรุณากรอกข้อมูล * ให้ครบ','error'); return;
   }
 
-  const params = { action:'register', userID:email, password:pwd, preName, name, lastName, nickName, birthday, department:dept };
+  showGlobalLoader(); // Show earlier before photo processing
+  try {
+    const params = { action:'register', userID:email, password:pwd, preName, name, lastName, nickName, birthday, department:dept };
 
-  // Photo
-  const photoInput = document.getElementById('regPhotoInput');
-  if (photoInput.files[0]) {
-    const { base64, mime, filename } = await fileToBase64(photoInput.files[0]);
-    params.photoBase64 = base64; params.photoFilename = filename; params.photoMime = mime;
-  }
+    // Photo
+    const photoInput = document.getElementById('regPhotoInput');
+    if (photoInput.files[0]) {
+      const { base64, mime, filename } = await fileToBase64(photoInput.files[0]);
+      params.photoBase64 = base64; params.photoFilename = filename; params.photoMime = mime;
+    }
 
-  const res = await api(params);
-  if (res.success) {
-    showAlert('registerAlert', res.message, 'success');
-    showToast('ลงทะเบียนสำเร็จ! กรุณาเข้าสู่ระบบ', 'success');
-    setTimeout(() => navigate('login'), 1500);
-  } else {
-    showAlert('registerAlert', res.message || 'เกิดข้อผิดพลาด', 'error');
+    const res = await api(params);
+    if (res.success) {
+      showAlert('registerAlert', res.message, 'success');
+      showToast('ลงทะเบียนสำเร็จ! กรุณาเข้าสู่ระบบ', 'success');
+      setTimeout(() => navigate('login'), 1500);
+    } else {
+      showAlert('registerAlert', res.message || 'เกิดข้อผิดพลาด', 'error');
+    }
+  } catch(e) {
+    showAlert('registerAlert', 'เกิดข้อผิดพลาด: ' + e.message, 'error');
+  } finally {
+    hideGlobalLoader();
   }
 }
 
