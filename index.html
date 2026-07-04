@@ -465,11 +465,23 @@
       .hamburger { display: flex; }
       .nav-links.open {
         display: flex; flex-direction: column;
-        position: fixed; inset: 0; top: 52px;
-        background: rgba(255,255,255,0.98); backdrop-filter: blur(20px);
-        padding: 20px; z-index: 999; gap: 4px;
+        position: fixed; top: 52px; left: 0; right: 0; bottom: 0;
+        background: var(--c-surface);
+        padding: 24px; z-index: 999; gap: 10px;
         animation: fadeIn 0.2s ease;
         border-top: 1px solid var(--c-border-light);
+        align-items: stretch;
+        overflow-y: auto;
+      }
+      .nav-links.open .nav-link {
+        text-align: left;
+        padding: 16px 20px;
+        background: var(--c-bg-2);
+        border: 1px solid var(--c-border-light);
+        border-radius: var(--radius-md);
+        font-size: 1.05rem;
+        font-weight: 600;
+        width: 100%;
       }
       .nav-link { padding: 13px 16px; border-radius: var(--radius-md); }
       .modal { padding: 20px; border-radius: var(--radius-lg); }
