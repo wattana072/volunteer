@@ -1665,6 +1665,10 @@ function openProfileModal() {
         <span class="badge badge-accent" style="margin-left:6px;">${u.Level}</span>
         <span class="badge badge-green" style="margin-left:6px;">${u.Role}</span>
       </div>
+      <div style="margin-top:24px; margin-bottom: 8px;">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(u.UserID)}" alt="QR Code" style="border-radius:12px; border: 4px solid var(--c-bg-2); box-shadow: var(--shadow-sm); width:140px; height:140px;" />
+        <div class="text-xs text-muted mt-2">QR Code สำหรับสแกนเข้าร่วมกิจกรรม</div>
+      </div>
     </div>
     <div id="profileEditAlert"></div>
     <div class="grid-2">
