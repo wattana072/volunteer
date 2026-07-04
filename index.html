@@ -355,7 +355,11 @@
     .quiz-option.wrong    { background: rgba(255,68,68,0.15); border-color: var(--c-danger); color: #ff8888; }
 
     /* ---- Goodness Form Grid ---- */
-    .goodness-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .goodness-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    @media (min-width: 560px) {
+      .goodness-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
+      .goodness-item-full { grid-column: span 2; }
+    }
     .goodness-item {
       background: var(--c-glass-bg); border: 1px solid var(--c-glass-bd);
       border-radius: var(--radius-md); padding: 18px;
@@ -440,6 +444,7 @@
     @media (max-width: 768px) {
       .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
       .goodness-grid { grid-template-columns: 1fr; }
+      .goodness-item[style*='span 2'] { grid-column: span 1 !important; }
       .hero-title { font-size: 1.5rem; }
       .nav-links { display: none; }
       .hamburger { display: flex; }
@@ -934,7 +939,7 @@
         <label class="form-label">ทำอะไรได้ตรงเวลา</label>
         <textarea id="gOntimeText" class="form-control" placeholder="ตรงเวลาในเรื่องอะไร..." rows="3"></textarea>
       </div>
-      <div class="goodness-item" style="grid-column:span 2;">
+      <div class="goodness-item goodness-item-full">
         <div class="goodness-item-title">🧘 นั่งสมาธิ (Meditate)</div>
         <label class="form-label">รูปภาพการนั่งสมาธิ</label>
         <input type="file" id="gMeditatePhoto" accept="image/*" class="form-control" style="padding:8px;" onchange="previewPhoto(this,'gMeditatePreview')" />
