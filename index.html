@@ -1,308 +1,301 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Volunteer OS</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Volunteer OS | พอร์ทัลระบบอาสาสมัครส่วนกลาง</title>
   
+  <!-- Apple Sleek Interface Frameworks -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'Sarabun', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
   <style>
-    :root {
-      --bg-color: #f5f5f7;
-      --text-main: #1d1d1f;
-      --text-secondary: #86868b;
-      --primary-color: #0071e3;
-      --danger-color: #ff3b30;
-      --header-bg: rgba(255, 255, 255, 0.8);
-    }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background: var(--header-bg);
-      backdrop-filter: blur(10px);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      border-bottom: 1px solid #d2d2d7;
-    }
-    .nav-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 15px 20px;
-    }
-    .logo {
-      display: flex;
-      align-items: center;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 18px;
-    }
-    .logo img {
-      width: 24px;
-      margin-right: 8px;
-    }
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 20px;
-      margin: 0;
-      padding: 0;
-    }
-    nav a {
-      cursor: pointer;
-      font-size: 14px;
-    }
-    nav a.active { color: var(--primary-color); }
-    .hidden { display: none !important; }
-    main {
-      max-width: 1000px;
-      margin: 40px auto;
-      padding: 0 20px;
-    }
-    .grid-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-    }
-    .grid-item {
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    }
-    .btn {
-      background: var(--primary-color);
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    .auth-container {
-      max-width: 400px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-      font-size: 14px;
-    }
-    .form-group input {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      box-sizing: border-box;
-    }
-    #loading-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(255,255,255,0.8);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
+      background-color: #F5F5F7;
+      color: #1D1D1F;
+      font-family: 'Inter', 'Sarabun', sans-serif;
     }
   </style>
 </head>
 <body>
+  <div id="root"></div>
 
-  <div id="loading-overlay" class="hidden">
-    <h2>กำลังโหลดข้อมูล...</h2>
-  </div>
+  <script type="text/babel">
+    const { useState, useEffect, useMemo } = React;
 
-  <header>
-    <div class="nav-container">
-      <a class="logo" onclick="navigateTo('home')">
-        <img src="https://img.icons8.com/ios-filled/50/000000/globe.png" alt="Volunteer OS" />
-        Volunteer OS
-      </a>
-      <nav>
-        <ul>
-          <li><a onclick="navigateTo('home')" id="nav-home" class="active">หน้าแรก</a></li>
-          <li><a onclick="navigateTo('login')" id="nav-login">ลงชื่อเข้าใช้</a></li>
-          <li id="nav-logout-container" class="hidden"><a onclick="logout()" class="text-danger">ออกจากระบบ</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+    // Configured Apps Script API endpoint
+    const API_URL = "https://script.google.com/macros/s/AKfycby6FkuiT16PiyfSmzZgNviSkNln4CUaNqI_sNMm3fi5ZtcMUtP6iupUZ48lSifrbC2g/exec";
 
-  <main>
-    <section id="home-section">
-      <h2>ระบบอาสาสมัคร Volunteer OS</h2>
-      <div id="home-grid" class="grid-container">
-        </div>
-    </section>
+    function App() {
+      const [user, setUser] = useState({
+        UserID: "somchai@volunteer.org",
+        Name: "สมชาย",
+        Surname: "ดีเลิศ",
+        Role: "Staff",
+        Level: "Leader",
+        Department: "สมาธิและปัญญา",
+        BoonScore: 850,
+        Avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
+      });
 
-    <section id="login-section" class="hidden auth-container">
-      <div style="text-align:center; margin-bottom: 20px;">
-        <h2>ลงชื่อเข้าสู่ระบบ</h2>
-      </div>
-      <form id="login-form">
-        <div class="form-group">
-          <label>อีเมลผู้ใช้งาน (UserID) *</label>
-          <input type="email" id="login-email" required placeholder="name@volunteer.com" />
-        </div>
-        <div class="form-group">
-          <label>รหัสผ่าน *</label>
-          <input type="password" id="login-password" required placeholder="รหัสผ่าน" />
-        </div>
-        <button type="submit" class="btn" style="width:100%;">ลงชื่อเข้าใช้</button>
-      </form>
-    </section>
+      const [currentTab, setCurrentTab] = useState("home");
+      const [goodnessForm, setGoodnessForm] = useState({
+        Giving: { done: false, text: "", photo: "" },
+        Sila: { done: false, text: "", photo: "" },
+        Clean: { done: false, text: "", photo: "" },
+        Array: { done: false, text: "", photo: "" },
+        Polite: { done: false, text: "", photo: "" },
+        Ontime: { done: false, text: "", photo: "" },
+        Meditate: { done: false, text: "", photo: "" }
+      });
 
-    <section id="dashboard-section" class="hidden">
-      <h2>พื้นที่สำหรับสมาชิก</h2>
-      <div id="dashboard-content" class="grid-container">
-        </div>
-    </section>
-  </main>
+      const [activities, setActivities] = useState([
+        { AcID: "AC-001", Title: "นั่งสมาธิเย็นวันศุกร์ (Friday Meditation)", BoonScore: 50, Location: "อาคารปฏิบัติธรรม ชั้น 4", Time: "18:00 น.", Image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=600" },
+        { AcID: "AC-002", Title: "ทำบุญตักบาตรเช้าวันอาทิตย์ (Sunday Alms)", BoonScore: 60, Location: "ลานธรรมสากล", Time: "06:30 น.", Image: "https://images.unsplash.com/photo-1609137144814-1e967885b59b?auto=format&fit=crop&q=80&w=600" }
+      ]);
 
-  <script>
-    // -------------------------------------------------------------
-    // นำ URL Web App ของ GAS ที่ Deploy ใหม่มาใส่ที่นี่
-    // -------------------------------------------------------------
-    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbw1Xyxy1WokcRfy8plDvKlnJ7nhlk_lOChnZQeg2xSq5u07XMRwamMhSdlCaFbuVRI/exec';
+      const [syncing, setSyncing] = useState(false);
+      const [message, setMessage] = useState("");
 
-    // ฟังก์ชันศูนย์กลางสำหรับเรียกใช้ API
-    async function callAPI(action, params = {}) {
-      showLoading(true);
-      try {
-        const response = await fetch(GAS_API_URL, {
-          method: 'POST',
-          // ใช้ text/plain เพื่อป้องกันปัญหา CORS Preflight OPTIONS บนเบราว์เซอร์
-          headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify({ action: action, params: params }),
-          redirect: 'follow'
-        });
-        
-        const result = await response.json();
-        if (result.status === 'error') {
-          throw new Error(result.message);
+      const calculatedScore = useMemo(() => {
+        const doneCount = Object.values(goodnessForm).filter(v => v.done).length;
+        return user.BoonScore + (doneCount * 10);
+      }, [user, goodnessForm]);
+
+      const completedCount = useMemo(() => {
+        return Object.values(goodnessForm).filter(v => v.done).length;
+      }, [goodnessForm]);
+
+      useEffect(() => {
+        lucide.createIcons();
+      }, [currentTab]);
+
+      const handleSaveGoodness = async () => {
+        if (!API_URL || API_URL.includes("PLEASE_PASTE")) {
+          alert("กรุณาติดตั้ง Apps Script WebApp URL ก่อนใช้งานในระบบคลาวด์ จริง");
+          return;
         }
-        return result.data;
-      } catch (error) {
-        alert('เกิดข้อผิดพลาด: ' + error.message);
-        console.error(error);
-        return null;
-      } finally {
-        showLoading(false);
-      }
+        setSyncing(true);
+        try {
+          const response = await fetch(API_URL, {
+            method: "POST",
+            mode: "no-cors", // avoid CORS complexity in static deploys
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              action: "saveGoodness",
+              gData: {
+                UserID: user.UserID,
+                DoDate: new Date().toISOString(),
+                GivingPoint: goodnessForm.Giving.done ? 1 : 0,
+                SilaPoint: goodnessForm.Sila.done ? 1 : 0,
+                CleanPoint: goodnessForm.Clean.done ? 1 : 0,
+                ArrayPoint: goodnessForm.Array.done ? 1 : 0,
+                PolitePoint: goodnessForm.Polite.done ? 1 : 0,
+                OntimePoint: goodnessForm.Ontime.done ? 1 : 0,
+                MeditatePoint: goodnessForm.Meditate.done ? 1 : 0
+              }
+            })
+          });
+          setMessage("ส่งประวัติความดีไปยัง Google Sheets เรียบร้อยแล้ว!");
+          setTimeout(() => setMessage(""), 4000);
+        } catch (e) {
+          alert("ไม่สามารถบันทึกไปยัง Apps Script ได้: " + e.message);
+        } finally {
+          setSyncing(false);
+        }
+      };
+
+      return (
+        <div className="flex flex-col h-screen w-full bg-[#F5F5F7] text-[#1D1D1F] overflow-hidden">
+          {/* Top Header Navigation */}
+          <header className="h-12 bg-white/80 backdrop-blur-md border-b border-[#D2D2D7] flex items-center justify-between px-6 shrink-0 z-50">
+            <div className="flex items-center gap-3">
+              <div className="w-7 h-7 bg-[#0071E3] rounded-lg flex items-center justify-center shadow-sm">
+                <i data-lucide="globe" className="w-4 h-4 text-white"></i>
+              </div>
+              <span className="font-semibold text-[17px] tracking-tight">Volunteer OS Portal</span>
+            </div>
+            <nav className="flex items-center gap-8">
+              <button onClick={() => setCurrentTab("home")} className={`text-[12px] font-medium ${currentTab === 'home' ? 'opacity-100 font-bold text-[#0071E3]' : 'opacity-60'}`}>หน้าแรก</button>
+              <button onClick={() => setCurrentTab("activities")} className={`text-[12px] font-medium ${currentTab === 'activities' ? 'opacity-100 font-bold text-[#0071E3]' : 'opacity-60'}`}>กิจกรรม</button>
+              <div className="flex items-center gap-2 border-l border-[#D2D2D7] pl-8">
+                <div className="text-right">
+                  <p className="text-[11px] font-bold leading-tight">{user.Name} {user.Surname}</p>
+                  <p className="text-[10px] text-[#86868B]">{user.Department}</p>
+                </div>
+                <img src={user.Avatar} alt="Avatar" className="w-8 h-8 rounded-full border border-[#D2D2D7]" />
+              </div>
+            </nav>
+          </header>
+
+          {/* Main Content Areas */}
+          <main className="flex-1 p-8 grid grid-cols-12 gap-6 overflow-y-auto">
+            
+            {/* Sidebar / Profile stats */}
+            <aside className="col-span-3 flex flex-col gap-6">
+              <div className="bg-white rounded-2xl p-6 border border-[#D2D2D7] shadow-sm flex flex-col items-center">
+                <h2 className="text-[11px] font-bold mb-4 uppercase tracking-wider text-[#86868B] self-start">สรุปแต้มบุญสะสม</h2>
+                
+                <div className="relative flex items-center justify-center py-4 w-full">
+                  <svg className="w-32 h-32 transform -rotate-90">
+                    <circle cx="64" cy="64" r="58" stroke="#F5F5F7" strokeWidth="10" fill="transparent" />
+                    <circle 
+                      cx="64" 
+                      cy="64" 
+                      r="58" 
+                      stroke="#AF52DE" 
+                      strokeWidth="10" 
+                      fill="transparent" 
+                      strokeDasharray="364.4" 
+                      strokeDashoffset={364.4 - (364.4 * Math.min(calculatedScore, 1000) / 1000)}
+                      className="transition-all duration-500"
+                    />
+                  </svg>
+                  <div className="absolute flex flex-col items-center">
+                    <span className="text-2xl font-bold tracking-tight">{calculatedScore}</span>
+                    <span className="text-[9px] uppercase font-semibold text-[#86868B]">แต้มทั้งหมด</span>
+                  </div>
+                </div>
+
+                <div className="mt-4 grid grid-cols-2 gap-2 w-full">
+                  <div className="bg-[#F5F5F7] p-3 rounded-xl text-center">
+                    <p className="text-[10px] text-[#86868B] mb-1">กิจกรรม</p>
+                    <p className="text-sm font-bold">{user.BoonScore}</p>
+                  </div>
+                  <div className="bg-[#F5F5F7] p-3 rounded-xl text-center">
+                    <p className="text-[10px] text-[#86868B] mb-1">บันทึกความดี</p>
+                    <p className="text-sm font-bold">{completedCount * 10}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-[#1D1D1F] text-white rounded-2xl p-6 shadow-xl flex flex-col items-center text-center">
+                <h3 className="text-sm font-semibold mb-1 self-start text-white">บัตร QR ประจำตัว</h3>
+                <p className="text-[11px] text-[#86868B] mb-4 text-left self-start">ยื่นหน้าจอนี้ให้เจ้าหน้าที่สแกนรับแต้มบุญทันที</p>
+                <div className="bg-white p-3 rounded-xl inline-block shadow-lg">
+                  <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${user.UserID}`} alt="QR" className="w-28 h-28" />
+                </div>
+                <span className="text-[9px] text-[#86868B] font-mono mt-3">{user.UserID}</span>
+              </div>
+            </aside>
+
+            {/* Middle panel - Daily log of goodness */}
+            <section className="col-span-6 flex flex-col gap-6">
+              <div className="bg-white rounded-2xl p-6 border border-[#D2D2D7] shadow-sm flex flex-col">
+                <div className="flex justify-between items-center mb-6">
+                  <div>
+                    <h2 className="text-lg font-bold">บันทึกความดีสากลประจำวัน</h2>
+                    <p className="text-xs text-[#86868B]">ทำเครื่องหมายถูกในความดีที่ท่านได้ปฏิบัติในวันนี้</p>
+                  </div>
+                  <span className="text-xs bg-[#E5E5E7] px-3 py-1 rounded-full font-medium">วันนี้</span>
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  {Object.keys(goodnessForm).map((key, index) => {
+                    const titles = {
+                      Giving: "1. การทำทาน / เอื้อเฟื้อเผื่อแผ่แบ่งปัน",
+                      Sila: "2. การรักษาศีล 5 / ฝึกจิตสำนึกเว้นบาป",
+                      Clean: "3. ความสะอาดของร่างกายและเสนาสนะ",
+                      Array: "4. การจัดระเบียบที่อยู่อาศัยข้าวของ",
+                      Polite: "5. การรักษาวาจาสุภาพ ปิยวาจาไพเราะ",
+                      Ontime: "6. การตรงต่อเวลาและระเบียบวินัยกลุ่ม",
+                      Meditate: "7. การนั่งสมาธิปฏิบัติธรรม สวดมนต์เย็น"
+                    };
+                    const item = goodnessForm[key];
+                    return (
+                      <div key={key} className={`flex items-center p-3 rounded-xl border transition-all ${item.done ? 'bg-[#F5F5F7] border-[#D2D2D7]' : 'bg-white border-[#E5E5E7] hover:border-[#D2D2D7]'}`}>
+                        <button 
+                          onClick={() => setGoodnessForm(prev => ({ ...prev, [key]: { ...prev[key], done: !prev[key].done } }))}
+                          className={`w-8 h-8 rounded-full border flex items-center justify-center mr-4 transition-all shrink-0 ${item.done ? 'bg-[#34C759] border-[#34C759] text-white' : 'border-[#D2D2D7] hover:bg-[#F5F5F7]'}`}
+                        >
+                          {item.done ? <i data-lucide="check" className="w-4 h-4"></i> : <span className="text-xs font-semibold text-[#86868B]">{index+1}</span>}
+                        </button>
+                        <div className="flex-1">
+                          <p className="text-xs font-bold">{titles[key]}</p>
+                          <p className="text-[10px] text-[#86868B]">สะสม +10 แต้มบุญ</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-[#D2D2D7] flex items-center justify-between">
+                  <div className="text-xs text-[#86868B]">
+                    สำเร็จ <strong className="text-[#34C759]">{completedCount} / 7</strong> รายการความดีสากล
+                  </div>
+                  <button 
+                    onClick={handleSaveGoodness}
+                    disabled={syncing}
+                    className="bg-[#0071E3] text-white text-[11px] font-bold px-5 py-2.5 rounded-full hover:bg-[#0077ED] flex items-center gap-1.5 shadow-sm active:scale-95 transition-all disabled:opacity-50"
+                  >
+                    {syncing ? "กำลังส่งบันทึก..." : "ส่งข้อมูลบันทึกความดี"}
+                    <i data-lucide="send" className="w-3.5 h-3.5"></i>
+                  </button>
+                </div>
+
+                {message && (
+                  <div className="mt-4 p-3 bg-[#E5F9EB] border border-[#BCECC7] text-[#1E7E34] text-xs rounded-xl flex items-center gap-2">
+                    <i data-lucide="check-circle" className="w-4 h-4"></i>
+                    {message}
+                  </div>
+                )}
+              </div>
+            </section>
+
+            {/* Right Panel - Recommended Activities */}
+            <aside className="col-span-3 flex flex-col gap-6">
+              <div className="bg-white rounded-2xl border border-[#D2D2D7] shadow-sm overflow-hidden flex flex-col">
+                <div className="p-4 border-b border-[#D2D2D7]">
+                  <h2 className="text-[12px] font-bold uppercase tracking-wider text-[#86868B]">กิจกรรมสะสมแต้มแนะนา</h2>
+                </div>
+                <div className="p-4 flex flex-col gap-4">
+                  {activities.map(act => (
+                    <div key={act.AcID} className="border-b border-[#F5F5F7] pb-4 last:border-0 last:pb-0">
+                      <img src={act.Image} alt="Activity" className="w-full h-24 object-cover rounded-xl mb-3 shadow-inner" />
+                      <span className="text-[9px] font-bold text-[#AF52DE] uppercase">กองกิจกรรมธรรมะ</span>
+                      <h4 className="text-xs font-bold mt-0.5">{act.Title}</h4>
+                      <p className="text-[10px] text-[#86868B] leading-tight mt-1">{act.Location} | {act.Time}</p>
+                      <button className="mt-3 w-full bg-[#F5F5F7] text-[#0071E3] font-bold text-[10px] py-2 rounded-lg hover:bg-[#E5E5E7] transition-colors">
+                        รับ {act.BoonScore} แต้มบุญ
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </aside>
+          </main>
+
+          {/* Footer Status */}
+          <footer className="h-10 bg-white border-t border-[#D2D2D7] px-6 flex items-center justify-between text-[10px] text-[#86868B] shrink-0">
+            <div className="flex items-center gap-4">
+              <span className="flex items-center gap-1.5">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#34C759]"></div>
+                เชื่อมโยงผ่าน Google Sheets แล้ว
+              </span>
+            </div>
+            <div>Volunteer OS &copy; 2026 &bull; พัฒนาเพื่อคลาวด์ Vercel</div>
+          </footer>
+        </div>
+      );
     }
 
-    // ฟังก์ชันแสดง/ซ่อน UI
-    function navigateTo(page) {
-      document.getElementById('home-section').classList.add('hidden');
-      document.getElementById('login-section').classList.add('hidden');
-      document.getElementById('dashboard-section').classList.add('hidden');
-      
-      document.getElementById('nav-home').classList.remove('active');
-      document.getElementById('nav-login').classList.remove('active');
-
-      if (page === 'home') {
-        document.getElementById('home-section').classList.remove('hidden');
-        document.getElementById('nav-home').classList.add('active');
-        loadHomeItems();
-      } else if (page === 'login') {
-        document.getElementById('login-section').classList.remove('hidden');
-        document.getElementById('nav-login').classList.add('active');
-      } else if (page === 'dashboard') {
-        document.getElementById('dashboard-section').classList.remove('hidden');
-        loadDashboard();
-      }
-    }
-
-    function showLoading(show) {
-      document.getElementById('loading-overlay').classList.toggle('hidden', !show);
-    }
-
-    // การทำงานของฟอร์ม Login
-    document.getElementById('login-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('login-email').value;
-      const password = document.getElementById('login-password').value;
-      
-      const userData = await callAPI('login', { userId: email, password: password });
-      
-      if (userData) {
-        // เก็บเซสชันจำลองใน LocalStorage
-        localStorage.setItem('user', JSON.stringify(userData));
-        updateNavState();
-        navigateTo('dashboard');
-      }
-    });
-
-    function logout() {
-      localStorage.removeItem('user');
-      updateNavState();
-      navigateTo('home');
-    }
-
-    function updateNavState() {
-      const user = localStorage.getItem('user');
-      if (user) {
-        document.getElementById('nav-login').classList.add('hidden');
-        document.getElementById('nav-logout-container').classList.remove('hidden');
-      } else {
-        document.getElementById('nav-login').classList.remove('hidden');
-        document.getElementById('nav-logout-container').classList.add('hidden');
-      }
-    }
-
-    // ตัวอย่างการดึงข้อมูลจาก API มาแสดงผล
-    async function loadHomeItems() {
-      const items = await callAPI('getItems', { page: 'Home' });
-      const container = document.getElementById('home-grid');
-      container.innerHTML = '';
-      
-      if (items && items.length > 0) {
-        items.forEach(item => {
-          const div = document.createElement('div');
-          div.className = 'grid-item';
-          div.innerHTML = `<h3>${item.Title}</h3><p>${item.Subtitle}</p>`;
-          container.appendChild(div);
-        });
-      } else {
-        container.innerHTML = '<p>ไม่มีข้อมูลแสดงผล</p>';
-      }
-    }
-
-    async function loadDashboard() {
-      const userStr = localStorage.getItem('user');
-      if (!userStr) return navigateTo('login');
-      
-      const user = JSON.parse(userStr);
-      const dashboard = document.getElementById('dashboard-content');
-      dashboard.innerHTML = `<div class="grid-item"><h3>ยินดีต้อนรับคุณ ${user.Name}</h3><p>บทบาท: ${user.Role}</p></div>`;
-      
-      // ตัวอย่างเรียก API ดึงสถิติ
-      const stats = await callAPI('getDashboardStats', { role: user.Role, userId: user.UserID, department: user.Department });
-      if (stats && stats.user) {
-         dashboard.innerHTML += `<div class="grid-item"><h3>แต้มบุญสะสม</h3><h2>${stats.user.totalBoonPoints} แต้ม</h2></div>`;
-      }
-    }
-
-    // เริ่มการทำงาน
-    updateNavState();
-    if (localStorage.getItem('user')) {
-      navigateTo('dashboard');
-    } else {
-      navigateTo('home');
-    }
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
   </script>
 </body>
 </html>
