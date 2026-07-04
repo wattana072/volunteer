@@ -475,7 +475,30 @@
       .modal { padding: 20px; border-radius: var(--radius-lg); }
       .hero-header { height: 260px; }
     }
-  </style>
+
+    /* ---- QR Scanner ---- */
+    @keyframes scanLine {
+      0%   { top: 0%; opacity: 1; }
+      45%  { top: calc(100% - 2px); opacity: 1; }
+      50%  { top: calc(100% - 2px); opacity: 0; }
+      55%  { top: 0%; opacity: 0; }
+      60%  { top: 0%; opacity: 1; }
+      100% { top: 0%; opacity: 1; }
+    }
+    @keyframes qrSuccess {
+      0%   { transform: scale(1); }
+      30%  { transform: scale(1.06); }
+      60%  { transform: scale(0.97); }
+      100% { transform: scale(1); }
+    }
+    #qrScanBtn.scanning {
+      background: var(--c-blue) !important;
+      color: #fff !important;
+      border-color: var(--c-blue) !important;
+    }
+    #qrScanBtn.scanning::after { content: ' ON'; font-size: 0.65rem; }
+    </style>
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 </head>
 <body>
 
@@ -982,8 +1005,42 @@
     <div id="actRegDetail" class="glass-card hidden" style="padding:14px;margin-bottom:14px;"></div>
     <div class="form-group">
       <label class="form-label">UserID ผู้เข้าร่วม (Email)</label>
-      <input id="actRegUserID" type="email" class="form-control" placeholder="user@email.com" />
+      <div style="display:flex;gap:8px;align-items:stretch;">
+        <input id="actRegUserID" type="email" class="form-control" placeholder="user@email.com" style="flex:1;" />
+        <button id="qrScanBtn" class="btn btn-ghost btn-sm" onclick="toggleQrScanner()" title="สแกน QR Code" style="padding:0 14px;font-size:1.2rem;border-radius:var(--radius-sm);flex-shrink:0;">
+          📷
+        </button>
+      </div>
     </div>
+
+    <!-- QR Scanner Area -->
+    <div id="qrScannerWrap" style="display:none;margin-bottom:14px;">
+      <div style="position:relative;background:#000;border-radius:var(--radius-md);overflow:hidden;aspect-ratio:1/1;max-height:260px;">
+        <video id="qrVideo" style="width:100%;height:100%;object-fit:cover;" playsinline muted autoplay></video>
+        <canvas id="qrCanvas" style="display:none;"></canvas>
+        <!-- Scanning frame overlay -->
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+          <div style="width:60%;aspect-ratio:1/1;border:3px solid rgba(0,113,227,0.9);border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,0.45);">
+            <!-- Corner marks -->
+            <div style="position:absolute;top:-3px;left:-3px;width:22px;height:22px;border-top:4px solid #0071e3;border-left:4px solid #0071e3;border-radius:4px 0 0 0;"></div>
+            <div style="position:absolute;top:-3px;right:-3px;width:22px;height:22px;border-top:4px solid #0071e3;border-right:4px solid #0071e3;border-radius:0 4px 0 0;"></div>
+            <div style="position:absolute;bottom:-3px;left:-3px;width:22px;height:22px;border-bottom:4px solid #0071e3;border-left:4px solid #0071e3;border-radius:0 0 0 4px;"></div>
+            <div style="position:absolute;bottom:-3px;right:-3px;width:22px;height:22px;border-bottom:4px solid #0071e3;border-right:4px solid #0071e3;border-radius:0 0 4px 0;"></div>
+            <!-- Scan line animation -->
+            <div id="qrScanLine" style="position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#0071e3,transparent);animation:scanLine 2s linear infinite;top:0;"></div>
+          </div>
+        </div>
+        <!-- Status -->
+        <div id="qrStatus" style="position:absolute;bottom:10px;left:0;right:0;text-align:center;font-size:0.78rem;color:rgba(255,255,255,0.85);font-family:var(--font);">
+          🔍 กำลังค้นหา QR Code...
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="stopQrScanner()">✕ ยกเลิก</button>
+        <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="switchCamera()" id="switchCamBtn">🔄 สลับกล้อง</button>
+      </div>
+    </div>
+
     <div class="form-group">
       <label class="form-label">Comment (ไม่บังคับ)</label>
       <textarea id="actRegComment" class="form-control" placeholder="ข้อความเพิ่มเติม..." rows="2"></textarea>
@@ -2197,6 +2254,160 @@ async function fileToBase64(file) {
     reader.readAsDataURL(file);
   });
 }
+
+// ============================================================
+//  QR CODE SCANNER
+// ============================================================
+let qrStream = null;
+let qrAnimFrame = null;
+let qrFacingMode = 'environment'; // rear camera by default
+
+async function toggleQrScanner() {
+  const wrap = document.getElementById('qrScannerWrap');
+  if (wrap.style.display === 'none' || !wrap.style.display) {
+    await startQrScanner();
+  } else {
+    stopQrScanner();
+  }
+}
+
+async function startQrScanner() {
+  const wrap   = document.getElementById('qrScannerWrap');
+  const video  = document.getElementById('qrVideo');
+  const btn    = document.getElementById('qrScanBtn');
+  const status = document.getElementById('qrStatus');
+
+  // Check support
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    showToast('อุปกรณ์นี้ไม่รองรับการเปิดกล้อง', 'error'); return;
+  }
+  if (typeof jsQR === 'undefined') {
+    showToast('กำลังโหลด QR library...', 'info');
+    await new Promise(r => setTimeout(r, 800));
+    if (typeof jsQR === 'undefined') { showToast('ไม่สามารถโหลด QR library ได้', 'error'); return; }
+  }
+
+  try {
+    // Stop existing stream if any
+    if (qrStream) { qrStream.getTracks().forEach(t => t.stop()); qrStream = null; }
+
+    status.textContent = '🔍 กำลังเปิดกล้อง...';
+    wrap.style.display = 'block';
+    btn.classList.add('scanning');
+
+    const constraints = {
+      video: {
+        facingMode: qrFacingMode,
+        width: { ideal: 640 },
+        height: { ideal: 640 }
+      }
+    };
+    qrStream = await navigator.mediaDevices.getUserMedia(constraints);
+    video.srcObject = qrStream;
+    await video.play();
+
+    status.textContent = '🔍 กำลังค้นหา QR Code...';
+    scanQrFrame();
+  } catch(err) {
+    wrap.style.display = 'none';
+    btn.classList.remove('scanning');
+    if (err.name === 'NotAllowedError') {
+      showToast('กรุณาอนุญาตให้แอปเข้าถึงกล้อง', 'error');
+    } else if (err.name === 'NotFoundError') {
+      showToast('ไม่พบกล้องบนอุปกรณ์นี้', 'error');
+    } else {
+      showToast('ไม่สามารถเปิดกล้องได้: ' + err.message, 'error');
+    }
+  }
+}
+
+function scanQrFrame() {
+  const video  = document.getElementById('qrVideo');
+  const canvas = document.getElementById('qrCanvas');
+  const status = document.getElementById('qrStatus');
+
+  if (!video || video.readyState < 2) {
+    qrAnimFrame = requestAnimationFrame(scanQrFrame); return;
+  }
+
+  const size = Math.min(video.videoWidth, video.videoHeight);
+  canvas.width  = size;
+  canvas.height = size;
+
+  const ctx = canvas.getContext('2d');
+  // Crop to center square
+  const offsetX = (video.videoWidth  - size) / 2;
+  const offsetY = (video.videoHeight - size) / 2;
+  ctx.drawImage(video, offsetX, offsetY, size, size, 0, 0, size, size);
+
+  const imageData = ctx.getImageData(0, 0, size, size);
+  const code = jsQR(imageData.data, imageData.width, imageData.height, {
+    inversionAttempts: 'dontInvert'
+  });
+
+  if (code && code.data) {
+    // QR found!
+    onQrDetected(code.data);
+    return; // stop loop
+  }
+
+  // Keep scanning
+  qrAnimFrame = requestAnimationFrame(scanQrFrame);
+}
+
+function onQrDetected(data) {
+  // Vibrate for haptic feedback (mobile)
+  if (navigator.vibrate) navigator.vibrate([80, 40, 80]);
+
+  // Fill UserID input
+  const input = document.getElementById('actRegUserID');
+  input.value = data.trim();
+
+  // Visual feedback
+  const status = document.getElementById('qrStatus');
+  if (status) status.textContent = '✅ พบ QR Code: ' + data.trim();
+
+  // Animate input
+  input.style.animation = 'qrSuccess 0.4s ease';
+  input.style.borderColor = 'var(--c-success)';
+  input.style.boxShadow = '0 0 0 3px rgba(52,199,89,0.2)';
+  setTimeout(() => {
+    input.style.animation = '';
+    input.style.borderColor = '';
+    input.style.boxShadow = '';
+  }, 1500);
+
+  showToast('✅ Scan สำเร็จ! ' + data.trim(), 'success');
+
+  // Auto-close scanner after 600ms
+  setTimeout(() => stopQrScanner(), 600);
+}
+
+function stopQrScanner() {
+  if (qrAnimFrame) { cancelAnimationFrame(qrAnimFrame); qrAnimFrame = null; }
+  if (qrStream)    { qrStream.getTracks().forEach(t => t.stop()); qrStream = null; }
+
+  const wrap  = document.getElementById('qrScannerWrap');
+  const btn   = document.getElementById('qrScanBtn');
+  const video = document.getElementById('qrVideo');
+  if (wrap)  wrap.style.display = 'none';
+  if (btn)   btn.classList.remove('scanning');
+  if (video) { video.srcObject = null; }
+}
+
+async function switchCamera() {
+  qrFacingMode = (qrFacingMode === 'environment') ? 'user' : 'environment';
+  stopQrScanner();
+  await new Promise(r => setTimeout(r, 200));
+  await startQrScanner();
+}
+
+// Stop scanner when modal closes
+const origCloseModal = closeModal;
+closeModal = function(id) {
+  if (id === 'actRegModal') stopQrScanner();
+  origCloseModal(id);
+};
 
 // Keyboard: Escape closes modals
 document.addEventListener('keydown', e => {
