@@ -1031,33 +1031,7 @@
       </div>
     </div>
 
-    <!-- QR Scanner Area -->
-    <div id="qrScannerWrap" style="display:none;margin-bottom:14px;">
-      <div style="position:relative;background:#000;border-radius:var(--radius-md);overflow:hidden;aspect-ratio:1/1;max-height:260px;">
-        <video id="qrVideo" style="width:100%;height:100%;object-fit:cover;" playsinline muted autoplay></video>
-        <canvas id="qrCanvas" style="display:none;"></canvas>
-        <!-- Scanning frame overlay -->
-        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
-          <div style="width:60%;aspect-ratio:1/1;border:3px solid rgba(0,113,227,0.9);border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,0.45);">
-            <!-- Corner marks -->
-            <div style="position:absolute;top:-3px;left:-3px;width:22px;height:22px;border-top:4px solid #0071e3;border-left:4px solid #0071e3;border-radius:4px 0 0 0;"></div>
-            <div style="position:absolute;top:-3px;right:-3px;width:22px;height:22px;border-top:4px solid #0071e3;border-right:4px solid #0071e3;border-radius:0 4px 0 0;"></div>
-            <div style="position:absolute;bottom:-3px;left:-3px;width:22px;height:22px;border-bottom:4px solid #0071e3;border-left:4px solid #0071e3;border-radius:0 0 0 4px;"></div>
-            <div style="position:absolute;bottom:-3px;right:-3px;width:22px;height:22px;border-bottom:4px solid #0071e3;border-right:4px solid #0071e3;border-radius:0 0 4px 0;"></div>
-            <!-- Scan line animation -->
-            <div id="qrScanLine" style="position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#0071e3,transparent);animation:scanLine 2s linear infinite;top:0;"></div>
-          </div>
-        </div>
-        <!-- Status -->
-        <div id="qrStatus" style="position:absolute;bottom:10px;left:0;right:0;text-align:center;font-size:0.78rem;color:rgba(255,255,255,0.85);font-family:var(--font);">
-          🔍 กำลังค้นหา QR Code...
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;margin-top:8px;">
-        <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="stopQrScanner()">✕ ยกเลิก</button>
-        <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="switchCamera()" id="switchCamBtn">🔄 สลับกล้อง</button>
-      </div>
-    </div>
+
 
     <div class="form-group">
       <label class="form-label">Comment (ไม่บังคับ)</label>
@@ -1897,7 +1871,10 @@ async function openQuizStartModal() {
     </div>
     <div class="form-group">
       <label class="form-label">UserID ผู้ทำข้อสอบ (Email)</label>
-      <input id="quizUserID" type="email" class="form-control" placeholder="user@email.com" value="${currentUser?currentUser.UserID:''}" />
+      <div style="display:flex;gap:8px;">
+        <input id="quizUserID" type="email" class="form-control" placeholder="user@email.com" value="${currentUser?currentUser.UserID:''}" style="flex:1;" />
+        <button class="btn btn-ghost btn-sm" onclick="toggleQrScanner('quizUserID')" title="สแกน QR Code" style="padding:0 14px;font-size:1.2rem;border-radius:var(--radius-sm);flex-shrink:0;">📷</button>
+      </div>
     </div>
     <button class="btn btn-primary btn-full" onclick="startQuiz()">▶️ เริ่มทำข้อสอบ</button>
   `;
@@ -2308,8 +2285,11 @@ let qrStream = null;
 let qrAnimFrame = null;
 let qrFacingMode = 'environment'; // rear camera by default
 
-async function toggleQrScanner() {
-  const wrap = document.getElementById('qrScannerWrap');
+window.qrTargetInputId = 'actRegUserID';
+
+async function toggleQrScanner(targetId) {
+  if (targetId) window.qrTargetInputId = targetId;
+  const wrap = document.getElementById('qrScannerModal');
   if (wrap.style.display === 'none' || !wrap.style.display) {
     await startQrScanner();
   } else {
@@ -2318,9 +2298,8 @@ async function toggleQrScanner() {
 }
 
 async function startQrScanner() {
-  const wrap   = document.getElementById('qrScannerWrap');
+  const wrap   = document.getElementById('qrScannerModal');
   const video  = document.getElementById('qrVideo');
-  const btn    = document.getElementById('qrScanBtn');
   const status = document.getElementById('qrStatus');
 
   // Check support
@@ -2338,8 +2317,7 @@ async function startQrScanner() {
     if (qrStream) { qrStream.getTracks().forEach(t => t.stop()); qrStream = null; }
 
     status.textContent = '🔍 กำลังเปิดกล้อง...';
-    wrap.style.display = 'block';
-    btn.classList.add('scanning');
+    wrap.style.display = 'flex';
 
     const constraints = {
       video: {
@@ -2418,8 +2396,8 @@ function onQrDetected(rawData) {
   if (match) data = match[0];
 
   // Fill UserID input
-  const input = document.getElementById('actRegUserID');
-  input.value = data;
+  const input = document.getElementById(window.qrTargetInputId || 'actRegUserID');
+  if (input) input.value = data;
 
   // Visual feedback
   const status = document.getElementById('qrStatus');
@@ -2481,6 +2459,36 @@ document.addEventListener('keydown', e => {
   <div style="background:var(--c-surface); padding:32px 40px; border-radius:var(--radius-lg); text-align:center; box-shadow:var(--shadow-lg); animation: fadeIn 0.2s ease;">
     <div class="spinner" style="margin: 0 auto 16px;"></div>
     <div style="font-weight:600; font-size:1.1rem; color:var(--c-text-primary);">ช้าเพื่อไปต่อ รอเพื่อสำเร็จ..</div>
+  </div>
+</div>
+
+<!-- Global QR Scanner Modal -->
+<div class="modal-overlay" id="qrScannerModal" style="display:none; z-index:99999; flex-direction:column; justify-content:center; align-items:center;">
+  <div class="modal" style="width:90%; max-width:400px; padding:20px; text-align:center;">
+    <div class="modal-header">
+      <span class="modal-title">📷 สแกน QR Code</span>
+      <button class="modal-close" onclick="stopQrScanner()">✕</button>
+    </div>
+    <div style="position:relative;background:#000;border-radius:var(--radius-md);overflow:hidden;aspect-ratio:1/1;max-height:260px;">
+      <video id="qrVideo" style="width:100%;height:100%;object-fit:cover;" playsinline muted autoplay></video>
+      <canvas id="qrCanvas" style="display:none;"></canvas>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+        <div style="width:60%;aspect-ratio:1/1;border:3px solid rgba(0,113,227,0.9);border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,0.45);">
+          <div style="position:absolute;top:-3px;left:-3px;width:22px;height:22px;border-top:4px solid #0071e3;border-left:4px solid #0071e3;border-radius:4px 0 0 0;"></div>
+          <div style="position:absolute;top:-3px;right:-3px;width:22px;height:22px;border-top:4px solid #0071e3;border-right:4px solid #0071e3;border-radius:0 4px 0 0;"></div>
+          <div style="position:absolute;bottom:-3px;left:-3px;width:22px;height:22px;border-bottom:4px solid #0071e3;border-left:4px solid #0071e3;border-radius:0 0 0 4px;"></div>
+          <div style="position:absolute;bottom:-3px;right:-3px;width:22px;height:22px;border-bottom:4px solid #0071e3;border-right:4px solid #0071e3;border-radius:0 0 4px 0;"></div>
+          <div id="qrScanLine" style="position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#0071e3,transparent);animation:scanLine 2s linear infinite;top:0;"></div>
+        </div>
+      </div>
+      <div id="qrStatus" style="position:absolute;bottom:10px;left:0;right:0;text-align:center;font-size:0.78rem;color:rgba(255,255,255,0.85);font-family:var(--font);">
+        🔍 กำลังค้นหา QR Code...
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:16px;">
+      <button class="btn btn-ghost" style="flex:1;" onclick="stopQrScanner()">✕ ยกเลิก</button>
+      <button class="btn btn-ghost" style="flex:1;" onclick="switchCamera()" id="switchCamBtn">🔄 สลับกล้อง</button>
+    </div>
   </div>
 </div>
 </body>
