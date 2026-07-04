@@ -2423,11 +2423,9 @@ function stopQrScanner() {
   if (qrAnimFrame) { cancelAnimationFrame(qrAnimFrame); qrAnimFrame = null; }
   if (qrStream)    { qrStream.getTracks().forEach(t => t.stop()); qrStream = null; }
 
-  const wrap  = document.getElementById('qrScannerWrap');
-  const btn   = document.getElementById('qrScanBtn');
+  const wrap  = document.getElementById('qrScannerModal');
   const video = document.getElementById('qrVideo');
   if (wrap)  wrap.style.display = 'none';
-  if (btn)   btn.classList.remove('scanning');
   if (video) { video.srcObject = null; }
 }
 
