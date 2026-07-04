@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>Volunteer OS</title>
+  <!-- Load Apple CSS -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- TOP HEADER NAVIGATION BAR -->
+  <header>
+    <div class="nav-container">
+      <a class="logo" onclick="navigateTo('Home')">
+        <img src="https://img.icons8.com/ios-filled/50/000000/globe.png" alt="Volunteer OS" />
+        Volunteer OS
+      </a>
+      <nav>
+        <ul>
+          <li><a id="nav-home" class="active">หน้าแรก</a></li>
+          <li><a id="nav-contact">ติดต่อเรา</a></li>
+          <li><a id="nav-login-btn">ลงชื่อเข้าใช้</a></li>
+          <!-- User Session UI -->
+          <li id="nav-user-profile" class="hidden d-flex align-center gap-2" style="cursor:pointer;" onclick="navigateTo('Dashboard')">
+            <img id="user-profile-img" class="avatar-thumb" src="" alt="Profile" />
+            <span id="user-profile-name" class="text-bold" style="font-size:12px;"></span>
+          </li>
+          <li><a id="nav-logout" class="hidden text-danger">ออกจากระบบ</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN PAGE CONTAINER -->
+  <main>
+
+    <!-- 1. HOME SCREEN SECTION -->
+    <section id="home-section">
+      <div id="home-grid" class="grid-container">
+        <!-- Dynaimcally loaded from Items sheet -->
+      </div>
+
+      <!-- Users by Department Stats -->
+      <div class="section-header">
+        <h2>สถิติสมาชิกแยกตามแผนก</h2>
+      </div>
+      <div class="grid-container">
+        <div class="grid-item w2x2">
+          <h3>แผนภูมิสัดส่วนความดี</h3>
+          <p>จำนวนอาสาสมัครที่สมัครเข้าร่วมโครงการ Volunteer OS ในแผนกงานต่างๆ</p>
+          <div id="home-dept-chart" class="mt-4">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+        <div class="grid-item w2x2">
+          <h3>ร่วมเป็นส่วนหนึ่งของระบบ</h3>
+          <p>ระบบอาสาสมัคร Volunteer OS ออกแบบเพื่อวัดผลการทำความดีสากล นั่งสมาธิ รักษาศีล และการลงมือปฏิบัติธรรมอย่างมีระบบ ค้นพบศักยภาพตนเองผ่านกิจกรรมสร้างสรรค์สังคม</p>
+          <button class="btn btn-primary mt-4" onclick="navigateTo('Login')">เข้าสู่พื้นที่สะสมแต้มบุญ</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. CONTACT US SECTION -->
+    <section id="contact-section" class="hidden">
+      <div class="section-header">
+        <h2>ติดต่อผู้ดูแลโครงการ</h2>
+      </div>
+      <div id="contact-grid" class="grid-container">
+        <!-- Dynaimcally loaded from Items sheet -->
+      </div>
+    </section>
+
+    <!-- 3. LOGIN PAGE SECTION -->
+    <section id="login-section" class="hidden">
+      <div class="auth-container">
+        <div class="text-center mb-4">
+          <img src="https://img.icons8.com/ios-filled/100/000000/globe.png" style="width:50px; margin-bottom:12px;" alt="Volunteer OS" />
+          <h2>ลงชื่อเข้าสู่ระบบ</h2>
+          <p class="text-secondary" style="font-size:13px;">Volunteer OS - โครงสร้างบันทึกสะสมแต้มบุญ</p>
+        </div>
+
+        <form id="login-form">
+          <div class="form-group">
+            <label for="login-email">อีเมลผู้ใช้งาน (UserID) *</label>
+            <input type="email" id="login-email" required placeholder="name@volunteer.com" />
+          </div>
+          <div class="form-group">
+            <label for="login-password">รหัสผ่าน *</label>
+            <input type="password" id="login-password" required placeholder="ระบุรหัสผ่านของคุณ" />
+          </div>
+          <button type="submit" id="login-submit-btn" class="btn btn-primary" style="width:100%; padding:12px;">ลงชื่อเข้าใช้</button>
+        </form>
+
+        <div class="text-center mt-4">
+          <span style="font-size:12px; color:var(--text-secondary);">ยังไม่มีบัญชีผู้ใช้งานใช่หรือไม่?</span>
+          <button type="button" id="btn-open-register" class="btn btn-secondary btn-small" style="margin-left:8px;">ลงทะเบียนสมาชิกใหม่</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. ROLE-BASED DASHBOARDS SECTION -->
+    <section id="dashboard-section" class="hidden">
+
+      <!-- ========================================== -->
+      <!-- USER ROLE DASHBOARD -->
+      <!-- ========================================== -->
+      <div id="user-dashboard-panel" class="hidden">
+        <h2 id="user-dash-title" class="mb-4">ห้องทำงานอาสาสมัคร</h2>
+
+        <div class="tab-nav">
+          <button class="tab-btn user-tab-btn active" onclick="switchTab(this, 'user-tab-points', 'user')">ภาพรวมสะสมบุญ</button>
+          <button class="tab-btn user-tab-btn" onclick="switchTab(this, 'user-tab-goodness', 'user')">บันทึกความดีสากลประจำวัน</button>
+          <button class="tab-btn user-tab-btn" onclick="switchTab(this, 'user-tab-comments', 'user')">ชื่นชมกิจกรรม</button>
+          <button class="tab-btn user-tab-btn" onclick="switchTab(this, 'user-tab-profile', 'user')">ข้อมูลส่วนตัว</button>
+        </div>
+
+        <!-- Tab 1: BoonPoint Overview -->
+        <div id="user-tab-points" class="user-tab-content">
+          <div class="boonpoint-ring-container">
+            <div class="boonpoint-ring">
+              <svg>
+                <circle class="bg" cx="50" cy="50" r="40"></circle>
+                <circle class="bar" id="boonpoint-ring-bar" cx="50" cy="50" r="40"></circle>
+              </svg>
+              <span class="boonpoint-text" id="user-boonpoint-value">0</span>
+            </div>
+            <div>
+              <h3>แต้มบุญสะสมทั้งหมดของคุณ</h3>
+              <p>สะสมความดีสะท้อนพัฒนาการเพื่อเลื่อนระดับสู่ Leader</p>
+              <div class="d-flex gap-2 mt-4" style="font-size:12px;">
+                <span class="badge badge-user" id="val-act-pts">0 แต้มกิจกรรม</span>
+                <span class="badge badge-staff" id="val-quiz-pts">0 แต้มข้อสอบ</span>
+                <span class="badge badge-admin" id="val-good-pts">0 แต้มความดี</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- History log lists -->
+          <div class="section-header">
+            <h3>ประวัติการบันทึกความดีประจำวัน</h3>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>วันที่ลงมือทำ</th>
+                  <th>กิจกรรมศีลธรรมที่ปฏิบัติ</th>
+                  <th class="text-center">แต้มสะสม</th>
+                  <th class="text-bold">คะแนนรวม</th>
+                </tr>
+              </thead>
+              <tbody id="user-goodness-table-body">
+                <!-- JS Populated -->
+              </tbody>
+            </table>
+          </div>
+
+          <div class="section-header">
+            <h3>ประวัติการลงทะเบียนเข้าร่วมกิจกรรม</h3>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>รหัสกิจกรรม</th>
+                  <th>หัวข้อกิจกรรม</th>
+                  <th>วันที่ลงชื่อเข้าร่วม</th>
+                  <th class="text-bold">แต้มบุญที่ได้รับ</th>
+                </tr>
+              </thead>
+              <tbody id="user-activity-table-body">
+                <!-- JS Populated -->
+              </tbody>
+            </table>
+          </div>
+
+          <div class="section-header">
+            <h3>ผลการทำข้อสอบธรรมะ</h3>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>รหัสข้อสอบ</th>
+                  <th>หัวข้อแบบวัดความรู้</th>
+                  <th>วันที่ทำการสอบ</th>
+                  <th class="text-center">ผลสอบคำตอบ</th>
+                  <th class="text-bold">แต้มบุญที่ได้รับ</th>
+                </tr>
+              </thead>
+              <tbody id="user-quiz-table-body">
+                <!-- JS Populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tab 2: Goodness Entry Form -->
+        <div id="user-tab-goodness" class="user-tab-content hidden">
+          <div class="section-header">
+            <h3>บันทึกคะแนนความดีสากล 5 ประการประจำวัน</h3>
+            <p class="text-secondary" style="font-size:13px;">แต่ละวันสามารถบันทึกและส่งข้อมูลได้ 1 ครั้งเท่านั้น กรุณาตรวจสอบให้ถี่ถ้วน</p>
+          </div>
+
+          <form id="goodness-form">
+            <div class="form-group" style="max-width:300px;">
+              <label for="good-date">วันที่ลงมือทำความดี *</label>
+              <input type="date" id="good-date" required />
+            </div>
+
+            <div class="goodness-grid">
+              <!-- Item 1: Giving -->
+              <div class="goodness-card">
+                <div class="goodness-card-title">
+                  <span class="badge badge-user">1</span>
+                  การทำทาน / เอื้อเฟื้อเผื่อแผ่
+                </div>
+                <div class="form-group">
+                  <label>แนบรูปภาพการทำทาน *</label>
+                  <input type="file" id="good-giving-photo" accept="image/*" onchange="handleFileChange(this, 'preview-giving')" />
+                  <div class="file-preview" id="preview-giving">ไม่มีไฟล์ภาพ</div>
+                </div>
+              </div>
+
+              <!-- Item 2: Sila -->
+              <div class="goodness-card">
+                <div class="goodness-card-title">
+                  <span class="badge badge-user">2</span>
+                  การรักษาศีล 5 / ฝึกจิตสำนึก
+                </div>
+                <div class="form-group">
+                  <label>เหตุการณ์ที่ได้รักษาศีลหรือควบคุมตนเอง *</label>
+                  <textarea id="good-sila-text" rows="3" placeholder="ระบุเหตุการณ์ เช่น ตั้งใจงดเว้นการพูดปดหลอกลวง, รักษาสติไม่โกธรขึ้ง"></textarea>
+                </div>
+              </div>
+
+              <!-- Item 3: Clean -->
+              <div class="goodness-card">
+                <div class="goodness-card-title">
+                  <span class="badge badge-user">3</span>
+                  ความสะอาด (ร่างกาย/สถานที่)
+                </div>
+                <div class="form-group">
+                  <label>แนบรูปภาพความสะอาด/ทำความสะอาดศาสนสถาน *</label>
+                  <input type="file" id="good-clean-photo" accept="image/*" onchange="handleFileChange(this, 'preview-clean')" />
+                  <div class="file-preview" id="preview-clean">ไม่มีไฟล์ภาพ</div>
+                </div>
+              </div>
+
+              <!-- Item 4: Array -->
+              <div class="goodness-card">
+                <div class="goodness-card-title">
+                  <span class="badge badge-user">4</span>
+                  ความเป็นระเบียบเรียบร้อย
+                </div>
+                <div class="form-group">
+                  <label>แนบรูปภาพการจัดระเบียบข้าวของเครื่องใช้ *</label>
+                  <input type="file" id="good-array-photo" accept="image/*" onchange="handleFileChange(this, 'preview-array')" />
+                  <div class="file-preview" id="preview-array">ไม่มีไฟล์ภาพ</div>
+                </div>
+              </div>
+
+              <!-- Item 5: Polite -->
+              <div class="goodness-card">
+                <div class="goodness-card-title">
+                  <span class="badge badge-user">5</span>
+                  คำพูดสุภาพเรียบร้อย
+                </div>
+                <div class="form-group">
+                  <label>คำพูดที่พูดสุภาพและเกิดความรักสามัคคี *</label>
+                  <input type="text" id="good-polite-text" placeholder="ระบุคำสุภาพที่ได้พูดคุยสร้างสรรค์วันนี้" />
+                </div>
+              </div>
+
+              <!-- Item 6: Ontime -->
+              <div class="goodness-card">
+                <div class="goodness-card-title">
+                  <span class="badge badge-user">6</span>
+                  ความตรงต่อเวลา
+                </div>
+                <div class="form-group">
+                  <label>ข้อความระบุว่าตรงต่อเวลาอย่างไรวันนี้ *</label>
+                  <input type="text" id="good-ontime-text" placeholder="เช่น เข้าร่วมประชุมกิจกรรมบุญก่อนเวลา 10 นาที" />
+                </div>
+              </div>
+
+              <!-- Item 7: Meditate -->
+              <div class="goodness-card" style="grid-column: span 2;">
+                <div class="goodness-card-title">
+                  <span class="badge badge-user">7</span>
+                  การนั่งสมาธิปฏิบัติธรรม
+                </div>
+                <div class="form-group">
+                  <label>แนบรูปภาพขณะนั่งสมาธิหรือบรรยากาศทำใจใสสงบ *</label>
+                  <input type="file" id="good-meditate-photo" accept="image/*" onchange="handleFileChange(this, 'preview-meditate')" />
+                  <div class="file-preview" id="preview-meditate">ไม่มีไฟล์ภาพ</div>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" id="goodness-submit-btn" class="btn btn-primary" style="width:100%; padding:14px; font-weight:600;">บันทึกความดีสากลประจำวัน</button>
+          </form>
+        </div>
+
+        <!-- Tab 3: Comments on activities -->
+        <div id="user-tab-comments" class="user-tab-content hidden">
+          <div class="section-header">
+            <h3>ส่งความชื่นชมและความประทับใจต่อกิจกรรมที่ท่านเข้าร่วม</h3>
+            <p class="text-secondary" style="font-size:13px;">ความคิดเห็นของอาสาสมัครทุกคนมีค่าต่อการพัฒนาโครงการ</p>
+          </div>
+
+          <form id="comment-form" style="max-width:600px; margin: 0 auto; background:#fff; border-radius:12px; border:1px solid var(--border-light); padding:30px;">
+            <div class="form-group">
+              <label for="comment-act-id">เลือกกิจกรรมอาสาสมัคร *</label>
+              <select id="comment-act-id" required>
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="comment-text">ความประทับใจ / ข้อเสนอแนะ *</label>
+              <textarea id="comment-text" rows="5" required placeholder="ระบุสิ่งที่ประทับใจ เช่น เพื่อนสตาฟดูแลดีมาก กิจกรรมสร้างพลังบวกและความสามัคคี"></textarea>
+            </div>
+            <button type="submit" id="comment-submit-btn" class="btn btn-primary">ส่งความคิดเห็น</button>
+          </form>
+        </div>
+
+        <!-- Tab 4: User Profile Edit -->
+        <div id="user-tab-profile" class="user-tab-content hidden">
+          <div class="section-header">
+            <h3>ข้อมูลโปรไฟล์สมาชิก</h3>
+          </div>
+
+          <form id="profile-form" style="background:#fff; border-radius:12px; border:1px solid var(--border-light); padding:30px;">
+            <div class="text-center mb-4">
+              <img id="prof-avatar" src="" class="avatar-large" alt="Profile Avatar" />
+              <div class="form-group" style="max-width:250px; margin:10px auto;">
+                <input type="file" id="prof-photo" accept="image/*" disabled onchange="handleFileChange(this, 'prof-avatar')" />
+              </div>
+              <p style="font-size:12px; color:var(--text-secondary);">รหัสผู้ใช้งานไม่สามารถเปลี่ยนแปลงได้</p>
+            </div>
+
+            <div class="goodness-grid">
+              <div class="form-group">
+                <label>คำนำหน้า *</label>
+                <select id="prof-prename" disabled required>
+                  <option value="นาย">นาย</option>
+                  <option value="นาง">นาง</option>
+                  <option value="นางสาว">นางสาว</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>ชื่อจริง *</label>
+                <input type="text" id="prof-name" disabled required />
+              </div>
+              <div class="form-group">
+                <label>นามสกุล *</label>
+                <input type="text" id="prof-lastname" disabled required />
+              </div>
+              <div class="form-group">
+                <label>ชื่อเล่น</label>
+                <input type="text" id="prof-nickname" disabled />
+              </div>
+              <div class="form-group">
+                <label>วันเกิด *</label>
+                <input type="text" id="prof-birthday" placeholder="วว/ดด/ปปปป" disabled required />
+              </div>
+              <div class="form-group">
+                <label>แผนก / กลุ่มงาน *</label>
+                <select id="prof-department" disabled required>
+                  <option value="สมาธิและปัญญา">สมาธิและปัญญา</option>
+                  <option value="ปฏิคมอาสา">ปฏิคมอาสา</option>
+                  <option value="ประชาสัมพันธ์และสื่อ">ประชาสัมพันธ์และสื่อ</option>
+                  <option value="ประสานงานบุญ">ประสานงานบุญ</option>
+                  <option value="ไอทีและโสตเทคโนโลยี">ไอทีและโสตเทคโนโลยี</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>ระดับ (Level) *</label>
+                <input type="text" id="prof-level" disabled readonly />
+              </div>
+              <div class="form-group">
+                <label>บทบาทผู้ใช้ (Role) *</label>
+                <input type="text" id="prof-role" disabled readonly />
+              </div>
+            </div>
+
+            <div class="text-center mt-4">
+              <button type="button" id="btn-start-prof-edit" class="btn btn-secondary" onclick="toggleProfileEdit(true)">ปรับปรุงข้อมูลส่วนตัว</button>
+              <div id="prof-edit-actions" class="hidden">
+                <button type="submit" id="btn-save-profile" class="btn btn-primary">บันทึก</button>
+                <button type="button" class="btn btn-outline" style="margin-left:8px;" onclick="toggleProfileEdit(false)">ยกเลิก</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- STAFF ROLE DASHBOARD -->
+      <!-- ========================================== -->
+      <div id="staff-dashboard-panel" class="hidden">
+        <h2 id="staff-dash-title" class="mb-4">ห้องควบคุมเจ้าหน้าที่ (Staff)</h2>
+
+        <div class="tab-nav">
+          <button class="tab-btn staff-tab-btn active" onclick="switchTab(this, 'staff-tab-members', 'staff')">สมาชิกในแผนก</button>
+          <button class="tab-btn staff-tab-btn" onclick="switchTab(this, 'staff-tab-register', 'staff')">ลงทะเบียนกิจกรรม</button>
+          <button class="tab-btn staff-tab-btn" onclick="switchTab(this, 'staff-tab-quiz', 'staff')">คุมสอบปัญหาธรรมะ</button>
+          <button class="tab-btn staff-tab-btn" onclick="switchTab(this, 'staff-tab-profile', 'staff')">ข้อมูลส่วนตัว</button>
+        </div>
+
+        <!-- Tab 1: Department Members list -->
+        <div id="staff-tab-members" class="staff-tab-content">
+          <div class="section-header d-flex justify-between align-center">
+            <h3>รายชื่อสมาชิกแผนกเดียวกัน</h3>
+            <button class="btn btn-primary btn-small" onclick="openAddUserModal()">เพิ่มสมาชิกร่วมแผนก</button>
+          </div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th class="text-center" style="width:60px;">รูปภาพ</th>
+                  <th>UserID (อีเมล)</th>
+                  <th>ชื่อ-นามสกุล</th>
+                  <th>ชื่อเล่น</th>
+                  <th>ระดับ (Level)</th>
+                  <th style="width:150px;">การจัดการ</th>
+                </tr>
+              </thead>
+              <tbody id="staff-members-table-body">
+                <!-- JS populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tab 2: Register participation (Scan QR) -->
+        <div id="staff-tab-register" class="staff-tab-content hidden">
+          <div class="section-header">
+            <h3>บันทึกประวัติการร่วมกิจกรรมให้แก่สมาชิก</h3>
+            <p class="text-secondary" style="font-size:13px;">เจ้าหน้าที่ทำการเลือกกิจกรรม จากนั้นทำการสแกน QR Code หรือระบุ UserID สมาชิกเพื่อบันทึกร่วมกิจกรรมสะสมบุญ</p>
+          </div>
+
+          <div style="max-width:550px; margin:0 auto; background:#fff; border-radius:12px; border:1px solid var(--border-light); padding:30px;">
+            <div class="form-group">
+              <label for="staff-attend-act-id">เลือกกิจกรรมที่จะสแกนบันทึก *</label>
+              <select id="staff-attend-act-id">
+                <!-- Loaded via JS -->
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="staff-attend-userid">UserID สมาชิก (สแกน QR หรือคีย์) *</label>
+              <div class="d-flex gap-2">
+                <input type="email" id="staff-attend-userid" placeholder="สแกนเพื่อรับรหัสสมาชิก" />
+                <button type="button" class="btn btn-secondary" onclick="startQRScanner('staff-attend-userid')">สแกน QR Code</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="staff-attend-comment">หมายเหตุกิจกรรม (ระบุโดยสตาฟ)</label>
+              <input type="text" id="staff-attend-comment" placeholder="เช่น สมาชิกดีเด่นฝ่ายจัดเตรียม" />
+            </div>
+
+            <button type="button" id="staff-attend-submit-btn" class="btn btn-primary" style="width:100%; padding:12px;" onclick="submitActivityAttendance('staff')">บันทึกการร่วมกิจกรรม</button>
+          </div>
+        </div>
+
+        <!-- Tab 3: Member Quiz Manager -->
+        <div id="staff-tab-quiz" class="staff-tab-content hidden">
+          <div class="section-header">
+            <h3>ดูแลการทำข้อสอบศีลธรรมแก่สมาชิก</h3>
+            <p class="text-secondary" style="font-size:13px;">เจ้าหน้าที่ทำการเลือกชุดข้อสอบ สแกนยืนยันสมาชิก หากสมาชิกยังไม่เคยทำข้อสอบชุดนี้ เจ้าหน้าที่จะเปิดหน้าแบบทำข้อสอบบนอุปกรณ์นี้เพื่อให้สมาชิกกดทำทันที</p>
+          </div>
+
+          <div style="max-width:550px; margin:0 auto; background:#fff; border-radius:12px; border:1px solid var(--border-light); padding:30px;">
+            <div class="form-group">
+              <label for="staff-quiz-id">เลือกชุดข้อสอบธรรมะ *</label>
+              <select id="staff-quiz-id">
+                <!-- JS populated -->
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="staff-quiz-userid">UserID สมาชิกผู้สอบ (สแกน QR หรือคีย์) *</label>
+              <div class="d-flex gap-2">
+                <input type="email" id="staff-quiz-userid" placeholder="สแกนเพื่อระบุผู้ทำข้อสอบ" />
+                <button type="button" class="btn btn-secondary" onclick="startQRScanner('staff-quiz-userid')">สแกน QR Code</button>
+              </div>
+            </div>
+
+            <button type="button" id="staff-quiz-start-btn" class="btn btn-primary" style="width:100%; padding:12px;" onclick="startQuizWorkflow('staff')">เริ่มทำข้อสอบ</button>
+          </div>
+        </div>
+
+        <!-- Tab 4: Staff Profile -->
+        <div id="staff-tab-profile" class="staff-tab-content hidden">
+          <div class="section-header">
+            <h3>ข้อมูลผู้ปฏิบัติงานเจ้าหน้าที่</h3>
+          </div>
+
+          <form id="staff-profile-form" style="background:#fff; border-radius:12px; border:1px solid var(--border-light); padding:30px;">
+            <div class="text-center mb-4">
+              <img id="staff-prof-avatar" src="" class="avatar-large" alt="Profile" />
+              <div class="form-group" style="max-width:250px; margin:10px auto;">
+                <input type="file" id="staff-prof-photo" accept="image/*" disabled onchange="handleFileChange(this, 'staff-prof-avatar')" />
+              </div>
+            </div>
+            <div class="goodness-grid">
+              <div class="form-group">
+                <label>คำนำหน้า *</label>
+                <select id="staff-prof-prename" disabled required>
+                  <option value="นาย">นาย</option>
+                  <option value="นาง">นาง</option>
+                  <option value="นางสาว">นางสาว</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>ชื่อจริง *</label>
+                <input type="text" id="staff-prof-name" disabled required />
+              </div>
+              <div class="form-group">
+                <label>นามสกุล *</label>
+                <input type="text" id="staff-prof-lastname" disabled required />
+              </div>
+              <div class="form-group">
+                <label>ชื่อเล่น</label>
+                <input type="text" id="staff-prof-nickname" disabled />
+              </div>
+              <div class="form-group">
+                <label>วันเกิด *</label>
+                <input type="text" id="staff-prof-birthday" placeholder="วว/ดด/ปปปป" disabled required />
+              </div>
+              <div class="form-group">
+                <label>แผนก / กลุ่มงาน *</label>
+                <input type="text" id="staff-prof-department" disabled readonly />
+              </div>
+            </div>
+
+            <div class="text-center mt-4">
+              <button type="button" id="btn-start-staff-prof-edit" class="btn btn-secondary" onclick="toggleStaffProfileEdit(true)">ปรับปรุงข้อมูลส่วนตัว</button>
+              <div id="staff-prof-edit-actions" class="hidden">
+                <button type="submit" id="btn-save-staff-profile" class="btn btn-primary" onclick="handleStaffProfileUpdate(event)">บันทึก</button>
+                <button type="button" class="btn btn-outline" style="margin-left:8px;" onclick="toggleStaffProfileEdit(false)">ยกเลิก</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- ADMIN ROLE DASHBOARD -->
+      <!-- ========================================== -->
+      <div id="admin-dashboard-panel" class="hidden">
+        <h2 id="admin-dash-title" class="mb-4">แผงควบคุมหลักผู้ดูแลระบบ (Admin)</h2>
+
+        <div class="tab-nav">
+          <button class="tab-btn admin-tab-btn active" onclick="switchTab(this, 'admin-tab-stats', 'admin')">แดชบอร์ดสถิติ</button>
+          <button class="tab-btn admin-tab-btn" onclick="switchTab(this, 'admin-tab-users', 'admin')">สมาชิกทั้งหมด</button>
+          <button class="tab-btn admin-tab-btn" onclick="switchTab(this, 'admin-tab-register', 'admin')">ลงทะเบียนร่วมกิจกรรม</button>
+          <button class="tab-btn admin-tab-btn" onclick="switchTab(this, 'admin-tab-quiz', 'admin')">คุมสอบปัญหาธรรมะ</button>
+          <button class="tab-btn admin-tab-btn" onclick="switchTab(this, 'admin-tab-settings', 'admin')">ตั้งค่าข้อมูล</button>
+          <button class="tab-btn admin-tab-btn" onclick="switchTab(this, 'admin-tab-profile', 'admin')">ข้อมูลส่วนตัว</button>
+        </div>
+
+        <!-- Tab 1: Stats -->
+        <div id="admin-tab-stats" class="admin-tab-content">
+          <div class="dashboard-grid">
+            <div class="stat-card">
+              <div class="label">จำนวนสมาชิกทั้งหมด</div>
+              <div class="value" id="admin-val-total-users">0</div>
+              <div class="desc">บัญชีอาสาสมัครในระบบ</div>
+            </div>
+            <div class="stat-card">
+              <div class="label">จำนวนกิจกรรมอาสา</div>
+              <div class="value" id="admin-val-total-activities">0</div>
+              <div class="desc">จำนวนโครงการบุญในฐานข้อมูล</div>
+            </div>
+            <div class="stat-card">
+              <div class="label">คะแนนบุญสะสมมอบแล้ว</div>
+              <div class="value" id="admin-val-total-boonpoint">0</div>
+              <div class="desc">ผลรวมคะแนนกิจกรรมและศีลธรรม</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Users Management -->
+        <div id="admin-tab-users" class="admin-tab-content hidden">
+          <div class="section-header d-flex justify-between align-center">
+            <h3>การจัดการสมาชิกอาสาสมัคร (CRUD)</h3>
+            <button class="btn btn-primary btn-small" onclick="openAddUserModal()">เพิ่มผู้ใช้เข้าระบบใหม่</button>
+          </div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th class="text-center" style="width:60px;">รูปภาพ</th>
+                  <th>UserID (Email)</th>
+                  <th>ชื่อ-นามสกุล</th>
+                  <th>ชื่อเล่น</th>
+                  <th>แผนก</th>
+                  <th>ระดับ</th>
+                  <th>สิทธิ์ผู้ใช้</th>
+                  <th style="width:150px;">การจัดการ</th>
+                </tr>
+              </thead>
+              <tbody id="admin-users-table-body">
+                <!-- JS populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tab 3: Register Activity -->
+        <div id="admin-tab-register" class="admin-tab-content hidden">
+          <div class="section-header">
+            <h3>บันทึกประวัติการร่วมกิจกรรมให้แก่สมาชิก</h3>
+          </div>
+          <div style="max-width:550px; margin:0 auto; background:#fff; border-radius:12px; border:1px solid var(--border-light); padding:30px;">
+            <div class="form-group">
+              <label for="admin-attend-act-id">เลือกกิจกรรมที่จะลงทะเบียน *</label>
+              <select id="admin-attend-act-id">
+                <!-- JS populated -->
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="admin-attend-userid">UserID สมาชิก (สแกน QR หรือคีย์) *</label>
+              <div class="d-flex gap-2">
+                <input type="email" id="admin-attend-userid" placeholder="สแกนหรือระบุไอดีอาสา" />
+                <button type="button" class="btn btn-secondary" onclick="startQRScanner('admin-attend-userid')">สแกน QR Code</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="admin-attend-comment">หมายเหตุกิจกรรม</label>
+              <input type="text" id="admin-attend-comment" placeholder="บันทึกข้อแนะนำ/ความประทับใจโดยแอดมิน" />
+            </div>
+
+            <button type="button" id="admin-attend-submit-btn" class="btn btn-primary" style="width:100%; padding:12px;" onclick="submitActivityAttendance('admin')">บันทึกการร่วมกิจกรรม</button>
+          </div>
+        </div>
+
+        <!-- Tab 4: Quiz execution trigger -->
+        <div id="admin-tab-quiz" class="admin-tab-content hidden">
+          <div class="section-header">
+            <h3>ดูแลการทำข้อสอบศีลธรรมแก่สมาชิก</h3>
+          </div>
+          <div style="max-width:550px; margin:0 auto; background:#fff; border-radius:12px; border:1px solid var(--border-light); padding:30px;">
+            <div class="form-group">
+              <label for="admin-quiz-id">เลือกชุดข้อสอบธรรมะ *</label>
+              <select id="admin-quiz-id">
+                <!-- JS populated -->
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="admin-quiz-userid">UserID สมาชิกผู้สอบ (สแกน QR หรือคีย์) *</label>
+              <div class="d-flex gap-2">
+                <input type="email" id="admin-quiz-userid" placeholder="สแกนหรือระบุไอดีอาสา" />
+                <button type="button" class="btn btn-secondary" onclick="startQRScanner('admin-quiz-userid')">สแกน QR Code</button>
+              </div>
+            </div>
+
+            <button type="button" id="admin-quiz-start-btn" class="btn btn-primary" style="width:100%; padding:12px;" onclick="startQuizWorkflow('admin')">เริ่มทำข้อสอบ</button>
+          </div>
+        </div>
+
+        <!-- Tab 5: Settings Setup CRUD (Activities, Quizzes) -->
+        <div id="admin-tab-settings" class="admin-tab-content hidden">
+
+          <!-- ActivitySet setup CRUD -->
+          <div class="section-header d-flex justify-between align-center">
+            <h3>ตั้งค่ารายการกิจกรรมอาสา (ActivitySet CRUD)</h3>
+            <button class="btn btn-primary btn-small" onclick="openAddActivityModal()">เพิ่มข้อมูลกิจกรรม</button>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>รหัสกิจกรรม</th>
+                  <th>ประเภทกิจกรรม</th>
+                  <th>ชื่อกิจกรรม</th>
+                  <th>ช่วงวันที่ดำเนินกิจกรรม</th>
+                  <th class="text-center">แต้มคะแนน</th>
+                  <th class="text-center">ยอดอาสา / เป้าหมาย</th>
+                  <th style="width:130px;">จัดการ</th>
+                </tr>
+              </thead>
+              <tbody id="admin-activities-table-body">
+                <!-- JS populated -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- QuizSet Setup CRUD -->
+          <div class="section-header d-flex justify-between align-center mt-4">
+            <h3>ตั้งค่าคลังแบบทดสอบศีลธรรม (QuizSet CRUD)</h3>
+            <button class="btn btn-primary btn-small" onclick="openAddQuizModal()">เพิ่มชุดแบบทดสอบ</button>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>รหัสข้อสอบ</th>
+                  <th>ชื่อหัวข้อแบบวัดความรู้</th>
+                  <th>รายละเอียดคำอธิบาย</th>
+                  <th>สถานะ</th>
+                  <th style="width:230px;">การจัดการ</th>
+                </tr>
+              </thead>
+              <tbody id="admin-quizset-table-body">
+                <!-- JS populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tab 6: Admin profile -->
+        <div id="admin-tab-profile" class="admin-tab-content hidden">
+          <div class="section-header">
+            <h3>ข้อมูลสิทธิ์ระบบผู้ดูแลระบบสูงสุด</h3>
+          </div>
+          <form id="admin-profile-form" style="background:#fff; border-radius:12px; border:1px solid var(--border-light); padding:30px;">
+            <div class="text-center mb-4">
+              <img id="admin-prof-avatar" src="" class="avatar-large" alt="Profile" />
+              <div class="form-group" style="max-width:250px; margin:10px auto;">
+                <input type="file" id="admin-prof-photo" accept="image/*" disabled onchange="handleFileChange(this, 'admin-prof-avatar')" />
+              </div>
+            </div>
+            <div class="goodness-grid">
+              <div class="form-group">
+                <label>คำนำหน้า *</label>
+                <select id="admin-prof-prename" disabled required>
+                  <option value="นาย">นาย</option>
+                  <option value="นาง">นาง</option>
+                  <option value="นางสาว">นางสาว</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>ชื่อจริง *</label>
+                <input type="text" id="admin-prof-name" disabled required />
+              </div>
+              <div class="form-group">
+                <label>นามสกุล *</label>
+                <input type="text" id="admin-prof-lastname" disabled required />
+              </div>
+              <div class="form-group">
+                <label>ชื่อเล่น</label>
+                <input type="text" id="admin-prof-nickname" disabled />
+              </div>
+              <div class="form-group">
+                <label>วันเกิด *</label>
+                <input type="text" id="admin-prof-birthday" placeholder="วว/ดด/ปปปป" disabled required />
+              </div>
+              <div class="form-group">
+                <label>แผนก / กลุ่มงาน *</label>
+                <input type="text" id="admin-prof-department" disabled readonly />
+              </div>
+            </div>
+
+            <div class="text-center mt-4">
+              <button type="button" id="btn-start-admin-prof-edit" class="btn btn-secondary" onclick="toggleAdminProfileEdit(true)">ปรับปรุงข้อมูลส่วนตัว</button>
+              <div id="admin-prof-edit-actions" class="hidden">
+                <button type="submit" id="btn-save-admin-profile" class="btn btn-primary" onclick="handleAdminProfileUpdate(event)">บันทึก</button>
+                <button type="button" class="btn btn-outline" style="margin-left:8px;" onclick="toggleAdminProfileEdit(false)">ยกเลิก</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- ========================================== -->
+  <!-- MODAL: REGISTRATION DIALOG -->
+  <!-- ========================================== -->
+  <div class="modal-overlay" id="register-modal">
+    <div class="modal-content" style="max-width:600px;">
+      <div class="modal-header">
+        <h3>ลงทะเบียนสมาชิกใหม่</h3>
+        <button type="button" class="btn btn-outline btn-small" onclick="closeModal('register-modal')">&times;</button>
+      </div>
+      <form id="register-form">
+        <div class="modal-body">
+          <div class="goodness-grid">
+            <div class="form-group">
+              <label for="reg-email">อีเมล (UserID) *</label>
+              <input type="email" id="reg-email" required placeholder="example@volunteer.com" />
+            </div>
+            <div class="form-group">
+              <label for="reg-password">กำหนดรหัสผ่าน *</label>
+              <input type="password" id="reg-password" required placeholder="ขั้นต่ำ 4 ตัวอักษร" />
+            </div>
+            <div class="form-group">
+              <label for="reg-prename">คำนำหน้า *</label>
+              <select id="reg-prename" required>
+                <option value="">เลือกคำนำหน้า</option>
+                <option value="นาย">นาย</option>
+                <option value="นาง">นาง</option>
+                <option value="นางสาว">นางสาว</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="reg-name">ชื่อจริง *</label>
+              <input type="text" id="reg-name" required placeholder="สมชาย" />
+            </div>
+            <div class="form-group">
+              <label for="reg-lastname">นามสกุล *</label>
+              <input type="text" id="reg-lastname" required placeholder="ดีเลิศ" />
+            </div>
+            <div class="form-group">
+              <label for="reg-nickname">ชื่อเล่น</label>
+              <input type="text" id="reg-nickname" placeholder="เช่น ต้น" />
+            </div>
+            <div class="form-group">
+              <label for="reg-birthday">วันเดือนปีเกิด</label>
+              <input type="text" id="reg-birthday" placeholder="วว/ดด/ปปปป" />
+            </div>
+            <div class="form-group">
+              <label for="reg-department">แผนกที่สังกัด *</label>
+              <select id="reg-department" required>
+                <option value="">เลือกกลุ่มแผนกงาน</option>
+                <option value="สมาธิและปัญญา">สมาธิและปัญญา</option>
+                <option value="ปฏิคมอาสา">ปฏิคมอาสา</option>
+                <option value="ประชาสัมพันธ์และสื่อ">ประชาสัมพันธ์และสื่อ</option>
+                <option value="ประสานงานบุญ">ประสานงานบุญ</option>
+                <option value="ไอทีและโสตเทคโนโลยี">ไอทีและโสตเทคโนโลยี</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="reg-level">ระดับสิทธิ์ (Level) - แก้ไขไม่ได้</label>
+              <input type="text" id="reg-level" value="New" disabled readonly />
+            </div>
+            <div class="form-group">
+              <label for="reg-role">บทบาทระบบ (Role) - แก้ไขไม่ได้</label>
+              <input type="text" id="reg-role" value="User" disabled readonly />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="reg-photo">อัปโหลดรูปโปรไฟล์ (ถ้ามี)</label>
+            <input type="file" id="reg-photo" accept="image/*" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('register-modal')">ยกเลิก</button>
+          <button type="submit" id="reg-submit-btn" class="btn btn-primary">ลงทะเบียน</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: QR CODE SCANNER SIMULATOR -->
+  <!-- ========================================== -->
+  <div class="modal-overlay" id="scanner-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>เครื่องสแกนเนอร์จำลอง (QR Scanner)</h3>
+        <button type="button" class="btn btn-outline btn-small" id="btn-close-scanner">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="qr-scanner-sim">
+          <div class="scanner-box">
+            <div class="scanner-laser"></div>
+            <img src="https://img.icons8.com/ios/100/ffffff/qr-code.png" style="opacity:0.3; width:80px;" alt="QR Code" />
+          </div>
+          <p class="text-bold mb-4">จำลองการสแกนด้วยกล้องมือถือ</p>
+          <p class="text-secondary mb-4" style="font-size:12px;">เลือกรายชื่อผู้ใช้ด้านล่างเพื่อส่งค่าสแกนเข้าระบบทันที</p>
+        </div>
+
+        <div class="form-group">
+          <label for="scanner-user-select">เลือกเพื่อจำลองการสแกนผ่านกล้อง</label>
+          <select id="scanner-user-select">
+            <!-- Filled via JS -->
+          </select>
+        </div>
+
+        <div class="section-header">
+          <p class="text-center text-secondary">หรือป้อนรหัส (Email) ด้วยตนเองเพื่อข้ามกล้องสแกน</p>
+        </div>
+
+        <div class="form-group">
+          <label for="scanner-manual-input">พิมพ์ UserID สมาชิก</label>
+          <input type="text" id="scanner-manual-input" placeholder="user@volunteer.com" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeModal('scanner-modal')">ยกเลิก</button>
+        <button type="button" class="btn btn-primary" id="btn-scanner-submit-manual">ยืนยันรหัสคีย์มือ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: QUIZ EXECUTION BOARD -->
+  <!-- ========================================== -->
+  <div class="modal-overlay" id="quiz-execution-modal">
+    <div class="modal-content" style="max-width:550px;">
+      <div class="modal-header">
+        <h3>ห้องทำข้อสอบธรรมะ</h3>
+        <button type="button" class="btn btn-outline btn-small" onclick="closeModal('quiz-execution-modal')">&times;</button>
+      </div>
+      <div class="modal-body" id="quiz-questions-wrapper">
+        <!-- Dynaimcally loaded question cards inside JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: USER CRUD EDITOR (ADMIN & STAFF) -->
+  <!-- ========================================== -->
+  <div class="modal-overlay" id="user-crud-modal">
+    <div class="modal-content" style="max-width:600px;">
+      <div class="modal-header">
+        <h3 id="user-modal-title">ข้อมูลสมาชิก</h3>
+        <button type="button" class="btn btn-outline btn-small" onclick="closeModal('user-crud-modal')">&times;</button>
+      </div>
+      <form id="user-crud-form" onsubmit="handleUserCRUDSave(event)">
+        <div class="modal-body">
+          <div class="goodness-grid">
+            <div class="form-group">
+              <label>UserID (Email) *</label>
+              <input type="email" id="crud-email" required placeholder="user@volunteer.com" />
+            </div>
+            <div class="form-group" id="crud-password-group">
+              <label>รหัสผ่านผู้ใช้ *</label>
+              <input type="password" id="crud-password" placeholder="กำหนดรหัสผ่าน" />
+            </div>
+            <div class="form-group">
+              <label>คำนำหน้า *</label>
+              <select id="crud-prename" required>
+                <option value="นาย">นาย</option>
+                <option value="นาง">นาง</option>
+                <option value="นางสาว">นางสาว</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>ชื่อจริง *</label>
+              <input type="text" id="crud-name" required placeholder="ระบุชื่อจริง" />
+            </div>
+            <div class="form-group">
+              <label>นามสกุล *</label>
+              <input type="text" id="crud-lastname" required placeholder="ระบุนามสกุล" />
+            </div>
+            <div class="form-group">
+              <label>ชื่อเล่น</label>
+              <input type="text" id="crud-nickname" placeholder="ระบุชื่อเล่น" />
+            </div>
+            <div class="form-group">
+              <label>วันเดือนปีเกิด</label>
+              <input type="text" id="crud-birthday" placeholder="วว/ดด/ปปปป" />
+            </div>
+            <div class="form-group">
+              <label>สิทธิ์ระดับสมาชิกร่วมโครงการ</label>
+              <select id="crud-level">
+                <option value="New">New</option>
+                <option value="Leader">Leader</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>บทบาทสิทธิ์ในระบบ (Role)</label>
+              <select id="crud-role">
+                <option value="User">User</option>
+                <option value="Staff">Staff</option>
+                <option value="Admin">Admin</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>แผนกสังกัดสตรีมงาน</label>
+              <select id="crud-department">
+                <option value="สมาธิและปัญญา">สมาธิและปัญญา</option>
+                <option value="ปฏิคมอาสา">ปฏิคมอาสา</option>
+                <option value="ประชาสัมพันธ์และสื่อ">ประชาสัมพันธ์และสื่อ</option>
+                <option value="ประสานงานบุญ">ประสานงานบุญ</option>
+                <option value="ไอทีและโสตเทคโนโลยี">ไอทีและโสตเทคโนโลยี</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>รูปภาพสมาชิกระบบ</label>
+            <input type="file" id="crud-photo" accept="image/*" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('user-crud-modal')">ยกเลิก</button>
+          <button type="submit" id="crud-user-save-btn" class="btn btn-primary">บันทึกข้อมูล</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: ACTIVITY CRUD EDITOR (ADMIN ONLY) -->
+  <!-- ========================================== -->
+  <div class="modal-overlay" id="activity-crud-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="activity-modal-title">ตั้งค่าโครงการกิจกรรม</h3>
+        <button type="button" class="btn btn-outline btn-small" onclick="closeModal('activity-crud-modal')">&times;</button>
+      </div>
+      <form id="activity-crud-form" onsubmit="handleActivityCRUDSave(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>รหัสกิจกรรม (AcID) *</label>
+            <input type="text" id="crud-act-id" required placeholder="AC003" />
+          </div>
+          <div class="form-group">
+            <label>ประเภทกิจกรรม *</label>
+            <select id="crud-act-type" required>
+              <option value="ปฏิบัติธรรม">ปฏิบัติธรรม</option>
+              <option value="พัฒนาตัวเอง">พัฒนาตัวเอง</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>ชื่อกิจกรรม *</label>
+            <input type="text" id="crud-act-title" required placeholder="ระบุหัวข้อกิจกรรมเด่น" />
+          </div>
+          <div class="form-group">
+            <label>คำอธิบายกิจกรรม</label>
+            <textarea id="crud-act-desc" rows="3" placeholder="ระบุรายละเอียดรายละเอียดงานบุญ"></textarea>
+          </div>
+          <div class="goodness-grid">
+            <div class="form-group">
+              <label>วันที่เริ่มเปิดทำกิจกรรม *</label>
+              <input type="date" id="crud-act-start" required />
+            </div>
+            <div class="form-group">
+              <label>วันที่สิ้นสุดกิจกรรม *</label>
+              <input type="date" id="crud-act-end" required />
+            </div>
+            <div class="form-group">
+              <label>คะแนนบุญตั้งต้น (BoonScore) *</label>
+              <input type="number" id="crud-act-score" required value="50" />
+            </div>
+            <div class="form-group">
+              <label>สถานะโครงการ *</label>
+              <select id="crud-act-status" required>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+            <div class="form-group" style="grid-column: span 2;">
+              <label>เป้าหมายจำนวนยอดสมาชิกผู้เข้าร่วมงานบุญ *</label>
+              <input type="number" id="crud-act-target" required value="100" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('activity-crud-modal')">ยกเลิก</button>
+          <button type="submit" id="crud-act-save-btn" class="btn btn-primary">บันทึกกิจกรรม</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: QUIZSET CRUD EDITOR (ADMIN ONLY) -->
+  <!-- ========================================== -->
+  <div class="modal-overlay" id="quiz-crud-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="quiz-modal-title">ตั้งค่ากระดานแบบวัดความรู้ศีลธรรม</h3>
+        <button type="button" class="btn btn-outline btn-small" onclick="closeModal('quiz-crud-modal')">&times;</button>
+      </div>
+      <form id="quiz-crud-form" onsubmit="handleQuizCRUDSave(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>รหัสชุดข้อสอบ (QuizsetID) *</label>
+            <input type="text" id="crud-quiz-id" required placeholder="QZ002" />
+          </div>
+          <div class="form-group">
+            <label>หัวข้อการสอบวัดผล *</label>
+            <input type="text" id="crud-quiz-title" required placeholder="ระบุหัวข้อสอบธรรมะ" />
+          </div>
+          <div class="form-group">
+            <label>คำอธิบายเนื้อหาข้อสอบ</label>
+            <textarea id="crud-quiz-desc" rows="3" placeholder="ระบุคำแนะนำเกี่ยวกับชุดแบบทดสอบนี้"></textarea>
+          </div>
+          <div class="form-group">
+            <label>สถานะการเปิดใช้ระบบข้อสอบ *</label>
+            <select id="crud-quiz-status" required>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('quiz-crud-modal')">ยกเลิก</button>
+          <button type="submit" id="crud-quiz-save-btn" class="btn btn-primary">บันทึกชุดข้อสอบ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: QUESTIONS MANAGER BOARD (ADMIN ONLY) -->
+  <!-- ========================================== -->
+  <div class="modal-overlay" id="questions-manager-modal">
+    <div class="modal-content" style="max-width:700px;">
+      <div class="modal-header">
+        <h3 id="q-mgr-modal-title">จัดการข้อสอบศีลธรรมรายคำถาม</h3>
+        <button type="button" class="btn btn-outline btn-small" onclick="closeModal('questions-manager-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-4 d-flex justify-between align-center">
+          <p class="text-secondary" style="font-size:12px;">สามารถทำการ เพิ่มข้อ หรือ ลบข้อสอบที่จัดเตรียมไว้ได้แบบไดนามิก</p>
+          <button type="button" class="btn btn-secondary btn-small" onclick="addDynamicQuestionFormRow()">+ เพิ่มคำถามข้อใหม่</button>
+        </div>
+        <div id="q-mgr-questions-list" style="max-height:50vh; overflow-y:auto; padding-right:8px;">
+          <!-- Questions list rows populated dynamically -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeModal('questions-manager-modal')">ยกเลิก</button>
+        <button type="button" id="btn-save-questions-mgr" class="btn btn-primary" onclick="saveAdminQuestionsList()">บันทึกคำถามทั้งหมด</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: MEMBER HISTORY VIEW (STAFF & ADMIN) -->
+  <!-- ========================================== -->
+  <div class="modal-overlay" id="member-history-modal">
+    <div class="modal-content" style="max-width:800px; width:95%;">
+      <div class="modal-header">
+        <h3 id="member-history-title">ประวัติการสะสมแต้มของสมาชิก</h3>
+        <button type="button" class="btn btn-outline btn-small" onclick="closeModal('member-history-modal')">&times;</button>
+      </div>
+      <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+
+        <!-- Stats summary inside modal -->
+        <div class="dashboard-grid mb-4">
+          <div class="stat-card">
+            <div class="label">แต้มบุญรวมสะสม</div>
+            <div class="value text-success" id="member-total-boonpoint">...</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">กิจกรรม / ข้อสอบ</div>
+            <div style="font-size:11px; margin-top:5px; line-height:1.6;">
+              กิจกรรม: <span class="text-bold" id="member-act-pts">...</span><br/>
+              ข้อสอบ: <span class="text-bold" id="member-quiz-pts">...</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="label">แต้มบันทึกความดี</div>
+            <div class="value" id="member-goodness-pts">...</div>
+          </div>
+        </div>
+
+        <!-- Dynamic History Tables -->
+        <div class="section-header">
+          <h4>บันทึกความดีสากลประจำวัน</h4>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>วันที่ลงมือทำ</th>
+                <th>กิจกรรมศีลธรรม</th>
+                <th class="text-center">แต้มสะสม</th>
+                <th class="text-bold">คะแนนรวม</th>
+              </tr>
+            </thead>
+            <tbody id="member-goodness-table-body">
+              <!-- JS Populated -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section-header">
+          <h4>การเข้าร่วมกิจกรรมบุญ</h4>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>รหัสกิจกรรม</th>
+                <th>หัวข้อกิจกรรม</th>
+                <th>วันที่ลงชื่อเข้าร่วม</th>
+                <th class="text-bold">แต้มบุญที่ได้รับ</th>
+              </tr>
+            </thead>
+            <tbody id="member-activity-table-body">
+              <!-- JS Populated -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section-header">
+          <h4>การทำข้อสอบธรรมะ</h4>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>รหัสข้อสอบ</th>
+                <th>หัวข้อแบบวัดความรู้</th>
+                <th>วันที่ทำการสอบ</th>
+                <th class="text-center">ผลสอบคำตอบ</th>
+                <th class="text-bold">แต้มบุญที่ได้รับ</th>
+              </tr>
+            </thead>
+            <tbody id="member-quiz-table-body">
+              <!-- JS Populated -->
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="closeModal('member-history-modal')">ปิดหน้าต่าง</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CORNER -->
+  <div class="toast-container" id="toast-wrapper"></div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <p>Volunteer OS &copy; 2026. Designed with Apple Clean Minimalist Aesthetics. Powered by Google Apps Script & Sheets.</p>
+  </div>
+
+  <!-- Load JavaScript Client Logic -->
+  <script src="api.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>
