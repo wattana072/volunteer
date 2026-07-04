@@ -3,299 +3,2186 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Volunteer OS | พอร์ทัลระบบอาสาสมัครส่วนกลาง</title>
-  
-  <!-- Apple Sleek Interface Frameworks -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <title>Volunteer OS V1 — ระบบจัดการอาสาสมัครวัด</title>
+  <meta name="description" content="ระบบจัดการอาสาสมัครวัด สะสมบุญพอยท์ กิจกรรมความดีสากล ตอบปัญหาธรรมะ" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'Sarabun', 'sans-serif'],
-          }
-        }
-      }
-    }
-  </script>
   <style>
+    /* ============================================================
+       CSS DESIGN SYSTEM — Gen Z Blue Gradient
+    ============================================================ */
+    :root {
+      --c-bg-deep:   #00001a;
+      --c-bg-dark:   #000033;
+      --c-bg-mid:    #00005c;
+      --c-blue-700:  #0033cc;
+      --c-blue-500:  #0055ff;
+      --c-blue-400:  #3377ff;
+      --c-blue-300:  #66aaff;
+      --c-blue-200:  #99ccff;
+      --c-blue-100:  #cce5ff;
+      --c-accent:    #ffe600;
+      --c-accent-2:  #ff6b35;
+      --c-white:     #ffffff;
+      --c-glass-bg:  rgba(0,80,255,0.08);
+      --c-glass-bd:  rgba(100,170,255,0.25);
+      --c-glass-hover: rgba(0,80,255,0.18);
+      --c-text-primary:   #ffffff;
+      --c-text-secondary: #99ccff;
+      --c-text-muted:     #5588bb;
+      --c-danger:    #ff4444;
+      --c-success:   #00e676;
+      --c-warning:   #ffab00;
+
+      --radius-sm:   8px;
+      --radius-md:   14px;
+      --radius-lg:   22px;
+      --radius-xl:   32px;
+      --radius-full: 9999px;
+
+      --shadow-glow: 0 0 30px rgba(0,85,255,0.35);
+      --shadow-card: 0 8px 32px rgba(0,0,60,0.5);
+      --shadow-btn:  0 4px 20px rgba(0,85,255,0.4);
+
+      --font: 'Kanit', sans-serif;
+      --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+
+      /* ---- API URL: แก้ไขตรงนี้เพียงที่เดียว ---- */
+      --gas-url: '';
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
     body {
-      background-color: #F5F5F7;
-      color: #1D1D1F;
-      font-family: 'Inter', 'Sarabun', sans-serif;
+      font-family: var(--font);
+      background: linear-gradient(135deg, var(--c-bg-deep) 0%, var(--c-bg-dark) 50%, var(--c-bg-mid) 100%);
+      background-attachment: fixed;
+      color: var(--c-text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ---- Scrollbar ---- */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--c-bg-deep); }
+    ::-webkit-scrollbar-thumb { background: var(--c-blue-700); border-radius: 3px; }
+
+    /* ---- Utility ---- */
+    .hidden { display: none !important; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+    .gap-2 { gap: 8px; }
+    .gap-3 { gap: 12px; }
+    .gap-4 { gap: 16px; }
+    .text-accent { color: var(--c-accent); }
+    .text-muted { color: var(--c-text-secondary); }
+    .text-sm { font-size: 0.85rem; }
+    .text-xs { font-size: 0.75rem; }
+    .text-lg { font-size: 1.15rem; }
+    .text-xl { font-size: 1.4rem; }
+    .text-2xl { font-size: 1.75rem; }
+    .text-3xl { font-size: 2.2rem; }
+    .font-bold { font-weight: 700; }
+    .font-extrabold { font-weight: 900; }
+    .text-center { text-align: center; }
+    .w-full { width: 100%; }
+    .mt-2 { margin-top: 8px; }
+    .mt-3 { margin-top: 12px; }
+    .mt-4 { margin-top: 16px; }
+    .mb-2 { margin-bottom: 8px; }
+    .mb-3 { margin-bottom: 12px; }
+    .mb-4 { margin-bottom: 16px; }
+    .p-3 { padding: 12px; }
+    .p-4 { padding: 16px; }
+    .rounded { border-radius: var(--radius-md); }
+
+    /* ---- Glass Card ---- */
+    .glass-card {
+      background: var(--c-glass-bg);
+      border: 1px solid var(--c-glass-bd);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 24px;
+      transition: var(--transition);
+    }
+    .glass-card:hover {
+      background: var(--c-glass-hover);
+      border-color: var(--c-blue-400);
+      box-shadow: var(--shadow-glow);
+      transform: translateY(-2px);
+    }
+
+    /* ---- Buttons ---- */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 12px 24px;
+      border: none; border-radius: var(--radius-full); cursor: pointer;
+      font-family: var(--font); font-size: 0.95rem; font-weight: 600;
+      transition: var(--transition); white-space: nowrap; text-decoration: none;
+    }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--c-blue-500), var(--c-blue-700));
+      color: var(--c-white);
+      box-shadow: var(--shadow-btn);
+    }
+    .btn-primary:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 6px 28px rgba(0,85,255,0.55); }
+    .btn-accent {
+      background: linear-gradient(135deg, var(--c-accent), #ffb700);
+      color: #000;
+      box-shadow: 0 4px 20px rgba(255,230,0,0.35);
+    }
+    .btn-accent:hover { transform: translateY(-2px); }
+    .btn-ghost {
+      background: transparent;
+      border: 1.5px solid var(--c-glass-bd);
+      color: var(--c-text-secondary);
+    }
+    .btn-ghost:hover { border-color: var(--c-blue-400); color: var(--c-white); background: var(--c-glass-bg); }
+    .btn-danger {
+      background: linear-gradient(135deg, #ff4444, #cc0000);
+      color: var(--c-white);
+    }
+    .btn-danger:hover { transform: translateY(-2px); }
+    .btn-sm { padding: 7px 16px; font-size: 0.82rem; }
+    .btn-full { width: 100%; }
+
+    /* ---- Form Elements ---- */
+    .form-group { margin-bottom: 16px; }
+    .form-label {
+      display: block; margin-bottom: 6px;
+      font-size: 0.85rem; font-weight: 600; color: var(--c-blue-200);
+    }
+    .form-control {
+      width: 100%;
+      background: rgba(0,40,120,0.35);
+      border: 1.5px solid var(--c-glass-bd);
+      border-radius: var(--radius-sm);
+      color: var(--c-white);
+      font-family: var(--font); font-size: 0.95rem;
+      padding: 12px 16px;
+      transition: var(--transition);
+      outline: none;
+    }
+    .form-control::placeholder { color: var(--c-text-muted); }
+    .form-control:focus { border-color: var(--c-blue-400); box-shadow: 0 0 0 3px rgba(0,85,255,0.2); background: rgba(0,60,180,0.3); }
+    .form-control option { background: #000033; color: #fff; }
+    select.form-control { cursor: pointer; }
+    textarea.form-control { resize: vertical; min-height: 80px; }
+
+    /* ---- Navbar ---- */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(0,0,30,0.85);
+      border-bottom: 1px solid var(--c-glass-bd);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 12px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: var(--transition);
+    }
+    .nav-brand {
+      font-weight: 900; font-size: 1.1rem;
+      background: linear-gradient(90deg, var(--c-white), var(--c-accent));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 4px; align-items: center; }
+    .nav-link {
+      padding: 8px 14px; border-radius: var(--radius-full);
+      color: var(--c-text-secondary); font-size: 0.88rem; font-weight: 500;
+      cursor: pointer; transition: var(--transition); border: none; background: none;
+      font-family: var(--font);
+    }
+    .nav-link:hover, .nav-link.active { background: var(--c-glass-bg); color: var(--c-white); }
+    .nav-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--c-blue-700);
+      border: 2px solid var(--c-blue-400);
+      object-fit: cover; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.85rem; color: #fff;
+      overflow: hidden;
+    }
+    .hamburger {
+      display: none; background: none; border: none; cursor: pointer;
+      flex-direction: column; gap: 5px; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 22px; height: 2px;
+      background: var(--c-white); border-radius: 2px; transition: var(--transition);
+    }
+
+    /* ---- Main content area ---- */
+    #app {
+      padding-top: 70px;
+      min-height: 100vh;
+    }
+
+    /* ---- PAGE CONTAINER ---- */
+    .page { display: none; animation: fadeInUp 0.35s ease; }
+    .page.active { display: block; }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+    .section { padding: 48px 0; }
+    .section-title {
+      font-size: 1.6rem; font-weight: 800; margin-bottom: 6px;
+      background: linear-gradient(90deg, #fff, var(--c-blue-200));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .section-subtitle { color: var(--c-text-secondary); margin-bottom: 28px; font-size: 0.95rem; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+
+    /* ---- Badge ---- */
+    .badge {
+      display: inline-block; padding: 3px 10px; border-radius: var(--radius-full);
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em;
+    }
+    .badge-blue  { background: rgba(0,85,255,0.25); color: var(--c-blue-200); border: 1px solid rgba(0,85,255,0.4); }
+    .badge-accent{ background: rgba(255,230,0,0.2); color: var(--c-accent); border: 1px solid rgba(255,230,0,0.4); }
+    .badge-green { background: rgba(0,230,118,0.15); color: var(--c-success); border: 1px solid rgba(0,230,118,0.35); }
+    .badge-red   { background: rgba(255,68,68,0.15); color: #ff6666; border: 1px solid rgba(255,68,68,0.35); }
+
+    /* ---- Stat Card ---- */
+    .stat-card {
+      background: var(--c-glass-bg);
+      border: 1px solid var(--c-glass-bd);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      text-align: center;
+      transition: var(--transition);
+    }
+    .stat-card:hover { transform: translateY(-3px); border-color: var(--c-blue-400); }
+    .stat-icon { font-size: 2rem; margin-bottom: 8px; }
+    .stat-value { font-size: 2rem; font-weight: 900; color: var(--c-accent); line-height: 1; }
+    .stat-label { font-size: 0.8rem; color: var(--c-text-secondary); margin-top: 4px; }
+
+    /* ---- Hero Header ---- */
+    .hero-header {
+      width: 100%; height: 320px; position: relative; overflow: hidden;
+      border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+    }
+    .hero-header img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,40,0.3), rgba(0,0,40,0.75));
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+      padding: 32px 24px;
+    }
+    .hero-title {
+      font-size: 2.2rem; font-weight: 900; text-align: center;
+      background: linear-gradient(90deg, #fff, var(--c-accent));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      text-shadow: none;
+    }
+    .hero-sub { color: var(--c-blue-200); margin-top: 4px; font-size: 0.95rem; text-align: center; }
+
+    /* ---- Table ---- */
+    .table-wrap { overflow-x: auto; border-radius: var(--radius-md); }
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { background: rgba(0,85,255,0.25); }
+    th { padding: 12px 16px; text-align: left; font-size: 0.82rem; font-weight: 700; color: var(--c-blue-100); white-space: nowrap; }
+    td { padding: 12px 16px; font-size: 0.88rem; color: var(--c-text-secondary); border-bottom: 1px solid rgba(100,170,255,0.08); }
+    tbody tr:hover { background: rgba(0,85,255,0.08); }
+    tbody tr:last-child td { border-bottom: none; }
+
+    /* ---- Alert ---- */
+    .alert {
+      padding: 14px 18px; border-radius: var(--radius-md); margin-bottom: 16px;
+      font-size: 0.9rem; display: flex; align-items: center; gap: 10px;
+    }
+    .alert-success { background: rgba(0,230,118,0.12); border: 1px solid rgba(0,230,118,0.35); color: var(--c-success); }
+    .alert-error   { background: rgba(255,68,68,0.12);  border: 1px solid rgba(255,68,68,0.35);  color: #ff8888; }
+    .alert-info    { background: rgba(0,85,255,0.12);   border: 1px solid var(--c-glass-bd);    color: var(--c-blue-200); }
+
+    /* ---- Modal ---- */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 2000;
+      background: rgba(0,0,30,0.85); backdrop-filter: blur(8px);
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: #000840;
+      border: 1px solid var(--c-glass-bd);
+      border-radius: var(--radius-xl);
+      width: 100%; max-width: 540px;
+      max-height: 90vh; overflow-y: auto;
+      padding: 32px;
+      animation: fadeInUp 0.25s ease;
+      box-shadow: 0 20px 60px rgba(0,0,60,0.8);
+    }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .modal-title { font-size: 1.25rem; font-weight: 800; color: var(--c-white); }
+    .modal-close {
+      width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--c-glass-bd);
+      background: var(--c-glass-bg); color: var(--c-text-secondary);
+      cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center;
+      transition: var(--transition);
+    }
+    .modal-close:hover { border-color: var(--c-danger); color: var(--c-danger); }
+
+    /* ---- Progress Bar ---- */
+    .progress-bar-wrap { background: rgba(0,40,100,0.5); border-radius: var(--radius-full); height: 10px; overflow: hidden; }
+    .progress-bar-fill {
+      height: 100%; border-radius: var(--radius-full);
+      background: linear-gradient(90deg, var(--c-blue-500), var(--c-accent));
+      transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    /* ---- Quiz Option ---- */
+    .quiz-option {
+      display: block; width: 100%;
+      padding: 14px 18px; margin-bottom: 10px;
+      background: var(--c-glass-bg); border: 1.5px solid var(--c-glass-bd);
+      border-radius: var(--radius-md); color: var(--c-text-primary);
+      font-family: var(--font); font-size: 0.95rem; text-align: left;
+      cursor: pointer; transition: var(--transition);
+    }
+    .quiz-option:hover:not(:disabled) { background: var(--c-glass-hover); border-color: var(--c-blue-400); }
+    .quiz-option.selected { background: rgba(0,85,255,0.3); border-color: var(--c-blue-400); color: #fff; }
+    .quiz-option.correct  { background: rgba(0,230,118,0.2); border-color: var(--c-success); color: var(--c-success); }
+    .quiz-option.wrong    { background: rgba(255,68,68,0.15); border-color: var(--c-danger); color: #ff8888; }
+
+    /* ---- Goodness Form Grid ---- */
+    .goodness-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .goodness-item {
+      background: var(--c-glass-bg); border: 1px solid var(--c-glass-bd);
+      border-radius: var(--radius-md); padding: 18px;
+    }
+    .goodness-item-title { font-size: 0.9rem; font-weight: 700; color: var(--c-accent); margin-bottom: 12px; }
+
+    /* ---- Reward Card ---- */
+    .reward-card {
+      background: var(--c-glass-bg); border: 1px solid var(--c-glass-bd);
+      border-radius: var(--radius-lg); overflow: hidden; transition: var(--transition);
+    }
+    .reward-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-glow); border-color: var(--c-accent); }
+    .reward-img { width: 100%; height: 180px; object-fit: cover; }
+    .reward-body { padding: 18px; }
+    .reward-points { font-size: 1.5rem; font-weight: 900; color: var(--c-accent); }
+    .reward-title { font-size: 1rem; font-weight: 700; margin-top: 4px; }
+
+    /* ---- Avatar Upload ---- */
+    .avatar-upload {
+      width: 100px; height: 100px; border-radius: 50%;
+      background: rgba(0,40,120,0.4); border: 2px dashed var(--c-glass-bd);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; margin: 0 auto 16px; overflow: hidden; transition: var(--transition);
+      position: relative;
+    }
+    .avatar-upload:hover { border-color: var(--c-blue-400); }
+    .avatar-upload img { width: 100%; height: 100%; object-fit: cover; }
+    .avatar-placeholder { color: var(--c-text-muted); font-size: 2rem; }
+    .avatar-upload input { display: none; }
+
+    /* ---- Glow pulse animation ---- */
+    @keyframes glow-pulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(0,85,255,0.3); }
+      50% { box-shadow: 0 0 40px rgba(0,85,255,0.7), 0 0 80px rgba(255,230,0,0.15); }
+    }
+    .glow-pulse { animation: glow-pulse 3s ease-in-out infinite; }
+
+    /* ---- Toast ---- */
+    #toast-container {
+      position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .toast {
+      background: #001166; border: 1px solid var(--c-blue-400);
+      border-radius: var(--radius-md); padding: 14px 20px;
+      color: var(--c-white); font-size: 0.9rem; font-weight: 500;
+      max-width: 320px; animation: slideInRight 0.3s ease;
+      box-shadow: 0 8px 30px rgba(0,0,60,0.6);
+    }
+    .toast.success { border-color: var(--c-success); background: #001a0d; }
+    .toast.error   { border-color: var(--c-danger);  background: #1a0000; }
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to   { transform: translateX(0); opacity: 1; }
+    }
+
+    /* ---- Loading Spinner ---- */
+    .spinner {
+      width: 40px; height: 40px; border-radius: 50%;
+      border: 3px solid rgba(0,85,255,0.2);
+      border-top-color: var(--c-blue-400);
+      animation: spin 0.8s linear infinite;
+      margin: 40px auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ---- Photo preview ---- */
+    .photo-preview {
+      width: 100%; height: 140px; object-fit: cover;
+      border-radius: var(--radius-md); margin-top: 8px;
+      border: 1px solid var(--c-glass-bd);
+    }
+
+    /* ---- Department Badge ---- */
+    .dept-tag {
+      display: inline-block; padding: 4px 12px;
+      background: rgba(0,85,255,0.2); border: 1px solid var(--c-blue-500);
+      border-radius: var(--radius-full); font-size: 0.8rem; color: var(--c-blue-200);
+    }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 768px) {
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .goodness-grid { grid-template-columns: 1fr; }
+      .hero-title { font-size: 1.5rem; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .nav-links.open {
+        display: flex; flex-direction: column;
+        position: fixed; inset: 0; top: 60px;
+        background: rgba(0,0,30,0.97); backdrop-filter: blur(20px);
+        padding: 24px; z-index: 999; gap: 8px;
+        animation: fadeInUp 0.25s ease;
+      }
+      .nav-link { padding: 14px 20px; border-radius: var(--radius-md); }
+      .modal { padding: 20px; }
     }
   </style>
 </head>
 <body>
-  <div id="root"></div>
 
-  <script type="text/babel">
-    const { useState, useEffect, useMemo } = React;
+<!-- ============================================================
+     NAVBAR
+============================================================ -->
+<nav id="navbar">
+  <a class="nav-brand" href="#" onclick="navigate('home')">⛪ Volunteer OS V1</a>
+  <div class="nav-links" id="navLinks">
+    <button class="nav-link" onclick="navigate('home'); closeMenu()">หน้าหลัก</button>
+    <button class="nav-link" id="navReward" onclick="navigate('reward'); closeMenu()">รางวัล</button>
+    <button class="nav-link" id="navContact" onclick="navigate('contact'); closeMenu()">ติดต่อ</button>
+    <button class="nav-link" id="navUser" onclick="navigate('user'); closeMenu()">สมาชิก</button>
+    <button class="nav-link" id="navStaff" onclick="navigate('staff'); closeMenu()">เจ้าหน้าที่</button>
+    <button class="nav-link" id="navAdmin" onclick="navigate('admin'); closeMenu()">ผู้ดูแล</button>
+    <div id="navAvatarWrap" class="hidden">
+      <div class="nav-avatar" id="navAvatar" onclick="navigate('profile')">U</div>
+    </div>
+    <button class="nav-link" id="navLogin" onclick="navigate('login')">เข้าสู่ระบบ</button>
+    <button class="nav-link" id="navLogout" onclick="logout()" style="color:var(--c-danger)" class="hidden">ออกจากระบบ</button>
+  </div>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
 
-    // Configured Apps Script API endpoint
-    const API_URL = "https://script.google.com/macros/s/AKfycby6FkuiT16PiyfSmzZgNviSkNln4CUaNqI_sNMm3fi5ZtcMUtP6iupUZ48lSifrbC2g/exec";
+<!-- Toast Container -->
+<div id="toast-container"></div>
 
-    function App() {
-      const [user, setUser] = useState({
-        UserID: "somchai@volunteer.org",
-        Name: "สมชาย",
-        Surname: "ดีเลิศ",
-        Role: "Staff",
-        Level: "Leader",
-        Department: "สมาธิและปัญญา",
-        BoonScore: 850,
-        Avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
-      });
+<!-- ============================================================
+     MAIN APP
+============================================================ -->
+<div id="app">
 
-      const [currentTab, setCurrentTab] = useState("home");
-      const [goodnessForm, setGoodnessForm] = useState({
-        Giving: { done: false, text: "", photo: "" },
-        Sila: { done: false, text: "", photo: "" },
-        Clean: { done: false, text: "", photo: "" },
-        Array: { done: false, text: "", photo: "" },
-        Polite: { done: false, text: "", photo: "" },
-        Ontime: { done: false, text: "", photo: "" },
-        Meditate: { done: false, text: "", photo: "" }
-      });
+  <!-- ========== PAGE: HOME ========== -->
+  <div class="page active" id="page-home">
 
-      const [activities, setActivities] = useState([
-        { AcID: "AC-001", Title: "นั่งสมาธิเย็นวันศุกร์ (Friday Meditation)", BoonScore: 50, Location: "อาคารปฏิบัติธรรม ชั้น 4", Time: "18:00 น.", Image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=600" },
-        { AcID: "AC-002", Title: "ทำบุญตักบาตรเช้าวันอาทิตย์ (Sunday Alms)", BoonScore: 60, Location: "ลานธรรมสากล", Time: "06:30 น.", Image: "https://images.unsplash.com/photo-1609137144814-1e967885b59b?auto=format&fit=crop&q=80&w=600" }
-      ]);
+    <!-- 1.1 Hero Header -->
+    <div class="hero-header">
+      <img src="https://images.dmc.tv/www/images/00-iimage/561225.01.jpg" alt="วัด" />
+      <div class="hero-overlay">
+        <div class="hero-title">🙏 Volunteer OS V1</div>
+        <div class="hero-sub">ระบบอาสาสมัครวัด · สะสมบุญพอยท์ · พัฒนาตนเอง</div>
+      </div>
+    </div>
 
-      const [syncing, setSyncing] = useState(false);
-      const [message, setMessage] = useState("");
-
-      const calculatedScore = useMemo(() => {
-        const doneCount = Object.values(goodnessForm).filter(v => v.done).length;
-        return user.BoonScore + (doneCount * 10);
-      }, [user, goodnessForm]);
-
-      const completedCount = useMemo(() => {
-        return Object.values(goodnessForm).filter(v => v.done).length;
-      }, [goodnessForm]);
-
-      useEffect(() => {
-        lucide.createIcons();
-      }, [currentTab]);
-
-      const handleSaveGoodness = async () => {
-        if (!API_URL || API_URL.includes("PLEASE_PASTE")) {
-          alert("กรุณาติดตั้ง Apps Script WebApp URL ก่อนใช้งานในระบบคลาวด์ จริง");
-          return;
-        }
-        setSyncing(true);
-        try {
-          const response = await fetch(API_URL, {
-            method: "POST",
-            mode: "no-cors", // avoid CORS complexity in static deploys
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              action: "saveGoodness",
-              gData: {
-                UserID: user.UserID,
-                DoDate: new Date().toISOString(),
-                GivingPoint: goodnessForm.Giving.done ? 1 : 0,
-                SilaPoint: goodnessForm.Sila.done ? 1 : 0,
-                CleanPoint: goodnessForm.Clean.done ? 1 : 0,
-                ArrayPoint: goodnessForm.Array.done ? 1 : 0,
-                PolitePoint: goodnessForm.Polite.done ? 1 : 0,
-                OntimePoint: goodnessForm.Ontime.done ? 1 : 0,
-                MeditatePoint: goodnessForm.Meditate.done ? 1 : 0
-              }
-            })
-          });
-          setMessage("ส่งประวัติความดีไปยัง Google Sheets เรียบร้อยแล้ว!");
-          setTimeout(() => setMessage(""), 4000);
-        } catch (e) {
-          alert("ไม่สามารถบันทึกไปยัง Apps Script ได้: " + e.message);
-        } finally {
-          setSyncing(false);
-        }
-      };
-
-      return (
-        <div className="flex flex-col h-screen w-full bg-[#F5F5F7] text-[#1D1D1F] overflow-hidden">
-          {/* Top Header Navigation */}
-          <header className="h-12 bg-white/80 backdrop-blur-md border-b border-[#D2D2D7] flex items-center justify-between px-6 shrink-0 z-50">
-            <div className="flex items-center gap-3">
-              <div className="w-7 h-7 bg-[#0071E3] rounded-lg flex items-center justify-center shadow-sm">
-                <i data-lucide="globe" className="w-4 h-4 text-white"></i>
+    <div class="container">
+      <!-- 1.1.1 & 1.1.2 หน้าที่อาสาสมัคร + อานิสงค์ -->
+      <div class="section">
+        <div class="grid-2">
+          <!-- หน้าที่ อสม. -->
+          <div class="glass-card">
+            <h2 class="section-title">🏛️ หน้าที่อาสาสมัครวัด</h2>
+            <p class="section-subtitle">ร่วมเป็นส่วนหนึ่งของการสร้างบุญกุศล</p>
+            <div style="display:flex; flex-direction:column; gap:14px;">
+              <div style="display:flex;align-items:center;gap:12px;background:var(--c-glass-bg);padding:14px;border-radius:var(--radius-md);border:1px solid var(--c-glass-bd);">
+                <span style="font-size:1.8rem;">🏯</span>
+                <div><div style="font-weight:700;color:#fff;">เป็นเจ้าของวัด</div><div class="text-sm text-muted">ดูแลสถานที่ศักดิ์สิทธิ์ด้วยใจบริสุทธิ์</div></div>
               </div>
-              <span className="font-semibold text-[17px] tracking-tight">Volunteer OS Portal</span>
+              <div style="display:flex;align-items:center;gap:12px;background:var(--c-glass-bg);padding:14px;border-radius:var(--radius-md);border:1px solid var(--c-glass-bd);">
+                <span style="font-size:1.8rem;">🙏</span>
+                <div><div style="font-weight:700;color:#fff;">ต้อนรับปฏิสันถารญาติโยม</div><div class="text-sm text-muted">รับแขกด้วยรอยยิ้มและไมตรีจิต</div></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;background:var(--c-glass-bg);padding:14px;border-radius:var(--radius-md);border:1px solid var(--c-glass-bd);">
+                <span style="font-size:1.8rem;">⭐</span>
+                <div><div style="font-weight:700;color:#fff;">เตรียมงาน · ต้อนรับ · เก็บงาน</div><div class="text-sm text-muted">ทำงานอย่างมีระเบียบและทุ่มเท</div></div>
+              </div>
             </div>
-            <nav className="flex items-center gap-8">
-              <button onClick={() => setCurrentTab("home")} className={`text-[12px] font-medium ${currentTab === 'home' ? 'opacity-100 font-bold text-[#0071E3]' : 'opacity-60'}`}>หน้าแรก</button>
-              <button onClick={() => setCurrentTab("activities")} className={`text-[12px] font-medium ${currentTab === 'activities' ? 'opacity-100 font-bold text-[#0071E3]' : 'opacity-60'}`}>กิจกรรม</button>
-              <div className="flex items-center gap-2 border-l border-[#D2D2D7] pl-8">
-                <div className="text-right">
-                  <p className="text-[11px] font-bold leading-tight">{user.Name} {user.Surname}</p>
-                  <p className="text-[10px] text-[#86868B]">{user.Department}</p>
-                </div>
-                <img src={user.Avatar} alt="Avatar" className="w-8 h-8 rounded-full border border-[#D2D2D7]" />
+          </div>
+
+          <!-- อานิสงค์ -->
+          <div class="glass-card">
+            <h2 class="section-title">✨ อานิสงค์การทำหน้าที่</h2>
+            <p class="section-subtitle">ผลบุญที่ได้รับจากการเป็นอาสาสมัครวัด</p>
+            <div style="display:flex; flex-direction:column; gap:14px;">
+              <div style="display:flex;align-items:center;gap:12px;background:rgba(255,230,0,0.06);padding:14px;border-radius:var(--radius-md);border:1px solid rgba(255,230,0,0.2);">
+                <span style="font-size:1.8rem;">💛</span>
+                <div><div style="font-weight:700;color:var(--c-accent);">ผิวพรรณวรรณะผ่องใส</div><div class="text-sm text-muted">บุญส่งให้หน้าตาผ่องใส มีเสน่ห์น่ารัก</div></div>
               </div>
-            </nav>
-          </header>
-
-          {/* Main Content Areas */}
-          <main className="flex-1 p-8 grid grid-cols-12 gap-6 overflow-y-auto">
-            
-            {/* Sidebar / Profile stats */}
-            <aside className="col-span-3 flex flex-col gap-6">
-              <div className="bg-white rounded-2xl p-6 border border-[#D2D2D7] shadow-sm flex flex-col items-center">
-                <h2 className="text-[11px] font-bold mb-4 uppercase tracking-wider text-[#86868B] self-start">สรุปแต้มบุญสะสม</h2>
-                
-                <div className="relative flex items-center justify-center py-4 w-full">
-                  <svg className="w-32 h-32 transform -rotate-90">
-                    <circle cx="64" cy="64" r="58" stroke="#F5F5F7" strokeWidth="10" fill="transparent" />
-                    <circle 
-                      cx="64" 
-                      cy="64" 
-                      r="58" 
-                      stroke="#AF52DE" 
-                      strokeWidth="10" 
-                      fill="transparent" 
-                      strokeDasharray="364.4" 
-                      strokeDashoffset={364.4 - (364.4 * Math.min(calculatedScore, 1000) / 1000)}
-                      className="transition-all duration-500"
-                    />
-                  </svg>
-                  <div className="absolute flex flex-col items-center">
-                    <span className="text-2xl font-bold tracking-tight">{calculatedScore}</span>
-                    <span className="text-[9px] uppercase font-semibold text-[#86868B]">แต้มทั้งหมด</span>
-                  </div>
-                </div>
-
-                <div className="mt-4 grid grid-cols-2 gap-2 w-full">
-                  <div className="bg-[#F5F5F7] p-3 rounded-xl text-center">
-                    <p className="text-[10px] text-[#86868B] mb-1">กิจกรรม</p>
-                    <p className="text-sm font-bold">{user.BoonScore}</p>
-                  </div>
-                  <div className="bg-[#F5F5F7] p-3 rounded-xl text-center">
-                    <p className="text-[10px] text-[#86868B] mb-1">บันทึกความดี</p>
-                    <p className="text-sm font-bold">{completedCount * 10}</p>
-                  </div>
-                </div>
+              <div style="display:flex;align-items:center;gap:12px;background:rgba(255,230,0,0.06);padding:14px;border-radius:var(--radius-md);border:1px solid rgba(255,230,0,0.2);">
+                <span style="font-size:1.8rem;">💫</span>
+                <div><div style="font-weight:700;color:var(--c-accent);">เป็นที่รักของมนุษย์และเทวดา</div><div class="text-sm text-muted">ได้รับความรักและการปกป้องจากทุกทิศ</div></div>
               </div>
-
-              <div className="bg-[#1D1D1F] text-white rounded-2xl p-6 shadow-xl flex flex-col items-center text-center">
-                <h3 className="text-sm font-semibold mb-1 self-start text-white">บัตร QR ประจำตัว</h3>
-                <p className="text-[11px] text-[#86868B] mb-4 text-left self-start">ยื่นหน้าจอนี้ให้เจ้าหน้าที่สแกนรับแต้มบุญทันที</p>
-                <div className="bg-white p-3 rounded-xl inline-block shadow-lg">
-                  <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${user.UserID}`} alt="QR" className="w-28 h-28" />
-                </div>
-                <span className="text-[9px] text-[#86868B] font-mono mt-3">{user.UserID}</span>
+              <div style="display:flex;align-items:center;gap:12px;background:rgba(255,230,0,0.06);padding:14px;border-radius:var(--radius-md);border:1px solid rgba(255,230,0,0.2);">
+                <span style="font-size:1.8rem;">🧠</span>
+                <div><div style="font-weight:700;color:var(--c-accent);">มีดวงปัญญาสว่างไสว</div><div class="text-sm text-muted">ปัญญาเฉลียวฉลาด เรียนรู้ได้เร็ว</div></div>
               </div>
-            </aside>
-
-            {/* Middle panel - Daily log of goodness */}
-            <section className="col-span-6 flex flex-col gap-6">
-              <div className="bg-white rounded-2xl p-6 border border-[#D2D2D7] shadow-sm flex flex-col">
-                <div className="flex justify-between items-center mb-6">
-                  <div>
-                    <h2 className="text-lg font-bold">บันทึกความดีสากลประจำวัน</h2>
-                    <p className="text-xs text-[#86868B]">ทำเครื่องหมายถูกในความดีที่ท่านได้ปฏิบัติในวันนี้</p>
-                  </div>
-                  <span className="text-xs bg-[#E5E5E7] px-3 py-1 rounded-full font-medium">วันนี้</span>
-                </div>
-
-                <div className="flex flex-col gap-3">
-                  {Object.keys(goodnessForm).map((key, index) => {
-                    const titles = {
-                      Giving: "1. การทำทาน / เอื้อเฟื้อเผื่อแผ่แบ่งปัน",
-                      Sila: "2. การรักษาศีล 5 / ฝึกจิตสำนึกเว้นบาป",
-                      Clean: "3. ความสะอาดของร่างกายและเสนาสนะ",
-                      Array: "4. การจัดระเบียบที่อยู่อาศัยข้าวของ",
-                      Polite: "5. การรักษาวาจาสุภาพ ปิยวาจาไพเราะ",
-                      Ontime: "6. การตรงต่อเวลาและระเบียบวินัยกลุ่ม",
-                      Meditate: "7. การนั่งสมาธิปฏิบัติธรรม สวดมนต์เย็น"
-                    };
-                    const item = goodnessForm[key];
-                    return (
-                      <div key={key} className={`flex items-center p-3 rounded-xl border transition-all ${item.done ? 'bg-[#F5F5F7] border-[#D2D2D7]' : 'bg-white border-[#E5E5E7] hover:border-[#D2D2D7]'}`}>
-                        <button 
-                          onClick={() => setGoodnessForm(prev => ({ ...prev, [key]: { ...prev[key], done: !prev[key].done } }))}
-                          className={`w-8 h-8 rounded-full border flex items-center justify-center mr-4 transition-all shrink-0 ${item.done ? 'bg-[#34C759] border-[#34C759] text-white' : 'border-[#D2D2D7] hover:bg-[#F5F5F7]'}`}
-                        >
-                          {item.done ? <i data-lucide="check" className="w-4 h-4"></i> : <span className="text-xs font-semibold text-[#86868B]">{index+1}</span>}
-                        </button>
-                        <div className="flex-1">
-                          <p className="text-xs font-bold">{titles[key]}</p>
-                          <p className="text-[10px] text-[#86868B]">สะสม +10 แต้มบุญ</p>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                <div className="mt-6 pt-4 border-t border-[#D2D2D7] flex items-center justify-between">
-                  <div className="text-xs text-[#86868B]">
-                    สำเร็จ <strong className="text-[#34C759]">{completedCount} / 7</strong> รายการความดีสากล
-                  </div>
-                  <button 
-                    onClick={handleSaveGoodness}
-                    disabled={syncing}
-                    className="bg-[#0071E3] text-white text-[11px] font-bold px-5 py-2.5 rounded-full hover:bg-[#0077ED] flex items-center gap-1.5 shadow-sm active:scale-95 transition-all disabled:opacity-50"
-                  >
-                    {syncing ? "กำลังส่งบันทึก..." : "ส่งข้อมูลบันทึกความดี"}
-                    <i data-lucide="send" className="w-3.5 h-3.5"></i>
-                  </button>
-                </div>
-
-                {message && (
-                  <div className="mt-4 p-3 bg-[#E5F9EB] border border-[#BCECC7] text-[#1E7E34] text-xs rounded-xl flex items-center gap-2">
-                    <i data-lucide="check-circle" className="w-4 h-4"></i>
-                    {message}
-                  </div>
-                )}
-              </div>
-            </section>
-
-            {/* Right Panel - Recommended Activities */}
-            <aside className="col-span-3 flex flex-col gap-6">
-              <div className="bg-white rounded-2xl border border-[#D2D2D7] shadow-sm overflow-hidden flex flex-col">
-                <div className="p-4 border-b border-[#D2D2D7]">
-                  <h2 className="text-[12px] font-bold uppercase tracking-wider text-[#86868B]">กิจกรรมสะสมแต้มแนะนา</h2>
-                </div>
-                <div className="p-4 flex flex-col gap-4">
-                  {activities.map(act => (
-                    <div key={act.AcID} className="border-b border-[#F5F5F7] pb-4 last:border-0 last:pb-0">
-                      <img src={act.Image} alt="Activity" className="w-full h-24 object-cover rounded-xl mb-3 shadow-inner" />
-                      <span className="text-[9px] font-bold text-[#AF52DE] uppercase">กองกิจกรรมธรรมะ</span>
-                      <h4 className="text-xs font-bold mt-0.5">{act.Title}</h4>
-                      <p className="text-[10px] text-[#86868B] leading-tight mt-1">{act.Location} | {act.Time}</p>
-                      <button className="mt-3 w-full bg-[#F5F5F7] text-[#0071E3] font-bold text-[10px] py-2 rounded-lg hover:bg-[#E5E5E7] transition-colors">
-                        รับ {act.BoonScore} แต้มบุญ
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </aside>
-          </main>
-
-          {/* Footer Status */}
-          <footer className="h-10 bg-white border-t border-[#D2D2D7] px-6 flex items-center justify-between text-[10px] text-[#86868B] shrink-0">
-            <div className="flex items-center gap-4">
-              <span className="flex items-center gap-1.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#34C759]"></div>
-                เชื่อมโยงผ่าน Google Sheets แล้ว
-              </span>
             </div>
-            <div>Volunteer OS &copy; 2026 &bull; พัฒนาเพื่อคลาวด์ Vercel</div>
-          </footer>
+          </div>
         </div>
-      );
-    }
+      </div>
 
-    const root = ReactDOM.createRoot(document.getElementById("root"));
-    root.render(<App />);
-  </script>
+      <!-- 1.2 การร่วมกิจกรรมสะสม Boonpoint -->
+      <div class="section" style="padding-top:0">
+        <h2 class="section-title">🌟 การร่วมกิจกรรมสะสม BoonPoint</h2>
+        <p class="section-subtitle">3 ช่องทางในการสะสมบุญพอยท์</p>
+        <div class="grid-3">
+          <div class="glass-card text-center">
+            <div style="font-size:3rem;margin-bottom:12px;">🌍</div>
+            <h3 style="font-weight:800;margin-bottom:8px;">กิจกรรมความดีสากล</h3>
+            <p class="text-sm text-muted">บันทึกการทำความดีประจำวัน ทาน ศีล สมาธิ พัฒนาตนเอง</p>
+            <div style="margin-top:16px;" id="homeGoodnessBtn">
+              <button class="btn btn-ghost btn-sm" onclick="navigate('login')">เริ่มบันทึกความดี →</button>
+            </div>
+          </div>
+          <div class="glass-card text-center">
+            <div style="font-size:3rem;margin-bottom:12px;">📖</div>
+            <h3 style="font-weight:800;margin-bottom:8px;">ตอบปัญหาธรรมะออนไลน์</h3>
+            <p class="text-sm text-muted">ทำแบบทดสอบปัญหาธรรมะ ศีล สมาธิ พุทธประวัติ</p>
+            <div style="margin-top:16px;">
+              <button class="btn btn-ghost btn-sm" onclick="navigate('login')">ทำแบบทดสอบ →</button>
+            </div>
+          </div>
+          <div class="glass-card text-center">
+            <div style="font-size:3rem;margin-bottom:12px;">🎪</div>
+            <h3 style="font-weight:800;margin-bottom:8px;">ร่วมกิจกรรมงานบุญ</h3>
+            <p class="text-sm text-muted">ลงทะเบียนร่วมกิจกรรมงานบุญและกิจกรรมพัฒนาตัวเอง</p>
+            <div style="margin-top:16px;">
+              <button class="btn btn-ghost btn-sm" onclick="navigate('login')">ดูกิจกรรม →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1.3 Reward -->
+      <div class="section" style="padding-top:0">
+        <div class="glass-card" style="background:linear-gradient(135deg,rgba(255,230,0,0.08),rgba(0,85,255,0.08));border-color:rgba(255,230,0,0.3);">
+          <div class="flex items-center justify-between" style="flex-wrap:wrap;gap:16px;">
+            <div>
+              <h2 class="section-title">🎁 Reward — แลกรางวัล</h2>
+              <p class="text-sm text-muted">การสั่งสมบุญนำสุขมาให้ · นำ BoonPoint มาแลกรางวัลสุดพิเศษ</p>
+            </div>
+            <button class="btn btn-accent" onclick="navigate('reward')">ดูรางวัลทั้งหมด 🎁</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1.4 Dashboard Users แยกตาม Department -->
+      <div class="section" style="padding-top:0">
+        <h2 class="section-title">👥 สมาชิกแยกตามแผนก</h2>
+        <p class="section-subtitle">สถิติสมาชิกอาสาสมัครวัดแยกตามแผนก</p>
+        <div id="homeDeptDashboard" class="grid-3">
+          <div class="spinner"></div>
+        </div>
+      </div>
+    </div>
+  </div><!-- end page-home -->
+
+  <!-- ========== PAGE: LOGIN ========== -->
+  <div class="page" id="page-login">
+    <div class="container" style="max-width:480px;padding-top:48px;">
+      <div class="glass-card glow-pulse" style="border-color:var(--c-blue-400);">
+        <div class="text-center mb-4">
+          <div style="font-size:3rem;margin-bottom:8px;">🙏</div>
+          <h1 class="text-2xl font-extrabold">เข้าสู่ระบบ</h1>
+          <p class="text-sm text-muted mt-2">Volunteer OS V1</p>
+        </div>
+        <div id="loginAlert"></div>
+        <div class="form-group">
+          <label class="form-label">📧 UserID (Email) *</label>
+          <input id="loginEmail" type="email" class="form-control" placeholder="your@email.com" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">🔒 Password *</label>
+          <input id="loginPwd" type="password" class="form-control" placeholder="รหัสผ่าน" />
+        </div>
+        <button class="btn btn-primary btn-full mt-3" id="loginBtn" onclick="doLogin()">เข้าสู่ระบบ</button>
+        <div class="text-center mt-4">
+          <p class="text-sm text-muted">ยังไม่มีบัญชี?</p>
+          <button class="btn btn-ghost btn-sm mt-2" onclick="navigate('register')">📝 ลงทะเบียนสมาชิกใหม่</button>
+        </div>
+      </div>
+    </div>
+  </div><!-- end page-login -->
+
+  <!-- ========== PAGE: REGISTER ========== -->
+  <div class="page" id="page-register">
+    <div class="container" style="max-width:600px;padding-top:48px;padding-bottom:48px;">
+      <div class="glass-card">
+        <div class="text-center mb-4">
+          <h1 class="text-2xl font-extrabold">📝 ลงทะเบียนสมาชิก</h1>
+          <p class="text-sm text-muted mt-2">กรอกข้อมูลให้ครบถ้วน ช่องที่มี * จำเป็นต้องกรอก</p>
+        </div>
+        <div id="registerAlert"></div>
+
+        <!-- Avatar upload -->
+        <div class="text-center">
+          <div class="avatar-upload" id="regAvatarWrap" onclick="document.getElementById('regPhotoInput').click()">
+            <img id="regAvatarPreview" src="" style="display:none;width:100%;height:100%;object-fit:cover;" />
+            <span class="avatar-placeholder" id="regAvatarPlaceholder">📷</span>
+          </div>
+          <input type="file" id="regPhotoInput" accept="image/*" onchange="previewRegPhoto(this)" />
+          <p class="text-xs text-muted">คลิกเพื่ออัปโหลดรูปภาพ (ไม่บังคับ)</p>
+        </div>
+
+        <div class="grid-2 mt-3">
+          <div class="form-group">
+            <label class="form-label">📧 UserID (Email) *</label>
+            <input id="regEmail" type="email" class="form-control" placeholder="your@email.com" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">🔒 Password *</label>
+            <input id="regPwd" type="password" class="form-control" placeholder="รหัสผ่าน" />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">คำนำหน้า *</label>
+            <select id="regPreName" class="form-control">
+              <option value="">-- เลือก --</option>
+              <option value="นาย">นาย</option>
+              <option value="นาง">นาง</option>
+              <option value="นางสาว">นางสาว</option>
+              <option value="พระ">พระ</option>
+              <option value="สามเณร">สามเณร</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">ชื่อ *</label>
+            <input id="regName" type="text" class="form-control" placeholder="ชื่อ" />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">นามสกุล *</label>
+            <input id="regLastName" type="text" class="form-control" placeholder="นามสกุล" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">ชื่อเล่น</label>
+            <input id="regNickName" type="text" class="form-control" placeholder="ชื่อเล่น" />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">📅 วันเกิด (dd/mm/yyyy)</label>
+            <input id="regBirthday" type="text" class="form-control" placeholder="25/12/2000" maxlength="10" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">🏛️ แผนก</label>
+            <select id="regDept" class="form-control">
+              <option value="">-- เลือกแผนก --</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Level</label>
+            <input type="text" class="form-control" value="New" disabled />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Role</label>
+            <input type="text" class="form-control" value="User" disabled />
+          </div>
+        </div>
+
+        <div class="flex gap-3 mt-4">
+          <button class="btn btn-ghost" onclick="navigate('login')">← กลับ</button>
+          <button class="btn btn-primary" style="flex:1" onclick="doRegister()">ลงทะเบียน</button>
+        </div>
+      </div>
+    </div>
+  </div><!-- end page-register -->
+
+  <!-- ========== PAGE: USER ========== -->
+  <div class="page" id="page-user">
+    <div class="container" style="padding-top:32px;padding-bottom:48px;">
+      <div class="flex items-center justify-between mb-4" style="flex-wrap:wrap;gap:16px;">
+        <div>
+          <h1 class="text-2xl font-extrabold">สวัสดี <span id="userGreetName" class="text-accent"></span> 🙏</h1>
+          <p class="text-sm text-muted" id="userDeptBadge"></p>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="openProfileModal()">👤 ดูโปรไฟล์</button>
+      </div>
+
+      <!-- BoonPoint Dashboard -->
+      <div id="userDashboard" class="grid-4 mb-4"></div>
+
+      <!-- Tabs -->
+      <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+        <button class="btn btn-primary btn-sm" id="uTabGoodness" onclick="showUserTab('goodness')">🌍 ความดีสากล</button>
+        <button class="btn btn-ghost btn-sm" id="uTabActivity" onclick="showUserTab('activity')">🎪 กิจกรรม</button>
+        <button class="btn btn-ghost btn-sm" id="uTabQuiz" onclick="showUserTab('quiz')">📖 ผลสอบ</button>
+        <button class="btn btn-accent btn-sm" onclick="openGoodnessModal()">➕ บันทึกความดีวันนี้</button>
+      </div>
+
+      <div id="userTabContent"></div>
+    </div>
+  </div><!-- end page-user -->
+
+  <!-- ========== PAGE: STAFF ========== -->
+  <div class="page" id="page-staff">
+    <div class="container" style="padding-top:32px;padding-bottom:48px;">
+      <div class="flex items-center justify-between mb-4" style="flex-wrap:wrap;gap:16px;">
+        <div>
+          <h1 class="text-2xl font-extrabold">🏛️ หน้าเจ้าหน้าที่</h1>
+          <p class="text-sm text-muted" id="staffDeptLabel"></p>
+        </div>
+      </div>
+
+      <!-- Staff Tabs -->
+      <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+        <button class="btn btn-primary btn-sm" id="sTabUsers" onclick="showStaffTab('users')">👥 สมาชิกแผนก</button>
+        <button class="btn btn-ghost btn-sm" id="sTabActivity" onclick="showStaffTab('activity')">📋 ลงทะเบียนกิจกรรม</button>
+        <button class="btn btn-ghost btn-sm" id="sTabQuiz" onclick="showStaffTab('quiz')">📖 ทำข้อสอบ</button>
+        <button class="btn btn-ghost btn-sm" id="sTabMyDash" onclick="showStaffTab('mydash')">📊 Dashboard ของฉัน</button>
+        <button class="btn btn-accent btn-sm" onclick="openGoodnessModal()">➕ ความดีวันนี้</button>
+      </div>
+      <div id="staffTabContent"></div>
+    </div>
+  </div><!-- end page-staff -->
+
+  <!-- ========== PAGE: ADMIN ========== -->
+  <div class="page" id="page-admin">
+    <div class="container" style="padding-top:32px;padding-bottom:48px;">
+      <div class="flex items-center justify-between mb-4" style="flex-wrap:wrap;gap:16px;">
+        <div>
+          <h1 class="text-2xl font-extrabold">⚙️ แผงผู้ดูแลระบบ</h1>
+          <p class="text-sm text-muted">จัดการข้อมูลทั้งหมดของระบบ Volunteer OS V1</p>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="openProfileModal()">👤 โปรไฟล์</button>
+      </div>
+
+      <!-- Admin Tabs -->
+      <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+        <button class="btn btn-primary btn-sm" id="aTabUsers" onclick="showAdminTab('users')">👥 สมาชิกทั้งหมด</button>
+        <button class="btn btn-ghost btn-sm" id="aTabActivity" onclick="showAdminTab('activity')">📋 กิจกรรม</button>
+        <button class="btn btn-ghost btn-sm" id="aTabQuiz" onclick="showAdminTab('quiz')">📖 ข้อสอบ</button>
+        <button class="btn btn-ghost btn-sm" id="aTabRegAc" onclick="showAdminTab('regac')">✅ ลงทะเบียนกิจกรรม</button>
+        <button class="btn btn-ghost btn-sm" id="aTabDoQuiz" onclick="showAdminTab('doquiz')">✏️ ทำข้อสอบ</button>
+        <button class="btn btn-accent btn-sm" onclick="openGoodnessModal()">➕ ความดีวันนี้</button>
+      </div>
+      <div id="adminTabContent"></div>
+    </div>
+  </div><!-- end page-admin -->
+
+  <!-- ========== PAGE: REWARD ========== -->
+  <div class="page" id="page-reward">
+    <div class="container" style="padding-top:48px;padding-bottom:48px;">
+      <div class="text-center mb-4">
+        <h1 class="text-3xl font-extrabold">🎁 Reward Center</h1>
+        <p class="section-subtitle">นำ BoonPoint มาแลกรางวัลสุดพิเศษ · การสั่งสมบุญนำสุขมาให้</p>
+      </div>
+      <div class="grid-4">
+        <div class="reward-card">
+          <img src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&h=200&fit=crop" class="reward-img" alt="Tablet" />
+          <div class="reward-body">
+            <div class="reward-points">⭐ 5,000</div>
+            <div class="reward-title">Tablet</div>
+            <p class="text-xs text-muted mt-2">อุปกรณ์ดิจิทัลสำหรับการเรียนรู้ธรรมะออนไลน์</p>
+            <button class="btn btn-accent btn-sm btn-full mt-3" onclick="alertReward('Tablet','5,000')">แลกรางวัล</button>
+          </div>
+        </div>
+        <div class="reward-card">
+          <img src="https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=400&h=200&fit=crop" class="reward-img" alt="PowerBank" />
+          <div class="reward-body">
+            <div class="reward-points">⭐ 2,000</div>
+            <div class="reward-title">Power Bank</div>
+            <p class="text-xs text-muted mt-2">แบตเตอรี่สำรองสำหรับการใช้งานทุกวัน</p>
+            <button class="btn btn-accent btn-sm btn-full mt-3" onclick="alertReward('Power Bank','2,000')">แลกรางวัล</button>
+          </div>
+        </div>
+        <div class="reward-card">
+          <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=400&h=200&fit=crop" class="reward-img" alt="ปฏิบัติธรรม" />
+          <div class="reward-body">
+            <div class="reward-points">⭐ 1,000</div>
+            <div class="reward-title">กิฟวัลเชอร์ปฏิบัติธรรม</div>
+            <p class="text-xs text-muted mt-2">บัตรเข้าร่วมปฏิบัติธรรม ณ สถานปฏิบัติธรรม</p>
+            <button class="btn btn-accent btn-sm btn-full mt-3" onclick="alertReward('กิฟวัลเชอร์ปฏิบัติธรรม','1,000')">แลกรางวัล</button>
+          </div>
+        </div>
+        <div class="reward-card">
+          <img src="https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=200&fit=crop" class="reward-img" alt="เครื่องดื่ม" />
+          <div class="reward-body">
+            <div class="reward-points">⭐ 100</div>
+            <div class="reward-title">เครื่องดื่ม</div>
+            <p class="text-xs text-muted mt-2">เครื่องดื่มสุขภาพจากวัด</p>
+            <button class="btn btn-accent btn-sm btn-full mt-3" onclick="alertReward('เครื่องดื่ม','100')">แลกรางวัล</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card text-center mt-4" style="border-color:rgba(255,230,0,0.3);background:rgba(255,230,0,0.05);">
+        <p class="text-sm text-muted">🌟 BoonPoint ของคุณ: <span class="text-accent font-bold text-xl" id="rewardBoonPoint">—</span> คะแนน</p>
+        <p class="text-xs text-muted mt-2">ติดต่อขอแลกรางวัลได้ที่ พระวัฒนา อคฺควฑฺฒโน | Line: Wattana072</p>
+      </div>
+    </div>
+  </div><!-- end page-reward -->
+
+  <!-- ========== PAGE: CONTACT ========== -->
+  <div class="page" id="page-contact">
+    <div class="container" style="max-width:540px;padding-top:48px;padding-bottom:48px;">
+      <div class="glass-card text-center glow-pulse">
+        <div style="font-size:4rem;margin-bottom:16px;">📿</div>
+        <h1 class="text-2xl font-extrabold mb-2">ติดต่อผู้ดูแลระบบ</h1>
+        <div style="background:rgba(255,230,0,0.08);border:1px solid rgba(255,230,0,0.25);border-radius:var(--radius-lg);padding:24px;margin:24px 0;">
+          <div style="font-size:1.3rem;font-weight:800;color:var(--c-accent);margin-bottom:4px;">พระวัฒนา อคฺควฑฺฒโน</div>
+          <div class="text-sm text-muted">ผู้พัฒนาระบบ Volunteer OS V1</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;text-align:left;">
+          <a href="tel:0624564524" style="display:flex;align-items:center;gap:14px;background:var(--c-glass-bg);padding:16px;border-radius:var(--radius-md);border:1px solid var(--c-glass-bd);text-decoration:none;color:inherit;transition:var(--transition);" onmouseover="this.style.borderColor='var(--c-blue-400)'" onmouseout="this.style.borderColor='var(--c-glass-bd)'">
+            <span style="font-size:1.5rem;">📞</span>
+            <div><div style="font-size:0.8rem;color:var(--c-text-secondary);">เบอร์โทรศัพท์</div><div style="font-weight:700;">062-456-4524</div></div>
+          </a>
+          <a href="mailto:wattana072@gmail.com" style="display:flex;align-items:center;gap:14px;background:var(--c-glass-bg);padding:16px;border-radius:var(--radius-md);border:1px solid var(--c-glass-bd);text-decoration:none;color:inherit;transition:var(--transition);" onmouseover="this.style.borderColor='var(--c-blue-400)'" onmouseout="this.style.borderColor='var(--c-glass-bd)'">
+            <span style="font-size:1.5rem;">✉️</span>
+            <div><div style="font-size:0.8rem;color:var(--c-text-secondary);">อีเมล</div><div style="font-weight:700;">wattana072@gmail.com</div></div>
+          </a>
+          <div style="display:flex;align-items:center;gap:14px;background:rgba(0,200,0,0.06);padding:16px;border-radius:var(--radius-md);border:1px solid rgba(0,200,0,0.2);">
+            <span style="font-size:1.5rem;">💬</span>
+            <div><div style="font-size:0.8rem;color:var(--c-text-secondary);">Line ID</div><div style="font-weight:700;color:#00e676;">Wattana072</div></div>
+          </div>
+        </div>
+        <button class="btn btn-ghost mt-4" onclick="navigate('home')">← กลับหน้าหลัก</button>
+      </div>
+    </div>
+  </div><!-- end page-contact -->
+
+</div><!-- end #app -->
+
+<!-- ============================================================
+     MODALS
+============================================================ -->
+<!-- Profile Modal -->
+<div class="modal-overlay" id="profileModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">👤 โปรไฟล์ของฉัน</span>
+      <button class="modal-close" onclick="closeModal('profileModal')">✕</button>
+    </div>
+    <div id="profileModalContent"></div>
+  </div>
+</div>
+
+<!-- Goodness Modal -->
+<div class="modal-overlay" id="goodnessModal">
+  <div class="modal" style="max-width:680px;">
+    <div class="modal-header">
+      <span class="modal-title">🌍 บันทึกความดีสากลประจำวัน</span>
+      <button class="modal-close" onclick="closeModal('goodnessModal')">✕</button>
+    </div>
+    <div id="goodnessAlert"></div>
+    <p class="text-xs text-muted mb-3">วันนี้: <span id="todayDate"></span> · ส่งได้วันละ 1 ครั้ง</p>
+    <div class="goodness-grid">
+      <div class="goodness-item">
+        <div class="goodness-item-title">🤲 ทาน (Giving)</div>
+        <label class="form-label">รูปภาพการทำทาน</label>
+        <input type="file" id="gGivingPhoto" accept="image/*" class="form-control" style="padding:8px;" onchange="previewPhoto(this,'gGivingPreview')" />
+        <img id="gGivingPreview" class="photo-preview hidden" />
+      </div>
+      <div class="goodness-item">
+        <div class="goodness-item-title">🪷 ศีล (Sila)</div>
+        <label class="form-label">เหตุการณ์ที่รักษาศีล</label>
+        <textarea id="gSilaText" class="form-control" placeholder="เขียนเหตุการณ์ที่ได้รักษาศีลวันนี้..." rows="3"></textarea>
+      </div>
+      <div class="goodness-item">
+        <div class="goodness-item-title">🧹 ทำความสะอาด (Clean)</div>
+        <label class="form-label">รูปภาพการทำความสะอาด</label>
+        <input type="file" id="gCleanPhoto" accept="image/*" class="form-control" style="padding:8px;" onchange="previewPhoto(this,'gCleanPreview')" />
+        <img id="gCleanPreview" class="photo-preview hidden" />
+      </div>
+      <div class="goodness-item">
+        <div class="goodness-item-title">📦 จัดระเบียบ (Array)</div>
+        <label class="form-label">รูปภาพการจัดระเบียบ</label>
+        <input type="file" id="gArrayPhoto" accept="image/*" class="form-control" style="padding:8px;" onchange="previewPhoto(this,'gArrayPreview')" />
+        <img id="gArrayPreview" class="photo-preview hidden" />
+      </div>
+      <div class="goodness-item">
+        <div class="goodness-item-title">🗣️ วาจาสุภาพ (Polite)</div>
+        <label class="form-label">คำพูดที่สุภาพที่พูดวันนี้</label>
+        <textarea id="gPoliteText" class="form-control" placeholder="พูดว่าอะไรไปวันนี้..." rows="3"></textarea>
+      </div>
+      <div class="goodness-item">
+        <div class="goodness-item-title">⏰ ตรงเวลา (Ontime)</div>
+        <label class="form-label">ทำอะไรได้ตรงเวลา</label>
+        <textarea id="gOntimeText" class="form-control" placeholder="ตรงเวลาในเรื่องอะไร..." rows="3"></textarea>
+      </div>
+      <div class="goodness-item" style="grid-column:span 2;">
+        <div class="goodness-item-title">🧘 นั่งสมาธิ (Meditate)</div>
+        <label class="form-label">รูปภาพการนั่งสมาธิ</label>
+        <input type="file" id="gMeditatePhoto" accept="image/*" class="form-control" style="padding:8px;" onchange="previewPhoto(this,'gMeditatePreview')" />
+        <img id="gMeditatePreview" class="photo-preview hidden" />
+      </div>
+    </div>
+    <button class="btn btn-accent btn-full mt-4" onclick="submitGoodness()">✨ ส่งความดีประจำวัน</button>
+  </div>
+</div>
+
+<!-- Activity Register Modal -->
+<div class="modal-overlay" id="actRegModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">📋 ลงทะเบียนผู้ร่วมกิจกรรม</span>
+      <button class="modal-close" onclick="closeModal('actRegModal')">✕</button>
+    </div>
+    <div id="actRegAlert"></div>
+    <div class="form-group">
+      <label class="form-label">เลือกกิจกรรม</label>
+      <select id="actRegSelect" class="form-control" onchange="onActivitySelect()"></select>
+    </div>
+    <div id="actRegDetail" class="glass-card hidden" style="padding:14px;margin-bottom:14px;"></div>
+    <div class="form-group">
+      <label class="form-label">UserID ผู้เข้าร่วม (Email)</label>
+      <input id="actRegUserID" type="email" class="form-control" placeholder="user@email.com" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Comment (ไม่บังคับ)</label>
+      <textarea id="actRegComment" class="form-control" placeholder="ข้อความเพิ่มเติม..." rows="2"></textarea>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="submitActivityReg()">✅ บันทึกการร่วมกิจกรรม</button>
+  </div>
+</div>
+
+<!-- Quiz Modal -->
+<div class="modal-overlay" id="quizModal">
+  <div class="modal" style="max-width:640px;">
+    <div class="modal-header">
+      <span class="modal-title" id="quizModalTitle">📖 แบบทดสอบ</span>
+      <button class="modal-close" onclick="closeModal('quizModal')">✕</button>
+    </div>
+    <div id="quizModalContent"></div>
+  </div>
+</div>
+
+<!-- User Detail Modal (for staff/admin) -->
+<div class="modal-overlay" id="userDetailModal">
+  <div class="modal" style="max-width:600px;">
+    <div class="modal-header">
+      <span class="modal-title">👤 ข้อมูลสมาชิก</span>
+      <button class="modal-close" onclick="closeModal('userDetailModal')">✕</button>
+    </div>
+    <div id="userDetailContent"></div>
+  </div>
+</div>
+
+<!-- Activity Form Modal (Admin) -->
+<div class="modal-overlay" id="actFormModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="actFormTitle">➕ เพิ่มกิจกรรม</span>
+      <button class="modal-close" onclick="closeModal('actFormModal')">✕</button>
+    </div>
+    <div id="actFormAlert"></div>
+    <input type="hidden" id="actFormId" />
+    <div class="form-group">
+      <label class="form-label">ประเภทกิจกรรม</label>
+      <select id="actFormType" class="form-control">
+        <option value="ปฏิบัติธรรม">ปฏิบัติธรรม</option>
+        <option value="พัฒนาตัวเอง">พัฒนาตัวเอง</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">ชื่อกิจกรรม</label>
+      <input id="actFormTitle2" type="text" class="form-control" placeholder="ชื่อกิจกรรม" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">รายละเอียด</label>
+      <textarea id="actFormDesc" class="form-control" rows="3" placeholder="รายละเอียดกิจกรรม"></textarea>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label class="form-label">วันเริ่มต้น</label>
+        <input id="actFormStart" type="text" class="form-control" placeholder="dd/mm/yyyy" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">วันสิ้นสุด</label>
+        <input id="actFormEnd" type="text" class="form-control" placeholder="dd/mm/yyyy" />
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label class="form-label">BoonScore</label>
+        <input id="actFormScore" type="number" class="form-control" placeholder="คะแนน" min="0" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">เป้าหมายผู้ร่วมงาน</label>
+        <input id="actFormTarget" type="number" class="form-control" placeholder="จำนวน" min="0" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">ภาพประกอบกิจกรรม</label>
+      <input type="file" id="actFormPhoto" accept="image/*" class="form-control" style="padding:8px;" onchange="previewPhoto(this,'actFormPhotoPreview')" />
+      <img id="actFormPhotoPreview" class="photo-preview hidden" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">สถานะ</label>
+      <select id="actFormStatus" class="form-control">
+        <option value="Active">Active</option>
+        <option value="Inactive">Inactive</option>
+      </select>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="saveActivity()">💾 บันทึกกิจกรรม</button>
+  </div>
+</div>
+
+<!-- QuizSet Form Modal (Admin) -->
+<div class="modal-overlay" id="quizFormModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">➕ เพิ่มชุดข้อสอบ</span>
+      <button class="modal-close" onclick="closeModal('quizFormModal')">✕</button>
+    </div>
+    <div id="quizFormAlert"></div>
+    <div class="form-group">
+      <label class="form-label">ประเภทข้อสอบ</label>
+      <select id="qzFormType" class="form-control">
+        <option value="ศีล">ศีล</option>
+        <option value="สมาธิ">สมาธิ</option>
+        <option value="ความดีสากล">ความดีสากล</option>
+        <option value="พุทธประวัติ">พุทธประวัติ</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">ชื่อชุดข้อสอบ</label>
+      <input id="qzFormTitle" type="text" class="form-control" placeholder="ชื่อชุดข้อสอบ" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">คำอธิบาย</label>
+      <textarea id="qzFormDesc" class="form-control" rows="2" placeholder="คำอธิบาย"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">สถานะ</label>
+      <select id="qzFormStatus" class="form-control">
+        <option value="Active">Active</option>
+        <option value="Inactive">Inactive</option>
+      </select>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="saveQuizSet()">💾 บันทึกชุดข้อสอบ</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     JAVASCRIPT
+============================================================ -->
+<script>
+// ============================================================
+//  CONFIG — แก้ไข URL ของ GAS Web App ที่นี่
+// ============================================================
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyuyKfj6zF3BVhQrcWBEHPt00BhXV3XG0XgWr4Fzq6cpAxSyLO8FBc4hSQJtirlUcft/exec';
+// ^^^^^ แก้ไข YOUR_DEPLOYMENT_ID ด้วย Deployment ID จาก GAS
+
+// ============================================================
+//  STATE
+// ============================================================
+let currentUser = null;
+let allActivities = [];
+let allQuizSets = [];
+let allUsers = [];
+let departments = [];
+let quizState = { questions: [], answers: {}, currentIdx: 0, startTime: null, quizsetId: '', quizUserId: '' };
+
+// ============================================================
+//  INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('volunteerUser');
+  if (saved) try { currentUser = JSON.parse(saved); } catch(e) {}
+  updateNavbar();
+  navigate(location.hash ? location.hash.replace('#','') : 'home');
+  loadHomeDeptDashboard();
+  loadDepartments();
+  document.getElementById('todayDate').textContent = getTodayFormatted();
+  // Auto set birthday format hint
+  const bd = document.getElementById('regBirthday');
+  if(bd) bd.addEventListener('input', formatBirthdayInput);
+});
+
+// ============================================================
+//  NAVIGATION
+// ============================================================
+function navigate(page) {
+  const pages = ['home','login','register','user','staff','admin','reward','contact','profile'];
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById('page-' + page);
+  if (target) {
+    target.classList.add('active');
+    location.hash = page;
+  }
+  // Load page-specific data
+  if (page === 'user' && currentUser) loadUserPage();
+  if (page === 'staff' && currentUser) loadStaffPage();
+  if (page === 'admin' && currentUser) loadAdminPage();
+  if (page === 'reward') loadRewardBoonPoint();
+  if (page === 'register') loadDepartmentsIntoSelect();
+  closeMenu();
+}
+
+function updateNavbar() {
+  const isLoggedIn = !!currentUser;
+  const role = currentUser ? currentUser.Role : '';
+
+  document.getElementById('navLogin').style.display   = isLoggedIn ? 'none' : '';
+  document.getElementById('navLogout').style.display  = isLoggedIn ? '' : 'none';
+  document.getElementById('navAvatarWrap').style.display = isLoggedIn ? '' : 'none';
+  document.getElementById('navUser').style.display    = (isLoggedIn && role === 'User')  ? '' : 'none';
+  document.getElementById('navStaff').style.display   = (isLoggedIn && role === 'Staff') ? '' : 'none';
+  document.getElementById('navAdmin').style.display   = (isLoggedIn && role === 'Admin') ? '' : 'none';
+
+  if (isLoggedIn) {
+    const av = document.getElementById('navAvatar');
+    if (currentUser.PhotoUrl) {
+      av.innerHTML = `<img src="${currentUser.PhotoUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    } else {
+      av.textContent = (currentUser.Name||'U').charAt(0).toUpperCase();
+    }
+  }
+}
+
+function logout() {
+  currentUser = null;
+  localStorage.removeItem('volunteerUser');
+  updateNavbar();
+  navigate('home');
+  showToast('ออกจากระบบสำเร็จ', 'success');
+}
+
+function toggleMenu() {
+  document.getElementById('navLinks').classList.toggle('open');
+}
+function closeMenu() {
+  document.getElementById('navLinks').classList.remove('open');
+}
+
+// ============================================================
+//  API HELPER
+// ============================================================
+async function api(params) {
+  try {
+    if (params.action === 'login' || params.action === 'register' ||
+        params.action === 'updateUser' || params.action === 'deleteUser' ||
+        params.action === 'registerActivity' || params.action === 'submitGoodness' ||
+        params.action === 'submitQuiz' || params.action === 'upsertActivity' ||
+        params.action === 'deleteActivity' || params.action === 'upsertQuizSet' ||
+        params.action === 'deleteQuizSet' || params.action === 'uploadPhoto' ||
+        params.action === 'updateActivityComment' || params.action === 'setupSheets') {
+      // POST
+      const res = await fetch(GAS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(params)
+      });
+      return await res.json();
+    } else {
+      // GET
+      const qs = new URLSearchParams(params).toString();
+      const res = await fetch(GAS_URL + '?' + qs);
+      return await res.json();
+    }
+  } catch(e) {
+    return { error: e.message };
+  }
+}
+
+// ============================================================
+//  AUTH
+// ============================================================
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pwd   = document.getElementById('loginPwd').value.trim();
+  if (!email || !pwd) { showAlert('loginAlert', 'กรุณากรอกข้อมูลให้ครบ', 'error'); return; }
+  setLoading('loginBtn', true);
+  const res = await api({ action:'login', userID: email, password: pwd });
+  setLoading('loginBtn', false);
+  if (res.success) {
+    currentUser = res.user;
+    localStorage.setItem('volunteerUser', JSON.stringify(currentUser));
+    updateNavbar();
+    showToast('ยินดีต้อนรับ ' + (currentUser.NickName || currentUser.Name) + '!', 'success');
+    const role = currentUser.Role;
+    if      (role === 'Admin') navigate('admin');
+    else if (role === 'Staff') navigate('staff');
+    else                       navigate('user');
+  } else {
+    showAlert('loginAlert', res.message || 'เกิดข้อผิดพลาด', 'error');
+  }
+}
+
+async function doRegister() {
+  const email    = document.getElementById('regEmail').value.trim();
+  const pwd      = document.getElementById('regPwd').value.trim();
+  const preName  = document.getElementById('regPreName').value;
+  const name     = document.getElementById('regName').value.trim();
+  const lastName = document.getElementById('regLastName').value.trim();
+  const nickName = document.getElementById('regNickName').value.trim();
+  const birthday = document.getElementById('regBirthday').value.trim();
+  const dept     = document.getElementById('regDept').value;
+
+  if (!email||!pwd||!preName||!name||!lastName) {
+    showAlert('registerAlert','กรุณากรอกข้อมูล * ให้ครบ','error'); return;
+  }
+
+  const params = { action:'register', userID:email, password:pwd, preName, name, lastName, nickName, birthday, department:dept };
+
+  // Photo
+  const photoInput = document.getElementById('regPhotoInput');
+  if (photoInput.files[0]) {
+    const { base64, mime, filename } = await fileToBase64(photoInput.files[0]);
+    params.photoBase64 = base64; params.photoFilename = filename; params.photoMime = mime;
+  }
+
+  const res = await api(params);
+  if (res.success) {
+    showAlert('registerAlert', res.message, 'success');
+    showToast('ลงทะเบียนสำเร็จ! กรุณาเข้าสู่ระบบ', 'success');
+    setTimeout(() => navigate('login'), 1500);
+  } else {
+    showAlert('registerAlert', res.message || 'เกิดข้อผิดพลาด', 'error');
+  }
+}
+
+// ============================================================
+//  HOME
+// ============================================================
+async function loadHomeDeptDashboard() {
+  const wrap = document.getElementById('homeDeptDashboard');
+  const users = await api({ action:'getAllUsers' });
+  const depts = await api({ action:'getDepartments' });
+  if (!users.success || !depts.success) { wrap.innerHTML = '<p class="text-muted">ไม่สามารถโหลดข้อมูลได้</p>'; return; }
+  wrap.innerHTML = '';
+  depts.departments.forEach(dept => {
+    const count = users.users.filter(u => u.Department === dept).length;
+    const card = document.createElement('div');
+    card.className = 'stat-card';
+    card.innerHTML = `
+      <div class="stat-icon">🏛️</div>
+      <div class="stat-value">${count}</div>
+      <div class="stat-label">${dept}</div>
+    `;
+    wrap.appendChild(card);
+  });
+}
+
+// ============================================================
+//  USER PAGE
+// ============================================================
+async function loadUserPage() {
+  const u = currentUser;
+  document.getElementById('userGreetName').textContent = u.NickName || u.Name;
+  document.getElementById('userDeptBadge').innerHTML = `<span class="dept-tag">${u.Department || 'ไม่ระบุแผนก'}</span>`;
+
+  const dash = await api({ action:'getDashboard', userID: u.UserID });
+  if (dash.success) renderUserDashboard(dash.dashboard);
+  showUserTab('goodness');
+}
+
+function renderUserDashboard(d) {
+  document.getElementById('userDashboard').innerHTML = `
+    <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-value">${d.totalBoonPoint}</div><div class="stat-label">BoonPoint รวม</div></div>
+    <div class="stat-card"><div class="stat-icon">🎪</div><div class="stat-value">${d.activityBoon}</div><div class="stat-label">จากกิจกรรม</div></div>
+    <div class="stat-card"><div class="stat-icon">🌍</div><div class="stat-value">${d.goodnessBoon}</div><div class="stat-label">ความดีสากล</div></div>
+    <div class="stat-card"><div class="stat-icon">📖</div><div class="stat-value">${d.quizBoon}</div><div class="stat-label">จากข้อสอบ</div></div>
+  `;
+}
+
+async function showUserTab(tab) {
+  ['goodness','activity','quiz'].forEach(t => {
+    const btn = document.getElementById('uTab'+capitalize(t));
+    if(btn) btn.className = 'btn btn-sm ' + (t===tab ? 'btn-primary':'btn-ghost');
+  });
+  const content = document.getElementById('userTabContent');
+  content.innerHTML = '<div class="spinner"></div>';
+
+  if (tab === 'goodness') {
+    const res = await api({ action:'getUserGoodness', userID: currentUser.UserID });
+    if (!res.success) { content.innerHTML = renderAlert(res.message,'error'); return; }
+    if (!res.goodness.length) { content.innerHTML = renderAlert('ยังไม่มีข้อมูลความดีสากล — กด "บันทึกความดีวันนี้" เพื่อเริ่ม','info'); return; }
+    content.innerHTML = `
+      <div class="glass-card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>วันที่</th><th>ทาน</th><th>ศีล</th><th>สะอาด</th><th>ระเบียบ</th><th>วาจา</th><th>เวลา</th><th>สมาธิ</th><th>รวม</th></tr></thead>
+            <tbody>
+              ${res.goodness.map(g => `
+                <tr>
+                  <td>${g.DoDate}</td>
+                  <td>${g.GivingPoint==='1'?'✅':'—'}</td>
+                  <td>${g.SilaPoint==='1'?'✅':'—'}</td>
+                  <td>${g.CleanPoint==='1'?'✅':'—'}</td>
+                  <td>${g.ArrayPoint==='1'?'✅':'—'}</td>
+                  <td>${g.PolitePoint==='1'?'✅':'—'}</td>
+                  <td>${g.OntimePoint==='1'?'✅':'—'}</td>
+                  <td>${g.MeditatePoint==='1'?'✅':'—'}</td>
+                  <td><span class="badge badge-accent">${g.sumPoint}</span></td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+  } else if (tab === 'activity') {
+    const res = await api({ action:'getUserActivities', userID: currentUser.UserID });
+    if (!res.success) { content.innerHTML = renderAlert(res.message,'error'); return; }
+    if (!res.participations.length) { content.innerHTML = renderAlert('ยังไม่มีประวัติการร่วมกิจกรรม','info'); return; }
+    content.innerHTML = `
+      <div class="glass-card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>กิจกรรม</th><th>ประเภท</th><th>คะแนน</th><th>Comment</th><th></th></tr></thead>
+            <tbody>
+              ${res.participations.map(p => `
+                <tr>
+                  <td><strong>${p.activityTitle||p.acId}</strong></td>
+                  <td><span class="badge badge-blue">${p.activityType}</span></td>
+                  <td><span class="badge badge-accent">+${p.boonScore}</span></td>
+                  <td>${p.comment || '<span class="text-muted text-xs">—</span>'}</td>
+                  <td>
+                    <button class="btn btn-ghost btn-sm" onclick="openCommentModal('${p.participationID}','${(p.comment||'').replace(/'/g,"\\'")}')">✏️</button>
+                  </td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+  } else if (tab === 'quiz') {
+    const res = await api({ action:'getUserQuizzes', userID: currentUser.UserID });
+    if (!res.success) { content.innerHTML = renderAlert(res.message,'error'); return; }
+    if (!res.quizzes.length) { content.innerHTML = renderAlert('ยังไม่มีประวัติการสอบ','info'); return; }
+    content.innerHTML = `
+      <div class="glass-card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>ชุดข้อสอบ</th><th>คะแนน</th><th>เต็ม</th><th>%</th></tr></thead>
+            <tbody>
+              ${res.quizzes.map(q => {
+                const pct = q.maxScore>0 ? Math.round(q.boonScore/q.maxScore*100) : 0;
+                return `<tr>
+                  <td>${q.quizTitle||q.quizsetId}</td>
+                  <td><span class="badge badge-accent">${q.boonScore}</span></td>
+                  <td>${q.maxScore}</td>
+                  <td>${pct}%</td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+  }
+}
+
+// ============================================================
+//  STAFF PAGE
+// ============================================================
+async function loadStaffPage() {
+  document.getElementById('staffDeptLabel').innerHTML = currentUser.Department ?
+    `<span class="dept-tag">${currentUser.Department}</span>` : '';
+  showStaffTab('users');
+}
+
+async function showStaffTab(tab) {
+  ['users','activity','quiz','mydash'].forEach(t => {
+    const key = {users:'Users',activity:'Activity',quiz:'Quiz',mydash:'MyDash'}[t];
+    const btn = document.getElementById('sTab'+key);
+    if(btn) btn.className = 'btn btn-sm ' + (t===tab?'btn-primary':'btn-ghost');
+  });
+  const content = document.getElementById('staffTabContent');
+  content.innerHTML = '<div class="spinner"></div>';
+
+  if (tab === 'users') {
+    const res = await api({ action:'getDeptUsers', department: currentUser.Department });
+    if (!res.success) { content.innerHTML = renderAlert(res.message,'error'); return; }
+    content.innerHTML = renderUserListTable(res.users, 'staff');
+  } else if (tab === 'activity') {
+    content.innerHTML = `
+      <div class="glass-card text-center">
+        <p class="mb-3 text-muted">เลือกกิจกรรมและกรอก UserID เพื่อบันทึกการร่วมกิจกรรม</p>
+        <button class="btn btn-primary" onclick="openActRegModal()">📋 ลงทะเบียนผู้ร่วมกิจกรรม</button>
+      </div>`;
+    loadActivities();
+  } else if (tab === 'quiz') {
+    content.innerHTML = `
+      <div class="glass-card text-center">
+        <p class="mb-3 text-muted">เลือกชุดข้อสอบและกรอก UserID เพื่อเริ่มทำข้อสอบ</p>
+        <button class="btn btn-primary" onclick="openQuizStartModal()">📖 เริ่มทำข้อสอบ</button>
+      </div>`;
+  } else if (tab === 'mydash') {
+    const dash = await api({ action:'getDashboard', userID: currentUser.UserID });
+    if (!dash.success) { content.innerHTML = renderAlert(dash.message,'error'); return; }
+    content.innerHTML = `
+      <div class="grid-4 mb-4">
+        <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-value">${dash.dashboard.totalBoonPoint}</div><div class="stat-label">BoonPoint รวม</div></div>
+        <div class="stat-card"><div class="stat-icon">🎪</div><div class="stat-value">${dash.dashboard.activityBoon}</div><div class="stat-label">จากกิจกรรม</div></div>
+        <div class="stat-card"><div class="stat-icon">🌍</div><div class="stat-value">${dash.dashboard.goodnessBoon}</div><div class="stat-label">ความดีสากล</div></div>
+        <div class="stat-card"><div class="stat-icon">📖</div><div class="stat-value">${dash.dashboard.quizBoon}</div><div class="stat-label">จากข้อสอบ</div></div>
+      </div>`;
+  }
+}
+
+// ============================================================
+//  ADMIN PAGE
+// ============================================================
+async function loadAdminPage() {
+  showAdminTab('users');
+}
+
+async function showAdminTab(tab) {
+  ['users','activity','quiz','regac','doquiz'].forEach(t => {
+    const key = {users:'Users',activity:'Activity',quiz:'Quiz',regac:'RegAc',doquiz:'DoQuiz'}[t];
+    const btn = document.getElementById('aTab'+key);
+    if(btn) btn.className = 'btn btn-sm ' + (t===tab?'btn-primary':'btn-ghost');
+  });
+  const content = document.getElementById('adminTabContent');
+  content.innerHTML = '<div class="spinner"></div>';
+
+  if (tab === 'users') {
+    const res = await api({ action:'getAllUsers' });
+    if (!res.success) { content.innerHTML = renderAlert(res.message,'error'); return; }
+    content.innerHTML = renderUserListTable(res.users, 'admin');
+  } else if (tab === 'activity') {
+    const res = await api({ action:'getActivities' });
+    if (!res.success) { content.innerHTML = renderAlert(res.message,'error'); return; }
+    allActivities = res.activities;
+    content.innerHTML = `
+      <div class="flex justify-between items-center mb-3">
+        <h3 style="font-weight:700;">กิจกรรมทั้งหมด (${allActivities.length})</h3>
+        <button class="btn btn-primary btn-sm" onclick="openActFormModal()">➕ เพิ่มกิจกรรม</button>
+      </div>
+      <div class="table-wrap glass-card" style="padding:0;">
+        <table>
+          <thead><tr><th>ID</th><th>ชื่อกิจกรรม</th><th>ประเภท</th><th>คะแนน</th><th>ผู้เข้าร่วม</th><th>สถานะ</th><th></th></tr></thead>
+          <tbody>
+            ${allActivities.map(a => `
+              <tr>
+                <td class="text-xs">${a.AcID}</td>
+                <td><strong>${a.Title}</strong></td>
+                <td><span class="badge badge-blue">${a.AcType}</span></td>
+                <td><span class="badge badge-accent">+${a.BoonScore}</span></td>
+                <td>${a.ParticipantCount}/${a.TargetCount||'∞'}</td>
+                <td><span class="badge ${a.Status==='Active'?'badge-green':'badge-red'}">${a.Status}</span></td>
+                <td style="white-space:nowrap;">
+                  <button class="btn btn-ghost btn-sm" onclick='openActFormModal(${JSON.stringify(a)})'>✏️</button>
+                  <button class="btn btn-danger btn-sm" onclick="deleteActivity('${a.AcID}')">🗑️</button>
+                </td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`;
+  } else if (tab === 'quiz') {
+    const res = await api({ action:'getQuizSets' });
+    if (!res.success) { content.innerHTML = renderAlert(res.message,'error'); return; }
+    allQuizSets = res.quizSets;
+    content.innerHTML = `
+      <div class="flex justify-between items-center mb-3">
+        <h3 style="font-weight:700;">ชุดข้อสอบทั้งหมด (${allQuizSets.length})</h3>
+        <button class="btn btn-primary btn-sm" onclick="openQuizFormModal()">➕ เพิ่มชุดข้อสอบ</button>
+      </div>
+      <div class="table-wrap glass-card" style="padding:0;">
+        <table>
+          <thead><tr><th>ID</th><th>ชื่อชุดข้อสอบ</th><th>ประเภท</th><th>สถานะ</th><th></th></tr></thead>
+          <tbody>
+            ${allQuizSets.map(q => `
+              <tr>
+                <td class="text-xs">${q.QuizsetID}</td>
+                <td><strong>${q.Title}</strong></td>
+                <td><span class="badge badge-blue">${q.QuizType}</span></td>
+                <td><span class="badge ${q.Status==='Active'?'badge-green':'badge-red'}">${q.Status}</span></td>
+                <td>
+                  <button class="btn btn-danger btn-sm" onclick="deleteQuizSet('${q.QuizsetID}')">🗑️</button>
+                </td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`;
+  } else if (tab === 'regac') {
+    content.innerHTML = `
+      <div class="glass-card text-center">
+        <p class="mb-3 text-muted">บันทึกการร่วมกิจกรรมของสมาชิก</p>
+        <button class="btn btn-primary" onclick="openActRegModal()">📋 ลงทะเบียนผู้ร่วมกิจกรรม</button>
+      </div>`;
+    loadActivities();
+  } else if (tab === 'doquiz') {
+    content.innerHTML = `
+      <div class="glass-card text-center">
+        <p class="mb-3 text-muted">เริ่มทำแบบทดสอบธรรมะ</p>
+        <button class="btn btn-primary" onclick="openQuizStartModal()">📖 เริ่มทำข้อสอบ</button>
+      </div>`;
+  }
+}
+
+// ============================================================
+//  RENDER HELPERS
+// ============================================================
+function renderUserListTable(users, role) {
+  if (!users.length) return renderAlert('ไม่พบสมาชิก','info');
+  return `
+    <div class="glass-card" style="padding:0;overflow:hidden;">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ภาพ</th><th>ชื่อ-สกุล</th><th>ชื่อเล่น</th><th>แผนก</th><th>Level</th><th>Role</th><th></th></tr></thead>
+          <tbody>
+            ${users.map(u => `
+              <tr>
+                <td>
+                  ${u.PhotoUrl
+                    ? `<img src="${u.PhotoUrl}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">`
+                    : `<div style="width:36px;height:36px;border-radius:50%;background:var(--c-blue-700);display:inline-flex;align-items:center;justify-content:center;font-weight:700;">${(u.Name||'U').charAt(0)}</div>`}
+                </td>
+                <td><strong>${u.PreName}${u.Name} ${u.LastName}</strong><div class="text-xs text-muted">${u.UserID}</div></td>
+                <td>${u.NickName||'—'}</td>
+                <td><span class="dept-tag">${u.Department||'—'}</span></td>
+                <td><span class="badge badge-blue">${u.Level}</span></td>
+                <td><span class="badge ${u.Role==='Admin'?'badge-accent':u.Role==='Staff'?'badge-green':'badge-blue'}">${u.Role}</span></td>
+                <td>
+                  <button class="btn btn-ghost btn-sm" onclick='openUserDetailModal(${JSON.stringify(u)})'>👁️</button>
+                  ${role==='admin' ? `<button class="btn btn-danger btn-sm" onclick="deleteUserAdmin('${u.UserID}')">🗑️</button>` : ''}
+                </td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+// ============================================================
+//  PROFILE MODAL
+// ============================================================
+function openProfileModal() {
+  const u = currentUser;
+  if (!u) return;
+  document.getElementById('profileModalContent').innerHTML = `
+    <div class="text-center mb-4">
+      ${u.PhotoUrl
+        ? `<img src="${u.PhotoUrl}" style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:2px solid var(--c-blue-400);margin-bottom:12px;">`
+        : `<div style="width:90px;height:90px;border-radius:50%;background:var(--c-blue-700);display:inline-flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;margin-bottom:12px;">${(u.Name||'U').charAt(0)}</div>`}
+      <div style="font-size:1.1rem;font-weight:800;">${u.PreName}${u.Name} ${u.LastName}</div>
+      <div class="text-sm text-muted">${u.UserID}</div>
+      <div style="margin-top:8px;">
+        <span class="badge badge-blue">${u.Department||'ไม่ระบุแผนก'}</span>
+        <span class="badge badge-accent" style="margin-left:6px;">${u.Level}</span>
+        <span class="badge badge-green" style="margin-left:6px;">${u.Role}</span>
+      </div>
+    </div>
+    <div id="profileEditAlert"></div>
+    <div class="grid-2">
+      <div class="form-group"><label class="form-label">คำนำหน้า</label>
+        <select id="editPreName" class="form-control">
+          <option ${u.PreName==='นาย'?'selected':''}>นาย</option>
+          <option ${u.PreName==='นาง'?'selected':''}>นาง</option>
+          <option ${u.PreName==='นางสาว'?'selected':''}>นางสาว</option>
+          <option ${u.PreName==='พระ'?'selected':''}>พระ</option>
+          <option ${u.PreName==='สามเณร'?'selected':''}>สามเณร</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">ชื่อ</label><input id="editName" class="form-control" value="${u.Name}"></div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group"><label class="form-label">นามสกุล</label><input id="editLastName" class="form-control" value="${u.LastName}"></div>
+      <div class="form-group"><label class="form-label">ชื่อเล่น</label><input id="editNickName" class="form-control" value="${u.NickName||''}"></div>
+    </div>
+    <div class="form-group"><label class="form-label">วันเกิด</label><input id="editBirthday" class="form-control" value="${u.Birthday||''}" placeholder="dd/mm/yyyy"></div>
+    <div class="form-group"><label class="form-label">รหัสผ่านใหม่ (เว้นว่างถ้าไม่เปลี่ยน)</label><input id="editPwd" type="password" class="form-control" placeholder="รหัสผ่านใหม่"></div>
+    <div class="flex gap-3 mt-3">
+      <button class="btn btn-ghost" onclick="closeModal('profileModal')">ยกเลิก</button>
+      <button class="btn btn-primary" style="flex:1" onclick="saveProfile()">💾 บันทึก</button>
+    </div>
+  `;
+  openModal('profileModal');
+}
+
+async function saveProfile() {
+  const params = {
+    action: 'updateUser',
+    userID: currentUser.UserID,
+    preName: document.getElementById('editPreName').value,
+    name: document.getElementById('editName').value,
+    lastName: document.getElementById('editLastName').value,
+    nickName: document.getElementById('editNickName').value,
+    birthday: document.getElementById('editBirthday').value
+  };
+  const pwd = document.getElementById('editPwd').value;
+  if (pwd) params.password = pwd;
+  const res = await api(params);
+  if (res.success) {
+    currentUser.Name = params.name; currentUser.LastName = params.lastName;
+    currentUser.NickName = params.nickName; currentUser.PreName = params.preName;
+    localStorage.setItem('volunteerUser', JSON.stringify(currentUser));
+    showToast('บันทึกโปรไฟล์สำเร็จ','success');
+    closeModal('profileModal');
+  } else {
+    showAlert('profileEditAlert', res.message, 'error');
+  }
+}
+
+// ============================================================
+//  GOODNESS MODAL
+// ============================================================
+function openGoodnessModal() {
+  if (!currentUser) { navigate('login'); return; }
+  clearGoodnessForm();
+  document.getElementById('todayDate').textContent = getTodayFormatted();
+  openModal('goodnessModal');
+}
+
+function clearGoodnessForm() {
+  ['gSilaText','gPoliteText','gOntimeText'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.value='';
+  });
+  ['gGivingPhoto','gCleanPhoto','gArrayPhoto','gMeditatePhoto'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.value='';
+  });
+  ['gGivingPreview','gCleanPreview','gArrayPreview','gMeditatePreview'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.classList.add('hidden');
+  });
+  document.getElementById('goodnessAlert').innerHTML='';
+}
+
+async function submitGoodness() {
+  const params = {
+    action: 'submitGoodness',
+    userID: currentUser.UserID,
+    doDate: getTodayFormatted(),
+    silaText: document.getElementById('gSilaText').value.trim(),
+    politeText: document.getElementById('gPoliteText').value.trim(),
+    ontimeText: document.getElementById('gOntimeText').value.trim()
+  };
+
+  for (const [fieldBase, inputId] of [
+    ['giving','gGivingPhoto'],['clean','gCleanPhoto'],
+    ['array','gArrayPhoto'],['meditate','gMeditatePhoto']
+  ]) {
+    const input = document.getElementById(inputId);
+    if (input && input.files[0]) {
+      const { base64, mime, filename } = await fileToBase64(input.files[0]);
+      params[fieldBase+'PhotoBase64'] = base64;
+      params[fieldBase+'PhotoFilename'] = filename;
+      params[fieldBase+'PhotoMime'] = mime;
+    }
+  }
+
+  const res = await api(params);
+  if (res.success) {
+    showAlert('goodnessAlert', `✅ ${res.message}`, 'success');
+    showToast(res.message, 'success');
+    setTimeout(() => {
+      closeModal('goodnessModal');
+      if (currentUser.Role === 'User') showUserTab('goodness');
+    }, 1800);
+  } else {
+    showAlert('goodnessAlert', res.message, 'error');
+  }
+}
+
+// ============================================================
+//  ACTIVITY REGISTER
+// ============================================================
+async function loadActivities() {
+  const res = await api({ action:'getActivities', activeOnly:'true' });
+  if (res.success) allActivities = res.activities;
+}
+
+async function openActRegModal() {
+  document.getElementById('actRegAlert').innerHTML = '';
+  document.getElementById('actRegUserID').value = '';
+  document.getElementById('actRegComment').value = '';
+  document.getElementById('actRegDetail').classList.add('hidden');
+  const sel = document.getElementById('actRegSelect');
+  sel.innerHTML = '<option value="">-- เลือกกิจกรรม --</option>';
+  const res = await api({ action:'getActivities', activeOnly:'true' });
+  if (res.success) {
+    allActivities = res.activities;
+    res.activities.forEach(a => {
+      const opt = document.createElement('option');
+      opt.value = a.AcID; opt.textContent = a.Title + ' (+'+a.BoonScore+' pt)';
+      sel.appendChild(opt);
+    });
+  }
+  openModal('actRegModal');
+}
+
+function onActivitySelect() {
+  const acId = document.getElementById('actRegSelect').value;
+  const detail = document.getElementById('actRegDetail');
+  if (!acId) { detail.classList.add('hidden'); return; }
+  const act = allActivities.find(a => a.AcID === acId);
+  if (!act) { detail.classList.add('hidden'); return; }
+  detail.classList.remove('hidden');
+  detail.innerHTML = `
+    <div class="flex gap-3 items-center">
+      ${act.AcPhotoUrl ? `<img src="${act.AcPhotoUrl}" style="width:60px;height:60px;object-fit:cover;border-radius:var(--radius-md);">` : ''}
+      <div>
+        <div style="font-weight:700;">${act.Title}</div>
+        <div class="text-xs text-muted">${act.Description}</div>
+        <div class="mt-2"><span class="badge badge-accent">+${act.BoonScore} BoonPoint</span></div>
+      </div>
+    </div>`;
+}
+
+async function submitActivityReg() {
+  const acId = document.getElementById('actRegSelect').value;
+  const userID = document.getElementById('actRegUserID').value.trim();
+  const comment = document.getElementById('actRegComment').value.trim();
+  if (!acId || !userID) { showAlert('actRegAlert','กรุณาเลือกกิจกรรมและกรอก UserID','error'); return; }
+  const res = await api({ action:'registerActivity', userID, acId, comment });
+  if (res.success) {
+    showAlert('actRegAlert', `✅ ${res.message}`, 'success');
+    showToast(res.message, 'success');
+    document.getElementById('actRegUserID').value='';
+    document.getElementById('actRegComment').value='';
+  } else {
+    showAlert('actRegAlert', res.message, 'error');
+  }
+}
+
+// ============================================================
+//  QUIZ
+// ============================================================
+async function openQuizStartModal() {
+  const sel_ui = `
+    <div id="quizStartAlert"></div>
+    <div class="form-group">
+      <label class="form-label">เลือกชุดข้อสอบ</label>
+      <select id="quizSetSelect" class="form-control">
+        <option value="">-- เลือก --</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">UserID ผู้ทำข้อสอบ (Email)</label>
+      <input id="quizUserID" type="email" class="form-control" placeholder="user@email.com" value="${currentUser?currentUser.UserID:''}" />
+    </div>
+    <button class="btn btn-primary btn-full" onclick="startQuiz()">▶️ เริ่มทำข้อสอบ</button>
+  `;
+  document.getElementById('quizModalTitle').textContent = '📖 เลือกชุดข้อสอบ';
+  document.getElementById('quizModalContent').innerHTML = '<div class="spinner"></div>';
+  openModal('quizModal');
+
+  const res = await api({ action:'getQuizSets' });
+  const activeQuiz = (res.quizSets||[]).filter(q => q.Status==='Active');
+  // Also check which ones user already completed
+  let doneIds = [];
+  if (currentUser) {
+    const doneRes = await api({ action:'getUserQuizzes', userID: currentUser.UserID });
+    if (doneRes.success) doneIds = doneRes.quizzes.map(q => q.quizsetId);
+  }
+
+  document.getElementById('quizModalContent').innerHTML = sel_ui;
+  const sel = document.getElementById('quizSetSelect');
+  activeQuiz.forEach(q => {
+    const done = doneIds.includes(q.QuizsetID);
+    const opt = document.createElement('option');
+    opt.value = q.QuizsetID;
+    opt.textContent = `[${q.QuizType}] ${q.Title}` + (done ? ' ✅ (ทำแล้ว)' : '');
+    if (done) opt.style.color='#888';
+    sel.appendChild(opt);
+  });
+}
+
+async function startQuiz() {
+  const quizsetId = document.getElementById('quizSetSelect').value;
+  const userId    = document.getElementById('quizUserID').value.trim();
+  if (!quizsetId || !userId) { showAlert('quizStartAlert','กรุณาเลือกชุดข้อสอบและกรอก UserID','error'); return; }
+
+  // Check already done
+  const doneRes = await api({ action:'getUserQuizzes', userID: userId });
+  if (doneRes.success && doneRes.quizzes.find(q => q.quizsetId === quizsetId)) {
+    showAlert('quizStartAlert','UserID นี้เคยทำข้อสอบชุดนี้แล้ว (ทำได้ครั้งเดียว)','error'); return;
+  }
+
+  document.getElementById('quizModalContent').innerHTML = '<div class="spinner"></div>';
+  const res = await api({ action:'getQuestions', quizsetID: quizsetId });
+  if (!res.success || !res.questions.length) {
+    document.getElementById('quizModalContent').innerHTML = renderAlert('ไม่พบคำถามในชุดข้อสอบนี้','error'); return;
+  }
+
+  quizState = { questions: res.questions, answers: {}, currentIdx: 0, startTime: Date.now(), quizsetId, quizUserId: userId };
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
+  const { questions, currentIdx, answers } = quizState;
+  const q = questions[currentIdx];
+  const total = questions.length;
+  const pct = Math.round((currentIdx/total)*100);
+
+  document.getElementById('quizModalTitle').textContent = `📖 ข้อ ${currentIdx+1} / ${total}`;
+  const selected = answers[q.QuestionID] || '';
+
+  document.getElementById('quizModalContent').innerHTML = `
+    <div class="mb-3">
+      <div class="flex justify-between mb-1">
+        <span class="text-xs text-muted">ความคืบหน้า</span>
+        <span class="text-xs text-accent font-bold">${currentIdx}/${total}</span>
+      </div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="glass-card mb-4" style="padding:18px;">
+      <p style="font-weight:700;line-height:1.6;">${q.Number}. ${q.QuestionText}</p>
+    </div>
+    ${['Choice1','Choice2','Choice3','Choice4'].map(c => q[c] ? `
+      <button class="quiz-option ${selected===q[c]?'selected':''}" onclick="selectAnswer('${q.QuestionID}','${q[c].replace(/'/g,"\\'")}')">
+        ${q[c]}
+      </button>` : '').join('')}
+    <div class="flex gap-3 mt-4">
+      ${currentIdx > 0 ? `<button class="btn btn-ghost" onclick="prevQuestion()">← ก่อนหน้า</button>` : ''}
+      ${currentIdx < total-1
+        ? `<button class="btn btn-primary" style="flex:1" onclick="nextQuestion()">ถัดไป →</button>`
+        : `<button class="btn btn-accent" style="flex:1" onclick="finishQuiz()">✅ ส่งคำตอบ</button>`
+      }
+    </div>
+    <p class="text-xs text-muted text-center mt-3">ตอบแล้ว ${Object.keys(quizState.answers).length} / ${total} ข้อ</p>
+  `;
+}
+
+function selectAnswer(qid, choice) {
+  quizState.answers[qid] = choice;
+  renderQuizQuestion();
+}
+function nextQuestion() {
+  if (quizState.currentIdx < quizState.questions.length - 1) { quizState.currentIdx++; renderQuizQuestion(); }
+}
+function prevQuestion() {
+  if (quizState.currentIdx > 0) { quizState.currentIdx--; renderQuizQuestion(); }
+}
+
+async function finishQuiz() {
+  const unanswered = quizState.questions.filter(q => !quizState.answers[q.QuestionID]).length;
+  if (unanswered > 0) {
+    if (!confirm(`ยังตอบไม่ครบ ${unanswered} ข้อ ต้องการส่งคำตอบเลยไหม?`)) return;
+  }
+  const duration = Math.round((Date.now() - quizState.startTime) / 1000);
+  document.getElementById('quizModalContent').innerHTML = '<div class="spinner"></div>';
+  const res = await api({
+    action: 'submitQuiz',
+    userID: quizState.quizUserId,
+    quizsetId: quizState.quizsetId,
+    answers: quizState.answers,
+    duration
+  });
+  if (res.success) {
+    const pct = res.maxScore>0 ? Math.round(res.boonScore/res.maxScore*100) : 0;
+    document.getElementById('quizModalContent').innerHTML = `
+      <div class="text-center">
+        <div style="font-size:4rem;margin-bottom:12px;">${pct>=80?'🎉':pct>=50?'👍':'😊'}</div>
+        <h2 class="text-2xl font-extrabold" style="color:var(--c-accent);">${pct>=80?'ยอดเยี่ยม!':pct>=50?'ดีมาก!':'ขอบคุณที่ร่วมสอบ!'}</h2>
+        <p class="text-lg mt-2">${res.message}</p>
+        <div class="glass-card text-center mt-4" style="padding:24px;">
+          <div style="font-size:3rem;font-weight:900;color:var(--c-accent);">${res.boonScore}/${res.maxScore}</div>
+          <div class="text-muted">คะแนนที่ได้ (${pct}%)</div>
+          <div class="progress-bar-wrap mt-3"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
+        </div>
+        <button class="btn btn-primary mt-4 btn-full" onclick="closeModal('quizModal')">เสร็จสิ้น ✓</button>
+      </div>`;
+    showToast(res.message, 'success');
+  } else {
+    document.getElementById('quizModalContent').innerHTML = renderAlert(res.message,'error') + `<button class="btn btn-ghost mt-3 btn-full" onclick="closeModal('quizModal')">ปิด</button>`;
+  }
+}
+
+// ============================================================
+//  USER DETAIL MODAL
+// ============================================================
+async function openUserDetailModal(user) {
+  document.getElementById('userDetailContent').innerHTML = '<div class="spinner"></div>';
+  openModal('userDetailModal');
+  const dash = await api({ action:'getDashboard', userID: user.UserID });
+  document.getElementById('userDetailContent').innerHTML = `
+    <div class="text-center mb-4">
+      ${user.PhotoUrl
+        ? `<img src="${user.PhotoUrl}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--c-blue-400);">`
+        : `<div style="width:80px;height:80px;border-radius:50%;background:var(--c-blue-700);display:inline-flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;">${(user.Name||'U').charAt(0)}</div>`}
+      <div style="font-size:1.1rem;font-weight:800;margin-top:10px;">${user.PreName}${user.Name} ${user.LastName}</div>
+      <div class="text-sm text-muted">${user.UserID}</div>
+      <div style="margin-top:8px;">
+        <span class="dept-tag">${user.Department||'—'}</span>
+        <span class="badge badge-accent" style="margin-left:6px;">${user.Level}</span>
+        <span class="badge badge-green" style="margin-left:6px;">${user.Role}</span>
+      </div>
+    </div>
+    ${dash.success ? `
+      <div class="grid-4">
+        <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-value">${dash.dashboard.totalBoonPoint}</div><div class="stat-label">รวม</div></div>
+        <div class="stat-card"><div class="stat-icon">🎪</div><div class="stat-value">${dash.dashboard.activityBoon}</div><div class="stat-label">กิจกรรม</div></div>
+        <div class="stat-card"><div class="stat-icon">🌍</div><div class="stat-value">${dash.dashboard.goodnessBoon}</div><div class="stat-label">ความดี</div></div>
+        <div class="stat-card"><div class="stat-icon">📖</div><div class="stat-value">${dash.dashboard.quizBoon}</div><div class="stat-label">สอบ</div></div>
+      </div>` : ''}
+    <div class="mt-3 text-sm" style="color:var(--c-text-secondary);text-align:center;">
+      <div>เกิด: ${user.Birthday||'—'} &nbsp;|&nbsp; ชื่อเล่น: ${user.NickName||'—'}</div>
+    </div>
+  `;
+}
+
+// ============================================================
+//  ADMIN: Activity CRUD
+// ============================================================
+function openActFormModal(activity) {
+  document.getElementById('actFormAlert').innerHTML='';
+  document.getElementById('actFormPhotoPreview').classList.add('hidden');
+  if (activity && activity.AcID) {
+    document.getElementById('actFormTitle').textContent='✏️ แก้ไขกิจกรรม';
+    document.getElementById('actFormId').value = activity.AcID;
+    document.getElementById('actFormType').value = activity.AcType;
+    document.getElementById('actFormTitle2').value = activity.Title;
+    document.getElementById('actFormDesc').value = activity.Description;
+    document.getElementById('actFormStart').value = activity.Startdate;
+    document.getElementById('actFormEnd').value = activity.EndDate;
+    document.getElementById('actFormScore').value = activity.BoonScore;
+    document.getElementById('actFormTarget').value = activity.TargetCount;
+    document.getElementById('actFormStatus').value = activity.Status;
+    if (activity.AcPhotoUrl) {
+      const prev = document.getElementById('actFormPhotoPreview');
+      prev.src = activity.AcPhotoUrl; prev.classList.remove('hidden');
+    }
+  } else {
+    document.getElementById('actFormTitle').textContent='➕ เพิ่มกิจกรรม';
+    document.getElementById('actFormId').value='';
+    ['actFormTitle2','actFormDesc','actFormStart','actFormEnd','actFormScore','actFormTarget'].forEach(id => {
+      document.getElementById(id).value='';
+    });
+    document.getElementById('actFormType').value='ปฏิบัติธรรม';
+    document.getElementById('actFormStatus').value='Active';
+  }
+  openModal('actFormModal');
+}
+
+async function saveActivity() {
+  const params = {
+    action: 'upsertActivity',
+    acID: document.getElementById('actFormId').value,
+    acType: document.getElementById('actFormType').value,
+    title: document.getElementById('actFormTitle2').value,
+    description: document.getElementById('actFormDesc').value,
+    startdate: document.getElementById('actFormStart').value,
+    endDate: document.getElementById('actFormEnd').value,
+    boonScore: document.getElementById('actFormScore').value,
+    targetCount: document.getElementById('actFormTarget').value,
+    status: document.getElementById('actFormStatus').value
+  };
+  const photoInput = document.getElementById('actFormPhoto');
+  if (photoInput.files[0]) {
+    const { base64, mime, filename } = await fileToBase64(photoInput.files[0]);
+    params.photoBase64 = base64; params.photoFilename = filename; params.photoMime = mime;
+  }
+  const res = await api(params);
+  if (res.success) {
+    showToast(res.message,'success');
+    closeModal('actFormModal');
+    showAdminTab('activity');
+  } else {
+    showAlert('actFormAlert', res.message, 'error');
+  }
+}
+
+async function deleteActivity(acID) {
+  if (!confirm('ยืนยันการลบกิจกรรมนี้?')) return;
+  const res = await api({ action:'deleteActivity', acID });
+  if (res.success) { showToast(res.message,'success'); showAdminTab('activity'); }
+  else showToast(res.message,'error');
+}
+
+async function deleteUserAdmin(userID) {
+  if (!confirm('ยืนยันการลบสมาชิก ' + userID + '?')) return;
+  const res = await api({ action:'deleteUser', userID });
+  if (res.success) { showToast(res.message,'success'); showAdminTab('users'); }
+  else showToast(res.message,'error');
+}
+
+// ============================================================
+//  ADMIN: Quiz CRUD
+// ============================================================
+function openQuizFormModal() {
+  document.getElementById('quizFormAlert').innerHTML='';
+  document.getElementById('qzFormTitle').value='';
+  document.getElementById('qzFormDesc').value='';
+  openModal('quizFormModal');
+}
+
+async function saveQuizSet() {
+  const params = {
+    action: 'upsertQuizSet',
+    quizType: document.getElementById('qzFormType').value,
+    title: document.getElementById('qzFormTitle').value,
+    description: document.getElementById('qzFormDesc').value,
+    status: document.getElementById('qzFormStatus').value
+  };
+  const res = await api(params);
+  if (res.success) {
+    showToast(res.message,'success');
+    closeModal('quizFormModal');
+    showAdminTab('quiz');
+  } else {
+    showAlert('quizFormAlert', res.message, 'error');
+  }
+}
+
+async function deleteQuizSet(quizsetID) {
+  if (!confirm('ยืนยันการลบชุดข้อสอบ?')) return;
+  const res = await api({ action:'deleteQuizSet', quizsetID });
+  if (res.success) { showToast(res.message,'success'); showAdminTab('quiz'); }
+  else showToast(res.message,'error');
+}
+
+// ============================================================
+//  COMMENT MODAL
+// ============================================================
+function openCommentModal(participationID, currentComment) {
+  const newComment = prompt('แก้ไข Comment:', currentComment);
+  if (newComment === null) return;
+  api({ action:'updateActivityComment', participationID, comment: newComment }).then(res => {
+    if (res.success) { showToast(res.message,'success'); showUserTab('activity'); }
+    else showToast(res.message,'error');
+  });
+}
+
+// ============================================================
+//  REWARD
+// ============================================================
+async function loadRewardBoonPoint() {
+  if (!currentUser) { document.getElementById('rewardBoonPoint').textContent='—'; return; }
+  const dash = await api({ action:'getDashboard', userID: currentUser.UserID });
+  if (dash.success) document.getElementById('rewardBoonPoint').textContent = dash.dashboard.totalBoonPoint;
+}
+
+function alertReward(name, pts) {
+  if (!currentUser) { navigate('login'); return; }
+  alert(`🎁 ขอแลกรางวัล: ${name}\nต้องใช้: ${pts} BoonPoint\n\nกรุณาติดต่อ: พระวัฒนา อคฺควฑฺฒโน\nLine: Wattana072\nTel: 062-456-4524`);
+}
+
+// ============================================================
+//  UTILITIES
+// ============================================================
+function openModal(id)  { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('active');
+  });
+});
+
+function showToast(msg, type='info') {
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.innerHTML = (type==='success'?'✅ ':type==='error'?'❌ ':'ℹ️ ') + msg;
+  c.appendChild(t);
+  setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity 0.3s'; setTimeout(()=>t.remove(),300); }, 3500);
+}
+
+function showAlert(containerId, msg, type='info') {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = renderAlert(msg, type);
+}
+
+function renderAlert(msg, type) {
+  const icons = {success:'✅',error:'❌',info:'ℹ️'};
+  return `<div class="alert alert-${type}">${icons[type]||'ℹ️'} ${msg}</div>`;
+}
+
+function setLoading(btnId, isLoading) {
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  btn.disabled = isLoading;
+  btn.textContent = isLoading ? '⏳ กำลังโหลด...' : 'เข้าสู่ระบบ';
+}
+
+function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+function getTodayFormatted() {
+  const d = new Date();
+  return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();
+}
+
+async function loadDepartments() {
+  const res = await api({ action:'getDepartments' });
+  if (res.success) departments = res.departments;
+}
+
+async function loadDepartmentsIntoSelect() {
+  if (!departments.length) {
+    const res = await api({ action:'getDepartments' });
+    if (res.success) departments = res.departments;
+  }
+  const sel = document.getElementById('regDept');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">-- เลือกแผนก --</option>';
+  departments.forEach(d => {
+    const opt = document.createElement('option');
+    opt.value = d; opt.textContent = d;
+    sel.appendChild(opt);
+  });
+}
+
+function formatBirthdayInput(e) {
+  let v = e.target.value.replace(/[^0-9]/g,'');
+  if (v.length > 2 && v.length <= 4) v = v.slice(0,2)+'/'+v.slice(2);
+  else if (v.length > 4) v = v.slice(0,2)+'/'+v.slice(2,4)+'/'+v.slice(4,8);
+  e.target.value = v;
+}
+
+function previewRegPhoto(input) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = document.getElementById('regAvatarPreview');
+    const placeholder = document.getElementById('regAvatarPlaceholder');
+    img.src = e.target.result; img.style.display='block';
+    if(placeholder) placeholder.style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function previewPhoto(input, previewId) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = document.getElementById(previewId);
+    img.src = e.target.result; img.classList.remove('hidden');
+  };
+  reader.readAsDataURL(file);
+}
+
+async function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => resolve({ base64: e.target.result, mime: file.type, filename: file.name });
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// Keyboard: Escape closes modals
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+  }
+});
+</script>
+
 </body>
 </html>
