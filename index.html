@@ -2355,17 +2355,29 @@ function scanQrFrame() {
   qrAnimFrame = requestAnimationFrame(scanQrFrame);
 }
 
-function onQrDetected(data) {
+function onQrDetected(rawData) {
   // Vibrate for haptic feedback (mobile)
   if (navigator.vibrate) navigator.vibrate([80, 40, 80]);
 
+  // ---- ดึงเฉพาะ Email จาก QR data ----
+  // ตัด prefix: https://, http://, mailto:
+  let data = rawData.trim()
+    .replace(/^https?:\/\//i, '')
+    .replace(/^mailto:/i, '')
+    .trim();
+
+  // หา pattern email ใน string
+  const emailRegex = /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/;
+  const match = data.match(emailRegex);
+  if (match) data = match[0];
+
   // Fill UserID input
   const input = document.getElementById('actRegUserID');
-  input.value = data.trim();
+  input.value = data;
 
   // Visual feedback
   const status = document.getElementById('qrStatus');
-  if (status) status.textContent = '✅ พบ QR Code: ' + data.trim();
+  if (status) status.textContent = '✅ พบ: ' + data;
 
   // Animate input
   input.style.animation = 'qrSuccess 0.4s ease';
@@ -2377,7 +2389,7 @@ function onQrDetected(data) {
     input.style.boxShadow = '';
   }, 1500);
 
-  showToast('✅ Scan สำเร็จ! ' + data.trim(), 'success');
+  showToast('✅ Scan สำเร็จ! ' + data, 'success');
 
   // Auto-close scanner after 600ms
   setTimeout(() => stopQrScanner(), 600);
