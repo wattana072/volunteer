@@ -759,6 +759,10 @@
             <input id="regBirthday" type="text" class="form-control" placeholder="25/12/2000" maxlength="10" />
           </div>
           <div class="form-group">
+            <label class="form-label">📱 เบอร์โทรศัพท์</label>
+            <input id="regPhone" type="tel" class="form-control" placeholder="0812345678" />
+          </div>
+          <div class="form-group">
             <label class="form-label">🏛️ แผนก</label>
             <select id="regDept" class="form-control">
               <option value="">-- เลือกแผนก --</option>
@@ -1175,7 +1179,7 @@
 // ============================================================
 //  CONFIG — แก้ไข URL ของ GAS Web App ที่นี่
 // ============================================================
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbwjNZjXi5sSLDd0T-wna38kdwqQSLDhrTq3PGDoii_PX0paY7gVoCGUr4Qd40PR9ObCjA/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwCHQtKKWBkh6_7Fl1fEH35-9BMnrRfX2qfYJe177T6WpfJwwlOx81mHIJ1pRJJ0iTK/exec';
 // ^^^^^ แก้ไข YOUR_DEPLOYMENT_ID ด้วย Deployment ID จาก GAS
 
 // ============================================================
@@ -1339,6 +1343,7 @@ async function doRegister() {
   const lastName = document.getElementById('regLastName').value.trim();
   const nickName = document.getElementById('regNickName').value.trim();
   const birthday = document.getElementById('regBirthday').value.trim();
+  const phone = document.getElementById('regPhone').value.trim();
   const dept     = document.getElementById('regDept').value;
 
   if (!email||!pwd||!preName||!name||!lastName) {
@@ -1723,6 +1728,7 @@ function openProfileModal() {
       <div class="form-group"><label class="form-label">ชื่อเล่น</label><input id="editNickName" class="form-control" value="${u.NickName||''}"></div>
     </div>
     <div class="form-group"><label class="form-label">วันเกิด</label><input id="editBirthday" class="form-control" value="${u.Birthday||''}" placeholder="dd/mm/yyyy"></div>
+    <div class="form-group"><label class="form-label">เบอร์โทรศัพท์</label><input id="editPhone" class="form-control" value="${u.Phone||''}"></div>
     <div class="form-group"><label class="form-label">รหัสผ่านใหม่ (เว้นว่างถ้าไม่เปลี่ยน)</label><input id="editPwd" type="password" class="form-control" placeholder="รหัสผ่านใหม่"></div>
     <div class="flex gap-3 mt-3">
       <button class="btn btn-ghost" onclick="closeModal('profileModal')">ยกเลิก</button>
@@ -1740,7 +1746,8 @@ async function saveProfile() {
     name: document.getElementById('editName').value,
     lastName: document.getElementById('editLastName').value,
     nickName: document.getElementById('editNickName').value,
-    birthday: document.getElementById('editBirthday').value
+    birthday: document.getElementById('editBirthday').value,
+    phone: document.getElementById('editPhone').value
   };
   const pwd = document.getElementById('editPwd').value;
   if (pwd) params.password = pwd;
@@ -2153,7 +2160,7 @@ async function openUserDetailModal(user) {
           <div class="stat-card"><div class="stat-icon">📖</div><div class="stat-value">${dash.dashboard.quizBoon}</div><div class="stat-label">สอบ</div></div>
         </div>` : ''}
       <div class="mt-3 text-sm" style="color:var(--c-text-secondary);text-align:center;">
-        <div>เกิด: ${user.Birthday||'—'} &nbsp;|&nbsp; ชื่อเล่น: ${user.NickName||'—'}</div>
+        <div>เกิด: ${user.Birthday||'—'} &nbsp;|&nbsp; ชื่อเล่น: ${user.NickName||'—'}</div><div class="mt-1">📱 ${user.Phone||'—'}</div>
       </div>
       <div class="mt-4 text-center">
         <button class="btn btn-ghost btn-sm" onclick="toggleUserDetailEdit(true)">✏️ แก้ไขข้อมูล</button>
@@ -2197,6 +2204,7 @@ async function openUserDetailModal(user) {
           </select>
         </div>
         <div class="form-group"><label class="form-label">วันเกิด</label><input id="sEditBirthday" class="form-control" value="${user.Birthday||''}"></div>
+        <div class="form-group"><label class="form-label">เบอร์โทรศัพท์</label><input id="sEditPhone" class="form-control" value="${user.Phone||''}"></div>
       </div>
       <div class="form-group"><label class="form-label">รหัสผ่านใหม่ (เว้นว่างถ้าไม่เปลี่ยน)</label><input id="sEditPwd" type="password" class="form-control" placeholder="รหัสผ่านใหม่"></div>
       <div class="flex gap-3 mt-4">
@@ -2231,7 +2239,8 @@ async function saveStaffUserEdit() {
     department: document.getElementById('sEditDept').value,
     role: document.getElementById('sEditRole').value,
     level: document.getElementById('sEditLevel').value,
-    birthday: document.getElementById('sEditBirthday').value
+    birthday: document.getElementById('sEditBirthday').value,
+    phone: document.getElementById('sEditPhone').value
   };
   const pwd = document.getElementById('sEditPwd').value;
   if (pwd) params.password = pwd;
