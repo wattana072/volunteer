@@ -805,6 +805,7 @@
         <button class="btn btn-ghost btn-sm" id="uTabQuiz" onclick="showUserTab('quiz')">📖 ผลสอบ</button>
         <button class="btn btn-accent btn-sm" onclick="openGoodnessModal()">➕ บันทึกความดีวันนี้</button>
         <button class="btn btn-primary btn-sm" onclick="scanToQuiz()">📷 Scan ตอบปัญหาธรรมะ</button>
+        <button class="btn btn-primary btn-sm" onclick="scanToActivity()">📷 Scan ร่วมกิจกรรม</button>
       </div>
 
       <div id="userTabContent"></div>
@@ -1865,6 +1866,35 @@ async function submitActivityReg() {
 }
 
 // ============================================================
+//  ACTIVITY SCAN
+// ============================================================
+async function scanToActivity() {
+  if (!currentUser) { showToast('กรุณาเข้าสู่ระบบก่อน', 'error'); return; }
+  window.qrTargetInputId = 'DIRECT_ACTIVITY';
+  const wrap = document.getElementById('qrScannerModal');
+  wrap.style.display = 'flex';
+  await startQrScanner();
+}
+
+async function registerActivityDirect(acId) {
+  if (!currentUser) return;
+  showGlobalLoader();
+  try {
+    const res = await api({ action:'registerActivity', userID: currentUser.UserID, acId: acId, comment: 'Scan QR' });
+    if (res.success) {
+      showToast(res.message || 'ลงทะเบียนเรียบร้อย', 'success');
+      loadUserDashboard();
+    } else {
+      showToast(res.message || 'ไม่สามารถลงทะเบียนได้', 'error');
+    }
+  } catch(e) {
+    showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
+  } finally {
+    hideGlobalLoader();
+  }
+}
+
+// ============================================================
 //  QUIZ
 // ============================================================
 async function scanToQuiz() {
@@ -2439,6 +2469,14 @@ function scanQrFrame() {
 function onQrDetected(rawData) {
   // Vibrate for haptic feedback (mobile)
   if (navigator.vibrate) navigator.vibrate([80, 40, 80]);
+
+  if (window.qrTargetInputId === 'DIRECT_ACTIVITY') {
+    const acId = rawData.trim();
+    stopQrScanner();
+    showToast('✅ Scan สำเร็จ! กำลังลงทะเบียน...', 'info');
+    registerActivityDirect(acId);
+    return;
+  }
 
   if (window.qrTargetInputId === 'DIRECT_QUIZ') {
     const quizsetId = rawData.trim();
