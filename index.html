@@ -2658,6 +2658,38 @@ document.addEventListener('keydown', e => {
     document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
   }
 });
+
+async function openActParticipantsModal(acId) {
+  document.getElementById('actPartsContent').innerHTML = '<div class="spinner"></div>';
+  openModal('actPartsModal');
+  const res = await api({ action: 'getActivityParticipants', acId: acId });
+  if (res.success) {
+    if (!res.participants || res.participants.length === 0) {
+      document.getElementById('actPartsContent').innerHTML = renderAlert('ยังไม่มีสมาชิกมาร่วมกิจกรรมนี้', 'info');
+      return;
+    }
+    const html = `
+      <div class="text-center mb-3 text-sm font-bold" style="color:var(--c-blue);">ยอดผู้เข้าร่วม: ${res.participants.length} คน</div>
+      <div class="grid gap-2">
+        ${res.participants.map(p => `
+          <div class="glass-card flex items-center" style="padding:10px; gap:12px; margin-bottom:8px;">
+            ${p.PhotoUrl
+              ? `<img src="${p.PhotoUrl}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">`
+              : `<div style="width:40px;height:40px;border-radius:50%;background:var(--c-blue-100);color:var(--c-blue-700);display:flex;align-items:center;justify-content:center;font-weight:700;">${(p.Name||'U').charAt(0)}</div>`}
+            <div style="flex:1;">
+              <div style="font-weight:700;">${p.Name}</div>
+              <div class="text-xs text-muted">${p.Department} | 🕒 ${new Date(p.Timestamp).toLocaleString('th-TH')}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    document.getElementById('actPartsContent').innerHTML = html;
+  } else {
+    document.getElementById('actPartsContent').innerHTML = renderAlert(res.message, 'error');
+  }
+}
+
 </script>
 
 
