@@ -1171,7 +1171,7 @@
 // ============================================================
 //  CONFIG — แก้ไข URL ของ GAS Web App ที่นี่
 // ============================================================
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbyuyKfj6zF3BVhQrcWBEHPt00BhXV3XG0XgWr4Fzq6cpAxSyLO8FBc4hSQJtirlUcft/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbypqvYUdcCjyn6Pk9bASGXHjn68OffAtSjN_YyTlMZPr3eXwDzFfTu-3W4P5Et1mgD_/exec';
 // ^^^^^ แก้ไข YOUR_DEPLOYMENT_ID ด้วย Deployment ID จาก GAS
 
 // ============================================================
@@ -1279,7 +1279,7 @@ async function api(params) {
         params.action === 'submitQuiz' || params.action === 'upsertActivity' ||
         params.action === 'deleteActivity' || params.action === 'upsertQuizSet' ||
         params.action === 'deleteQuizSet' || params.action === 'uploadPhoto' ||
-        params.action === 'updateActivityComment' || params.action === 'setupSheets') {
+        params.action === 'updateActivityComment' || params.action === 'setupSheets' || params.action === 'printMemberCards') {
       // POST
       showGlobalLoader();
       try {
