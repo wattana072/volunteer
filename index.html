@@ -2412,11 +2412,16 @@ function renderAlert(msg, type) {
   return `<div class="alert alert-${type}">${icons[type]||'ℹ️'} ${msg}</div>`;
 }
 
-function setLoading(btnId, isLoading) {
+function setLoading(btnId, isLoading, defaultText = 'ตกลง') {
   const btn = document.getElementById(btnId);
   if (!btn) return;
   btn.disabled = isLoading;
-  btn.textContent = isLoading ? '⏳ กำลังโหลด...' : 'เข้าสู่ระบบ';
+  if (isLoading) {
+    if (!btn.dataset.origText) btn.dataset.origText = btn.textContent;
+    btn.textContent = '⏳ กำลังโหลด...';
+  } else {
+    btn.textContent = btn.dataset.origText || defaultText;
+  }
 }
 
 function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
@@ -2900,7 +2905,7 @@ async function submitPrintCards() {
     document.getElementById('printAlert').innerHTML = renderAlert('✅ สร้างไฟล์สำเร็จ!', 'success');
     window.open(res.url, '_blank');
   } else {
-    document.getElementById('printAlert').innerHTML = renderAlert('❌ ' + res.message, 'error');
+    document.getElementById('printAlert').innerHTML = renderAlert('❌ ' + (res.message || res.error || 'เกิดข้อผิดพลาด'), 'error');
   }
 }
 
