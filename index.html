@@ -1641,7 +1641,7 @@ function renderUserListTable(users, role) {
     <div class="glass-card" style="padding:0;overflow:hidden;">
       <div class="table-wrap">
         <table>
-          <thead><tr><th>ภาพ</th><th>ชื่อ-สกุล</th><th>ชื่อเล่น</th><th>แผนก</th><th>Level</th><th>Role</th><th></th></tr></thead>
+          <thead><tr><th>ภาพ</th><th>ชื่อ-สกุล</th><th>ชื่อเล่น</th><th>แผนก</th><th>Level</th><th>Role</th><th style="text-align:center;">BP</th></tr></thead>
           <tbody>
             ${users.map(u => `
               <tr>
@@ -1655,9 +1655,9 @@ function renderUserListTable(users, role) {
                 <td><span class="dept-tag">${u.Department||'—'}</span></td>
                 <td><span class="badge badge-blue">${u.Level}</span></td>
                 <td><span class="badge ${u.Role==='Admin'?'badge-accent':u.Role==='Staff'?'badge-green':'badge-blue'}">${u.Role}</span></td>
-                <td>
-                  <button class="btn btn-ghost btn-sm" onclick='openUserDetailModal(${JSON.stringify(u)})'>👁️</button>
-                  ${role==='admin' ? `<button class="btn btn-danger btn-sm" onclick="deleteUserAdmin('${u.UserID}')">🗑️</button>` : ''}
+                <td style="text-align:center; vertical-align:middle;">
+                  <div style="font-weight:800; color:var(--c-blue-600); font-size:1.1rem; display:inline-block;">${u.BP || 0}</div>
+                  ${role==='admin' ? `<button class="btn btn-danger btn-sm ml-2" onclick="deleteUserAdmin('${u.UserID}')">🗑️</button>` : ''}
                 </td>
               </tr>`).join('')}
           </tbody>
