@@ -1860,15 +1860,32 @@ async function submitActivityReg() {
 // ============================================================
 //  QUIZ
 // ============================================================
+function renderQuizQr(quizsetId) {
+  const wrap = document.getElementById('quizSetQrWrap');
+  if (!quizsetId) {
+    wrap.style.display = 'none';
+    wrap.innerHTML = '';
+    return;
+  }
+  wrap.style.display = 'block';
+  wrap.innerHTML = `
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(quizsetId)}" 
+         alt="Quiz QR Code" 
+         style="border-radius:12px; border: 4px solid var(--c-bg-2); box-shadow: var(--shadow-sm); width:160px; height:160px; display:inline-block;" />
+    <div class="text-xs text-muted mt-2">QR Code สำหรับ QuizSetID นี้</div>
+  `;
+}
+
 async function openQuizStartModal() {
   const sel_ui = `
     <div id="quizStartAlert"></div>
     <div class="form-group">
       <label class="form-label">เลือกชุดข้อสอบ</label>
-      <select id="quizSetSelect" class="form-control">
+      <select id="quizSetSelect" class="form-control" onchange="renderQuizQr(this.value)">
         <option value="">-- เลือก --</option>
       </select>
     </div>
+    <div id="quizSetQrWrap" class="text-center" style="display:none; margin: 16px 0;"></div>
     <div class="form-group">
       <label class="form-label">UserID ผู้ทำข้อสอบ (Email)</label>
       <div style="display:flex;gap:8px;">
