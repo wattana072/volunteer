@@ -516,7 +516,56 @@
       border-color: var(--c-blue) !important;
     }
     #qrScanBtn.scanning::after { content: ' ON'; font-size: 0.65rem; }
-    </style>
+    
+.pop-loader-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.6);
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.pop-loader-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+.pop-loader-box {
+  background: #fff;
+  padding: 32px 48px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  transform: scale(0.8);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.pop-loader-overlay.active .pop-loader-box {
+  transform: scale(1);
+}
+.pop-loader-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #007aff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 16px;
+}
+.pop-loader-icon {
+  font-size: 50px;
+  margin-bottom: 16px;
+  display: none;
+}
+.pop-loader-text {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+  </style>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 </head>
 <body>
@@ -759,10 +808,6 @@
             <input id="regBirthday" type="text" class="form-control" placeholder="25/12/2000" maxlength="10" />
           </div>
           <div class="form-group">
-            <label class="form-label">📱 เบอร์โทรศัพท์</label>
-            <input id="regPhone" type="tel" class="form-control" placeholder="0812345678" />
-          </div>
-          <div class="form-group">
             <label class="form-label">🏛️ แผนก</label>
             <select id="regDept" class="form-control">
               <option value="">-- เลือกแผนก --</option>
@@ -783,7 +828,7 @@
 
         <div class="flex gap-3 mt-4">
           <button class="btn btn-ghost" onclick="navigate('login')">← กลับ</button>
-          <button id="btnRegister" class="btn btn-primary" style="flex:1" onclick="doRegister()">ลงทะเบียน</button>
+          <button class="btn btn-primary" style="flex:1" onclick="doRegister()">ลงทะเบียน</button>
         </div>
       </div>
     </div>
@@ -1179,7 +1224,7 @@
 // ============================================================
 //  CONFIG — แก้ไข URL ของ GAS Web App ที่นี่
 // ============================================================
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbwv7iKokEEy2q_SaJKPfZ_YymHJL1t40ZyZqEhMxqsaclNaBU3-jEQK9maTyAneNo7C/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwjNZjXi5sSLDd0T-wna38kdwqQSLDhrTq3PGDoii_PX0paY7gVoCGUr4Qd40PR9ObCjA/exec';
 // ^^^^^ แก้ไข YOUR_DEPLOYMENT_ID ด้วย Deployment ID จาก GAS
 
 // ============================================================
@@ -1267,6 +1312,37 @@ function closeMenu() {
 // ============================================================
 //  GLOBAL LOADER
 // ============================================================
+
+function showPopLoader(msg = 'หยุดเป็นตัวสำเร็จ...') {
+  const overlay = document.getElementById('popLoader');
+  document.getElementById('popLoaderSpinner').style.display = 'block';
+  document.getElementById('popLoaderIcon').style.display = 'none';
+  document.getElementById('popLoaderText').innerText = msg;
+  overlay.classList.add('active');
+}
+
+function hidePopLoaderSuccess(msg = 'อนุโมทนาบุญ', duration = 2000) {
+  const overlay = document.getElementById('popLoader');
+  document.getElementById('popLoaderSpinner').style.display = 'none';
+  document.getElementById('popLoaderIcon').style.display = 'block';
+  document.getElementById('popLoaderIcon').innerText = '✅';
+  document.getElementById('popLoaderText').innerText = msg;
+  setTimeout(() => {
+    overlay.classList.remove('active');
+  }, duration);
+}
+
+function hidePopLoaderError(msg = 'เกิดข้อผิดพลาด') {
+  const overlay = document.getElementById('popLoader');
+  document.getElementById('popLoaderSpinner').style.display = 'none';
+  document.getElementById('popLoaderIcon').style.display = 'block';
+  document.getElementById('popLoaderIcon').innerText = '❌';
+  document.getElementById('popLoaderText').innerText = msg;
+  setTimeout(() => {
+    overlay.classList.remove('active');
+  }, 2500);
+}
+
 function showGlobalLoader() {
   const l = document.getElementById('globalLoader');
   if (l) { l.style.display = 'flex'; l.classList.add('active'); }
@@ -1350,7 +1426,6 @@ async function doRegister() {
     showAlert('registerAlert','กรุณากรอกข้อมูล * ให้ครบ','error'); return;
   }
 
-  setLoading('btnRegister', true, 'ลงทะเบียน');
   showGlobalLoader(); // Show earlier before photo processing
   try {
     const params = { action:'register', userID:email, password:pwd, preName, name, lastName, nickName, birthday, phone:phone, department:dept };
@@ -1729,7 +1804,6 @@ function openProfileModal() {
       <div class="form-group"><label class="form-label">ชื่อเล่น</label><input id="editNickName" class="form-control" value="${u.NickName||''}"></div>
     </div>
     <div class="form-group"><label class="form-label">วันเกิด</label><input id="editBirthday" class="form-control" value="${u.Birthday||''}" placeholder="dd/mm/yyyy"></div>
-    <div class="form-group"><label class="form-label">เบอร์โทรศัพท์</label><input id="editPhone" class="form-control" value="${u.Phone||''}"></div>
     <div class="form-group"><label class="form-label">รหัสผ่านใหม่ (เว้นว่างถ้าไม่เปลี่ยน)</label><input id="editPwd" type="password" class="form-control" placeholder="รหัสผ่านใหม่"></div>
     <div class="flex gap-3 mt-3">
       <button class="btn btn-ghost" onclick="closeModal('profileModal')">ยกเลิก</button>
@@ -1752,7 +1826,10 @@ async function saveProfile() {
   };
   const pwd = document.getElementById('editPwd').value;
   if (pwd) params.password = pwd;
+  setLoading('btnSubmitGoodness', true);
+  document.getElementById('goodnessAlert').innerHTML = renderAlert('⏳ กำลังบันทึกข้อมูล กรุณารอสักครู่...', 'info');
   const res = await api(params);
+  setLoading('btnSubmitGoodness', false);
   if (res.success) {
     currentUser.Name = params.name; currentUser.LastName = params.lastName;
     currentUser.NickName = params.nickName; currentUser.PreName = params.preName;
@@ -1811,21 +1888,18 @@ async function submitGoodness() {
   }
 
   setLoading('btnSubmitGoodness', true);
-  document.getElementById('goodnessAlert').innerHTML = renderAlert('⏳ หยุดเป็นตัวสำเร็จ...', 'info');
-  try {
-    const res = await api(params);
-    if (res.success) {
-      showAlert('goodnessAlert', `✅ ${res.message}`, 'success');
-      showToast(res.message, 'success');
-      setTimeout(() => {
-        closeModal('goodnessModal');
-        if (currentUser.Role === 'User') showUserTab('goodness');
-      }, 1800);
-    } else {
-      showAlert('goodnessAlert', res.message, 'error');
-    }
-  } finally {
-    setLoading('btnSubmitGoodness', false);
+  document.getElementById('goodnessAlert').innerHTML = renderAlert('⏳ กำลังบันทึกข้อมูล กรุณารอสักครู่...', 'info');
+  const res = await api(params);
+  setLoading('btnSubmitGoodness', false);
+  if (res.success) {
+    showAlert('goodnessAlert', `✅ ${res.message}`, 'success');
+    showToast(res.message, 'success');
+    setTimeout(() => {
+      closeModal('goodnessModal');
+      if (currentUser.Role === 'User') showUserTab('goodness');
+    }, 1800);
+  } else {
+    showAlert('goodnessAlert', res.message, 'error');
   }
 }
 
@@ -2161,7 +2235,7 @@ async function openUserDetailModal(user) {
           <div class="stat-card"><div class="stat-icon">📖</div><div class="stat-value">${dash.dashboard.quizBoon}</div><div class="stat-label">สอบ</div></div>
         </div>` : ''}
       <div class="mt-3 text-sm" style="color:var(--c-text-secondary);text-align:center;">
-        <div>เกิด: ${user.Birthday||'—'} &nbsp;|&nbsp; ชื่อเล่น: ${user.NickName||'—'}</div><div class="mt-1">📱 ${user.Phone||'—'}</div>
+        <div>เกิด: ${user.Birthday||'—'} &nbsp;|&nbsp; ชื่อเล่น: ${user.NickName||'—'}</div>
       </div>
       <div class="mt-4 text-center">
         <button class="btn btn-ghost btn-sm" onclick="toggleUserDetailEdit(true)">✏️ แก้ไขข้อมูล</button>
@@ -2205,7 +2279,6 @@ async function openUserDetailModal(user) {
           </select>
         </div>
         <div class="form-group"><label class="form-label">วันเกิด</label><input id="sEditBirthday" class="form-control" value="${user.Birthday||''}"></div>
-        <div class="form-group"><label class="form-label">เบอร์โทรศัพท์</label><input id="sEditPhone" class="form-control" value="${user.Phone||''}"></div>
       </div>
       <div class="form-group"><label class="form-label">รหัสผ่านใหม่ (เว้นว่างถ้าไม่เปลี่ยน)</label><input id="sEditPwd" type="password" class="form-control" placeholder="รหัสผ่านใหม่"></div>
       <div class="flex gap-3 mt-4">
@@ -2240,14 +2313,16 @@ async function saveStaffUserEdit() {
     department: document.getElementById('sEditDept').value,
     role: document.getElementById('sEditRole').value,
     level: document.getElementById('sEditLevel').value,
-    birthday: document.getElementById('sEditBirthday').value,
-    phone: document.getElementById('sEditPhone').value
+    birthday: document.getElementById('sEditBirthday').value
   };
   const pwd = document.getElementById('sEditPwd').value;
   if (pwd) params.password = pwd;
 
   document.getElementById('userDetailContent').innerHTML = '<div class="spinner"></div>';
+  setLoading('btnSubmitGoodness', true);
+  document.getElementById('goodnessAlert').innerHTML = renderAlert('⏳ กำลังบันทึกข้อมูล กรุณารอสักครู่...', 'info');
   const res = await api(params);
+  setLoading('btnSubmitGoodness', false);
   if (res.success) {
     showToast('บันทึกข้อมูลสมาชิกสำเร็จ', 'success');
     closeModal('userDetailModal');
@@ -2314,7 +2389,10 @@ async function saveActivity() {
     const { base64, mime, filename } = await fileToBase64(photoInput.files[0]);
     params.photoBase64 = base64; params.photoFilename = filename; params.photoMime = mime;
   }
+  setLoading('btnSubmitGoodness', true);
+  document.getElementById('goodnessAlert').innerHTML = renderAlert('⏳ กำลังบันทึกข้อมูล กรุณารอสักครู่...', 'info');
   const res = await api(params);
+  setLoading('btnSubmitGoodness', false);
   if (res.success) {
     showToast(res.message,'success');
     closeModal('actFormModal');
@@ -2356,7 +2434,10 @@ async function saveQuizSet() {
     description: document.getElementById('qzFormDesc').value,
     status: document.getElementById('qzFormStatus').value
   };
+  setLoading('btnSubmitGoodness', true);
+  document.getElementById('goodnessAlert').innerHTML = renderAlert('⏳ กำลังบันทึกข้อมูล กรุณารอสักครู่...', 'info');
   const res = await api(params);
+  setLoading('btnSubmitGoodness', false);
   if (res.success) {
     showToast(res.message,'success');
     closeModal('quizFormModal');
@@ -2438,7 +2519,7 @@ function setLoading(btnId, isLoading, defaultText = 'ตกลง') {
   btn.disabled = isLoading;
   if (isLoading) {
     if (!btn.dataset.origText) btn.dataset.origText = btn.textContent;
-    btn.textContent = '⏳ หยุดเป็นตัวสำเร็จ...';
+    btn.textContent = '⏳ กำลังโหลด...';
   } else {
     btn.textContent = btn.dataset.origText || defaultText;
   }
@@ -2688,7 +2769,7 @@ function onQrDetected(rawData) {
 
   // --- Auto Submit for actRegUserID ---
   if (window.qrTargetInputId === 'actRegUserID') {
-    if (status) status.textContent = '⏳ หยุดเป็นตัวสำเร็จ...';
+    if (status) status.textContent = 'กำลังบันทึกข้อมูล...';
     submitActivityReg().then(success => {
       if (success) {
         playBeep('success');
@@ -2845,7 +2926,7 @@ function renderPrintCardsTab(role) {
           </tr>
         </thead>
         <tbody id="pcTbody">
-          <tr><td colspan="5" class="text-center">⏳ หยุดเป็นตัวสำเร็จ...</td></tr>
+          <tr><td colspan="5" class="text-center">กำลังโหลดข้อมูล...</td></tr>
         </tbody>
       </table>
     </div>
@@ -2973,6 +3054,15 @@ async function submitPrintCards() {
     <div id="quizPartsContent" style="max-height: 400px; overflow-y: auto; padding-right: 4px;">
       <div class="spinner"></div>
     </div>
+  </div>
+</div>
+
+
+<div class="pop-loader-overlay" id="popLoader">
+  <div class="pop-loader-box">
+    <div class="pop-loader-spinner" id="popLoaderSpinner"></div>
+    <div class="pop-loader-icon" id="popLoaderIcon">✨</div>
+    <div class="pop-loader-text" id="popLoaderText">⏳ หยุดเป็นตัวสำเร็จ...</div>
   </div>
 </div>
 
