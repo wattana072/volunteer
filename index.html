@@ -1884,7 +1884,7 @@ async function registerActivityDirect(acId) {
     const res = await api({ action:'registerActivity', userID: currentUser.UserID, acId: acId, comment: 'Scan QR' });
     if (res.success) {
       showToast(res.message || 'ลงทะเบียนเรียบร้อย', 'success');
-      loadUserDashboard();
+      loadUserPage();
     } else {
       showToast(res.message || 'ไม่สามารถลงทะเบียนได้', 'error');
     }
