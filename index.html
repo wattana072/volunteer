@@ -1861,15 +1861,17 @@ async function submitActivityReg() {
   const acId = document.getElementById('actRegSelect').value;
   const userID = document.getElementById('actRegUserID').value.trim();
   const comment = document.getElementById('actRegComment').value.trim();
-  if (!acId || !userID) { showAlert('actRegAlert','กรุณาเลือกกิจกรรมและกรอก UserID','error'); return; }
+  if (!acId || !userID) { showAlert('actRegAlert','กรุณาเลือกกิจกรรมและกรอก UserID','error'); return false; }
   const res = await api({ action:'registerActivity', userID, acId, comment });
   if (res.success) {
     showAlert('actRegAlert', `✅ ${res.message}`, 'success');
     showToast(res.message, 'success');
     document.getElementById('actRegUserID').value='';
     document.getElementById('actRegComment').value='';
+    return true;
   } else {
     showAlert('actRegAlert', res.message, 'error');
+    return false;
   }
 }
 
@@ -2616,18 +2618,40 @@ function onQrDetected(rawData) {
   if (status) status.textContent = '✅ พบ: ' + data;
 
   // Animate input
-  input.style.animation = 'qrSuccess 0.4s ease';
-  input.style.borderColor = 'var(--c-success)';
-  input.style.boxShadow = '0 0 0 3px rgba(52,199,89,0.2)';
-  setTimeout(() => {
-    input.style.animation = '';
-    input.style.borderColor = '';
-    input.style.boxShadow = '';
-  }, 1500);
+  if (input) {
+    input.style.animation = 'qrSuccess 0.4s ease';
+    input.style.borderColor = 'var(--c-success)';
+    input.style.boxShadow = '0 0 0 3px rgba(52,199,89,0.2)';
+    setTimeout(() => {
+      input.style.animation = '';
+      input.style.borderColor = '';
+      input.style.boxShadow = '';
+    }, 1500);
+  }
+
+  // --- Auto Submit for actRegUserID ---
+  if (window.qrTargetInputId === 'actRegUserID') {
+    if (status) status.textContent = 'กำลังบันทึกข้อมูล...';
+    submitActivityReg().then(success => {
+      if (success) {
+        if (status) status.textContent = '✅ บันทึกแล้ว! พร้อมสแกนคนต่อไป...';
+        showToast('✅ ลงทะเบียน ' + data + ' สำเร็จ!', 'success');
+      } else {
+        if (status) status.textContent = '❌ ข้าม! พร้อมสแกนคนต่อไป...';
+        showToast('❌ ไม่สามารถลงทะเบียน ' + data + ' ได้', 'error');
+      }
+      // Resume scanner after delay
+      setTimeout(() => {
+        if (status) status.textContent = '🔍 กำลังค้นหา QR Code...';
+        scanQrFrame();
+      }, 2000);
+    });
+    return;
+  }
 
   showToast('✅ Scan สำเร็จ! ' + data, 'success');
 
-  // Auto-close scanner after 600ms
+  // Auto-close scanner after 600ms for other modes
   setTimeout(() => stopQrScanner(), 600);
 }
 
