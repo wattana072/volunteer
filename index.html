@@ -2402,7 +2402,7 @@ function scanQrFrame() {
   const status = document.getElementById('qrStatus');
 
   if (!video || video.readyState < 2) {
-    qrAnimFrame = requestAnimationFrame(scanQrFrame); return;
+    qrAnimFrame = setTimeout(scanQrFrame, 100); return;
   }
 
   const size = Math.min(video.videoWidth, video.videoHeight);
@@ -2426,8 +2426,8 @@ function scanQrFrame() {
     return; // stop loop
   }
 
-  // Keep scanning
-  qrAnimFrame = requestAnimationFrame(scanQrFrame);
+  // Keep scanning - run only 4 times a second to improve performance (INP)
+  qrAnimFrame = setTimeout(scanQrFrame, 250);
 }
 
 function onQrDetected(rawData) {
@@ -2479,7 +2479,7 @@ function onQrDetected(rawData) {
 }
 
 function stopQrScanner() {
-  if (qrAnimFrame) { cancelAnimationFrame(qrAnimFrame); qrAnimFrame = null; }
+  if (qrAnimFrame) { clearTimeout(qrAnimFrame); qrAnimFrame = null; }
   if (qrStream)    { qrStream.getTracks().forEach(t => t.stop()); qrStream = null; }
 
   const wrap  = document.getElementById('qrScannerModal');
