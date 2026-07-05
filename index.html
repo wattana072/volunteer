@@ -1352,7 +1352,7 @@ async function doRegister() {
 
   showGlobalLoader(); // Show earlier before photo processing
   try {
-    const params = { action:'register', userID:email, password:pwd, preName, name, lastName, nickName, birthday, department:dept };
+    const params = { action:'register', userID:email, password:pwd, preName, name, lastName, nickName, birthday, phone:phone, department:dept };
 
     // Photo
     const photoInput = document.getElementById('regPhotoInput');
