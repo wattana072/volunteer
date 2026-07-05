@@ -804,6 +804,7 @@
         <button class="btn btn-ghost btn-sm" id="uTabActivity" onclick="showUserTab('activity')">🎪 กิจกรรม</button>
         <button class="btn btn-ghost btn-sm" id="uTabQuiz" onclick="showUserTab('quiz')">📖 ผลสอบ</button>
         <button class="btn btn-accent btn-sm" onclick="openGoodnessModal()">➕ บันทึกความดีวันนี้</button>
+        <button class="btn btn-primary btn-sm" onclick="scanToQuiz()">📷 Scan ตอบปัญหาธรรมะ</button>
       </div>
 
       <div id="userTabContent"></div>
@@ -1860,6 +1861,39 @@ async function submitActivityReg() {
 // ============================================================
 //  QUIZ
 // ============================================================
+async function scanToQuiz() {
+  if (!currentUser) { showToast('กรุณาเข้าสู่ระบบก่อน', 'error'); return; }
+  window.qrTargetInputId = 'DIRECT_QUIZ';
+  const wrap = document.getElementById('qrScannerModal');
+  wrap.style.display = 'flex';
+  await startQrScanner();
+}
+
+async function startQuizDirect(quizsetId) {
+  if (!currentUser) return;
+  showGlobalLoader();
+  try {
+    const doneRes = await api({ action:'getUserQuizzes', userID: currentUser.UserID });
+    if (doneRes.success && doneRes.quizzes.find(q => q.quizsetId === quizsetId)) {
+      showToast('คุณเคยทำข้อสอบชุดนี้ไปแล้ว (ทำได้ครั้งเดียว)', 'error');
+      return;
+    }
+    const res = await api({ action:'getQuestions', quizsetID: quizsetId });
+    if (!res.success || !res.questions.length) {
+      showToast('ไม่พบคำถามในชุดข้อสอบนี้', 'error');
+      return;
+    }
+    quizState = { questions: res.questions, answers: {}, currentIdx: 0, startTime: Date.now(), quizsetId, quizUserId: currentUser.UserID };
+    document.getElementById('quizModalTitle').textContent = `📖 ข้อ 1 / ${res.questions.length}`;
+    openModal('quizModal');
+    renderQuizQuestion();
+  } catch(e) {
+    showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
+  } finally {
+    hideGlobalLoader();
+  }
+}
+
 function renderQuizQr(quizsetId) {
   const wrap = document.getElementById('quizSetQrWrap');
   if (!quizsetId) {
@@ -2399,6 +2433,14 @@ function scanQrFrame() {
 function onQrDetected(rawData) {
   // Vibrate for haptic feedback (mobile)
   if (navigator.vibrate) navigator.vibrate([80, 40, 80]);
+
+  if (window.qrTargetInputId === 'DIRECT_QUIZ') {
+    const quizsetId = rawData.trim();
+    stopQrScanner();
+    showToast('✅ Scan สำเร็จ! โหลดข้อสอบ...', 'success');
+    startQuizDirect(quizsetId);
+    return;
+  }
 
   // ---- ดึงเฉพาะ Email จาก QR data ----
   // ตัด prefix: https://, http://, mailto:
