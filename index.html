@@ -2686,7 +2686,7 @@ async function openActParticipantsModal(acId) {
     `;
     document.getElementById('actPartsContent').innerHTML = html;
   } else {
-    document.getElementById('actPartsContent').innerHTML = renderAlert(res.message, 'error');
+    document.getElementById('actPartsContent').innerHTML = renderAlert(res.message || res.error || 'เกิดข้อผิดพลาดจากเซิร์ฟเวอร์', 'error');
   }
 }
 
