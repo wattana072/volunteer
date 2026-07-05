@@ -1350,6 +1350,7 @@ async function doRegister() {
     showAlert('registerAlert','กรุณากรอกข้อมูล * ให้ครบ','error'); return;
   }
 
+  setLoading('btnRegister', true, 'ลงทะเบียน');
   showGlobalLoader(); // Show earlier before photo processing
   try {
     const params = { action:'register', userID:email, password:pwd, preName, name, lastName, nickName, birthday, phone:phone, department:dept };
