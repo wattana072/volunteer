@@ -1009,7 +1009,7 @@
         <img id="gMeditatePreview" class="photo-preview hidden" />
       </div>
     </div>
-    <button class="btn btn-accent btn-full mt-4" onclick="submitGoodness()">✨ ส่งความดีประจำวัน</button>
+    <button id="btnSubmitGoodness" class="btn btn-accent btn-full mt-4" onclick="submitGoodness()">✨ ส่งความดีประจำวัน</button>
   </div>
 </div>
 
@@ -1740,7 +1740,10 @@ async function saveProfile() {
   };
   const pwd = document.getElementById('editPwd').value;
   if (pwd) params.password = pwd;
+  setLoading('btnSubmitGoodness', true);
+  document.getElementById('goodnessAlert').innerHTML = renderAlert('⏳ กำลังบันทึกข้อมูล กรุณารอสักครู่...', 'info');
   const res = await api(params);
+  setLoading('btnSubmitGoodness', false);
   if (res.success) {
     currentUser.Name = params.name; currentUser.LastName = params.lastName;
     currentUser.NickName = params.nickName; currentUser.PreName = params.preName;
@@ -1798,7 +1801,10 @@ async function submitGoodness() {
     }
   }
 
+  setLoading('btnSubmitGoodness', true);
+  document.getElementById('goodnessAlert').innerHTML = renderAlert('⏳ กำลังบันทึกข้อมูล กรุณารอสักครู่...', 'info');
   const res = await api(params);
+  setLoading('btnSubmitGoodness', false);
   if (res.success) {
     showAlert('goodnessAlert', `✅ ${res.message}`, 'success');
     showToast(res.message, 'success');
@@ -2227,7 +2233,10 @@ async function saveStaffUserEdit() {
   if (pwd) params.password = pwd;
 
   document.getElementById('userDetailContent').innerHTML = '<div class="spinner"></div>';
+  setLoading('btnSubmitGoodness', true);
+  document.getElementById('goodnessAlert').innerHTML = renderAlert('⏳ กำลังบันทึกข้อมูล กรุณารอสักครู่...', 'info');
   const res = await api(params);
+  setLoading('btnSubmitGoodness', false);
   if (res.success) {
     showToast('บันทึกข้อมูลสมาชิกสำเร็จ', 'success');
     closeModal('userDetailModal');
@@ -2294,7 +2303,10 @@ async function saveActivity() {
     const { base64, mime, filename } = await fileToBase64(photoInput.files[0]);
     params.photoBase64 = base64; params.photoFilename = filename; params.photoMime = mime;
   }
+  setLoading('btnSubmitGoodness', true);
+  document.getElementById('goodnessAlert').innerHTML = renderAlert('⏳ กำลังบันทึกข้อมูล กรุณารอสักครู่...', 'info');
   const res = await api(params);
+  setLoading('btnSubmitGoodness', false);
   if (res.success) {
     showToast(res.message,'success');
     closeModal('actFormModal');
@@ -2336,7 +2348,10 @@ async function saveQuizSet() {
     description: document.getElementById('qzFormDesc').value,
     status: document.getElementById('qzFormStatus').value
   };
+  setLoading('btnSubmitGoodness', true);
+  document.getElementById('goodnessAlert').innerHTML = renderAlert('⏳ กำลังบันทึกข้อมูล กรุณารอสักครู่...', 'info');
   const res = await api(params);
+  setLoading('btnSubmitGoodness', false);
   if (res.success) {
     showToast(res.message,'success');
     closeModal('quizFormModal');
