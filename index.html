@@ -967,7 +967,11 @@
       <button class="modal-close" onclick="closeModal('goodnessModal')">✕</button>
     </div>
     <div id="goodnessAlert"></div>
-    <p class="text-xs text-muted mb-3">วันนี้: <span id="todayDate"></span> · ส่งได้วันละ 1 ครั้ง</p>
+    <div style="margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+      <label for="gDoDate" class="text-sm font-bold">เลือกวันที่ส่ง:</label>
+      <input type="date" id="gDoDate" class="form-control" style="width:150px; padding:4px 8px; font-size:14px;" />
+      <span class="text-xs text-muted">ส่งได้วันละ 1 ครั้ง</span>
+    </div>
     <div class="goodness-grid">
       <div class="goodness-item">
         <div class="goodness-item-title">🤲 ทาน (Giving)</div>
@@ -1194,7 +1198,7 @@ document.addEventListener('DOMContentLoaded', () => {
   navigate(location.hash ? location.hash.replace('#','') : 'home');
   loadHomeDeptDashboard();
   loadDepartments();
-  document.getElementById('todayDate').textContent = getTodayFormatted();
+  const dInp = document.getElementById('gDoDate'); if(dInp) dInp.value = new Date().toLocaleDateString('en-CA');
   // Auto set birthday format hint
   const bd = document.getElementById('regBirthday');
   if(bd) bd.addEventListener('input', formatBirthdayInput);
@@ -1761,7 +1765,7 @@ async function saveProfile() {
 function openGoodnessModal() {
   if (!currentUser) { navigate('login'); return; }
   clearGoodnessForm();
-  document.getElementById('todayDate').textContent = getTodayFormatted();
+  const dInp = document.getElementById('gDoDate'); if(dInp) dInp.value = new Date().toLocaleDateString('en-CA');
   openModal('goodnessModal');
 }
 
@@ -1782,7 +1786,7 @@ async function submitGoodness() {
   const params = {
     action: 'submitGoodness',
     userID: currentUser.UserID,
-    doDate: getTodayFormatted(),
+    doDate: document.getElementById('gDoDate').value.split('-').reverse().join('/'),
     silaText: document.getElementById('gSilaText').value.trim(),
     politeText: document.getElementById('gPoliteText').value.trim(),
     ontimeText: document.getElementById('gOntimeText').value.trim()
