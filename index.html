@@ -783,7 +783,7 @@
 
         <div class="flex gap-3 mt-4">
           <button class="btn btn-ghost" onclick="navigate('login')">← กลับ</button>
-          <button class="btn btn-primary" style="flex:1" onclick="doRegister()">ลงทะเบียน</button>
+          <button id="btnRegister" class="btn btn-primary" style="flex:1" onclick="doRegister()">ลงทะเบียน</button>
         </div>
       </div>
     </div>
@@ -1810,7 +1810,7 @@ async function submitGoodness() {
   }
 
   setLoading('btnSubmitGoodness', true);
-  document.getElementById('goodnessAlert').innerHTML = renderAlert('⏳ กำลังบันทึกข้อมูล กรุณารอสักครู่...', 'info');
+  document.getElementById('goodnessAlert').innerHTML = renderAlert('⏳ หยุดเป็นตัวสำเร็จ...', 'info');
   try {
     const res = await api(params);
     if (res.success) {
@@ -2437,7 +2437,7 @@ function setLoading(btnId, isLoading, defaultText = 'ตกลง') {
   btn.disabled = isLoading;
   if (isLoading) {
     if (!btn.dataset.origText) btn.dataset.origText = btn.textContent;
-    btn.textContent = '⏳ กำลังโหลด...';
+    btn.textContent = '⏳ หยุดเป็นตัวสำเร็จ...';
   } else {
     btn.textContent = btn.dataset.origText || defaultText;
   }
@@ -2687,7 +2687,7 @@ function onQrDetected(rawData) {
 
   // --- Auto Submit for actRegUserID ---
   if (window.qrTargetInputId === 'actRegUserID') {
-    if (status) status.textContent = 'กำลังบันทึกข้อมูล...';
+    if (status) status.textContent = '⏳ หยุดเป็นตัวสำเร็จ...';
     submitActivityReg().then(success => {
       if (success) {
         playBeep('success');
@@ -2844,7 +2844,7 @@ function renderPrintCardsTab(role) {
           </tr>
         </thead>
         <tbody id="pcTbody">
-          <tr><td colspan="5" class="text-center">กำลังโหลดข้อมูล...</td></tr>
+          <tr><td colspan="5" class="text-center">⏳ หยุดเป็นตัวสำเร็จ...</td></tr>
         </tbody>
       </table>
     </div>
