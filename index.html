@@ -1637,6 +1637,10 @@ async function showAdminTab(tab) {
 // ============================================================
 function renderUserListTable(users, role) {
   if (!users.length) return renderAlert('ไม่พบสมาชิก','info');
+  
+  // Sort users by BP descending
+  users.sort((a, b) => (b.BP || 0) - (a.BP || 0));
+
   return `
     <div class="glass-card" style="padding:0;overflow:hidden;">
       <div class="table-wrap">
