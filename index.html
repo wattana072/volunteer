@@ -1030,7 +1030,7 @@
       <label class="form-label">UserID ผู้เข้าร่วม (Email)</label>
       <div style="display:flex;gap:8px;align-items:stretch;">
         <input id="actRegUserID" type="email" class="form-control" placeholder="user@email.com" style="flex:1;" />
-        <button id="qrScanBtn" class="btn btn-ghost btn-sm" onclick="toggleQrScanner()" title="สแกน QR Code" style="padding:0 14px;font-size:1.2rem;border-radius:var(--radius-sm);flex-shrink:0;">
+        <button id="qrScanBtn" class="btn btn-ghost btn-sm" onclick="toggleQrScanner('actRegUserID')" title="สแกน QR Code" style="padding:0 14px;font-size:1.2rem;border-radius:var(--radius-sm);flex-shrink:0;">
           📷
         </button>
       </div>
@@ -2545,7 +2545,7 @@ async function startQrScanner() {
     scanQrFrame();
   } catch(err) {
     wrap.style.display = 'none';
-    btn.classList.remove('scanning');
+    
     if (err.name === 'NotAllowedError') {
       showToast('กรุณาอนุญาตให้แอปเข้าถึงกล้อง', 'error');
     } else if (err.name === 'NotFoundError') {
@@ -2910,6 +2910,51 @@ async function submitPrintCards() {
 }
 
 </script>
+
+
+<!-- QR Scanner Modal -->
+<div class="modal-overlay" id="qrScannerModal" style="display:none; z-index: 10000;">
+  <div class="modal text-center">
+    <div class="modal-header">
+      <span class="modal-title">สแกน QR Code</span>
+      <button class="modal-close" onclick="toggleQrScanner()">✕</button>
+    </div>
+    <div style="position:relative; width:100%; max-width:300px; margin:0 auto;">
+      <video id="qrVideo" style="width:100%; border-radius:8px; background:#000;" playsinline></video>
+      <canvas id="qrCanvas" style="display:none;"></canvas>
+    </div>
+    <div id="qrStatus" class="mt-3 text-muted text-sm">กำลังเตรียมกล้อง...</div>
+    <button class="btn btn-ghost mt-3 w-full" onclick="toggleQrScanner()">ยกเลิก</button>
+  </div>
+</div>
+
+<!-- Activity Participants Modal -->
+<div class="modal-overlay" id="actPartsModal" style="z-index: 10000; display:none;">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">👥 สมาชิกที่มาร่วมกิจกรรม</span>
+      <button class="modal-close" onclick="closeModal('actPartsModal')">✕</button>
+    </div>
+    <div id="actPartsAlert"></div>
+    <div id="actPartsContent" style="max-height: 400px; overflow-y: auto; padding-right: 4px;">
+      <div class="spinner"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Quiz Participants Modal -->
+<div class="modal-overlay" id="quizPartsModal" style="z-index: 10000; display:none;">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">🏆 ผลการตอบปัญหา</span>
+      <button class="modal-close" onclick="closeModal('quizPartsModal')">✕</button>
+    </div>
+    <div id="quizPartsAlert"></div>
+    <div id="quizPartsContent" style="max-height: 400px; overflow-y: auto; padding-right: 4px;">
+      <div class="spinner"></div>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
